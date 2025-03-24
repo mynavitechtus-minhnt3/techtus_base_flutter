@@ -5,7 +5,9 @@ import '../../../../index.dart';
 part 'home_state.freezed.dart';
 
 @freezed
-class HomeState extends BaseState with _$HomeState {
+sealed class HomeState extends BaseState with _$HomeState {
+  const HomeState._();
+  
   factory HomeState({
     @Default(LoadMoreOutput<ApiUserData>(data: <ApiUserData>[])) LoadMoreOutput<ApiUserData> users,
     @Default(false) bool isShimmerLoading,

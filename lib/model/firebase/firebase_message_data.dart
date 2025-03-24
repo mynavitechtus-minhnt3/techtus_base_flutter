@@ -7,7 +7,7 @@ part 'firebase_message_data.freezed.dart';
 part 'firebase_message_data.g.dart';
 
 @freezed
-class FirebaseMessageData with _$FirebaseMessageData {
+sealed class FirebaseMessageData with _$FirebaseMessageData {
   const FirebaseMessageData._();
 
   const factory FirebaseMessageData({

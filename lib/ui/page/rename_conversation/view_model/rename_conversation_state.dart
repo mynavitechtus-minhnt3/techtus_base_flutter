@@ -5,7 +5,7 @@ import '../../../../index.dart';
 part 'rename_conversation_state.freezed.dart';
 
 @freezed
-class RenameConversationState extends BaseState with _$RenameConversationState {
+sealed class RenameConversationState extends BaseState with _$RenameConversationState {
   const RenameConversationState._();
 
   const factory RenameConversationState({

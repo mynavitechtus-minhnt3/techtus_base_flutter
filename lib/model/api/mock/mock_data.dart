@@ -6,7 +6,7 @@ part 'mock_data.g.dart';
 /// This file is used to generate mock data for testing.
 @freezed
 @visibleForTesting
-class MockData with _$MockData {
+sealed class MockData with _$MockData {
   const MockData._();
 
   const factory MockData({
@@ -18,7 +18,7 @@ class MockData with _$MockData {
 }
 
 @freezed
-class MockData2 with _$MockData2 {
+sealed class MockData2 with _$MockData2 {
   const MockData2._();
 
   const factory MockData2({

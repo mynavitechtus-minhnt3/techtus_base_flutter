@@ -70,19 +70,31 @@ class CommonPagedSliverGrid<T> extends StatelessWidget {
           noMoreItemsIndicator ?? const CommonNoMoreItemsIndicator(),
     );
 
-    final pagedView = PagedSliverGrid(
-      pagingController: pagingController.pagingController,
-      builderDelegate: builderDelegate,
-      gridDelegate: gridDelegate,
-      addAutomaticKeepAlives: addAutomaticKeepAlives,
-      addRepaintBoundaries: addRepaintBoundaries,
-      addSemanticIndexes: addSemanticIndexes,
-      showNewPageProgressIndicatorAsGridChild: showNewPageProgressIndicatorAsGridChild,
-      showNewPageErrorIndicatorAsGridChild: showNewPageErrorIndicatorAsGridChild,
-      showNoMoreItemsIndicatorAsGridChild: showNoMoreItemsIndicatorAsGridChild,
-      shrinkWrapFirstPageIndicators: shrinkWrapFirstPageIndicators,
-    );
+    PagedSliverGrid<int, T> pagedView({
+      required PagingState<int, T> state,
+      required void Function() fetchNextPage,
+    }) =>
+        PagedSliverGrid(
+          state: state,
+          fetchNextPage: fetchNextPage,
+          builderDelegate: builderDelegate,
+          gridDelegate: gridDelegate,
+          addAutomaticKeepAlives: addAutomaticKeepAlives,
+          addRepaintBoundaries: addRepaintBoundaries,
+          addSemanticIndexes: addSemanticIndexes,
+          showNewPageProgressIndicatorAsGridChild: showNewPageProgressIndicatorAsGridChild,
+          showNewPageErrorIndicatorAsGridChild: showNewPageErrorIndicatorAsGridChild,
+          showNoMoreItemsIndicatorAsGridChild: showNoMoreItemsIndicatorAsGridChild,
+          shrinkWrapFirstPageIndicators: shrinkWrapFirstPageIndicators,
+        );
 
-    return pagedView;
+    return PagingListener(
+        controller: pagingController.pagingController,
+        builder: (context, state, fetchNextPage) {
+          return pagedView(
+            state: state,
+            fetchNextPage: fetchNextPage,
+          );
+        });
   }
 }

@@ -5,7 +5,7 @@ import '../../index.dart';
 part 'paged_list.freezed.dart';
 
 @freezed
-class PagedList<T> with _$PagedList<T> {
+sealed class PagedList<T> with _$PagedList<T> {
   const PagedList._();
 
   const factory PagedList({

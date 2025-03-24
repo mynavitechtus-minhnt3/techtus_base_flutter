@@ -1,59 +1,54 @@
-import 'package:flutter/material.dart';
+import 'dart:async';
+
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 import '../../../index.dart';
 
 class CommonPagingController<T> {
   CommonPagingController({
-    this.invisibleItemsThreshold = Constant.invisibleItemsThreshold,
-    this.firstPageKey = Constant.initialPage,
-  }) : pagingController = PagingController<int, T>(
-          firstPageKey: firstPageKey,
-          invisibleItemsThreshold: invisibleItemsThreshold,
-        );
+    required this.fetchPage,
+    this.initialPageState,
+  }) {
+    _init();
+  }
 
-  final PagingController<int, T> pagingController;
+  final PagingState<int, T>? initialPageState;
+  final FutureOr<List<T>> Function(int, bool) fetchPage;
 
-  final int? invisibleItemsThreshold;
-  final int firstPageKey;
+  late PagingController<int, T> _pagingController;
+
+  PagingController<int, T> get pagingController => _pagingController;
 
   // call when error
   set error(AppException? appException) {
-    pagingController.error = appException;
+    _pagingController.value = _pagingController.value.copyWith(
+      error: appException,
+    );
   }
 
-  // call when initState to listen to trigger load more
-  void listen({
-    required VoidCallback onLoadMore,
-  }) {
-    pagingController.addPageRequestListener((pageKey) {
-      if (pageKey > Constant.initialPage) {
-        onLoadMore();
-      }
-    });
+  void _init() {
+    _pagingController = PagingController<int, T>(
+      value: initialPageState,
+      getNextPageKey: (state) => (state.keys?.last ?? 0) + 1,
+      fetchPage: (pageKey) {
+        final isInitialLoad = pageKey == Constant.initialPage;
+        return fetchPage(
+          pageKey,
+          isInitialLoad,
+        );
+      },
+    );
   }
 
-  // call append data when load first page / more page success
-  void appendLoadMoreOutput(LoadMoreOutput<T> loadMoreOutput) {
-    if (loadMoreOutput.isRefreshSuccess) {
-      pagingController.refresh();
-    }
-
-    if (loadMoreOutput.isLastPage) {
-      pagingController.appendLastPage(loadMoreOutput.data);
-    } else {
-      pagingController.appendPage(
-        loadMoreOutput.data,
-        (pagingController.nextPageKey ?? (Constant.initialPage - 1)) + 1,
-      );
-    }
+  void refresh() {
+    _pagingController.refresh();
   }
 
   void insertItemAt({
     required int index,
     required T item,
   }) {
-    pagingController.itemList?.insert(index, item);
+    _pagingController.items?.insert(index, item);
     // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
     pagingController.notifyListeners();
   }
@@ -62,7 +57,7 @@ class CommonPagingController<T> {
     required int index,
     required Iterable<T> items,
   }) {
-    pagingController.itemList?.insertAll(index, items);
+    pagingController.items?.insertAll(index, items);
     // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
     pagingController.notifyListeners();
   }
@@ -71,13 +66,13 @@ class CommonPagingController<T> {
     required int index,
     required T newItem,
   }) {
-    pagingController.itemList?[index] = newItem;
+    pagingController.items?[index] = newItem;
     // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
     pagingController.notifyListeners();
   }
 
   void removeItemAt(int index) {
-    pagingController.itemList?.removeAt(index);
+    pagingController.items?.removeAt(index);
     // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
     pagingController.notifyListeners();
   }
@@ -86,7 +81,7 @@ class CommonPagingController<T> {
     required int start,
     required int end,
   }) {
-    pagingController.itemList?.removeRange(start, end);
+    pagingController.items?.removeRange(start, end);
     // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
     pagingController.notifyListeners();
   }
@@ -95,7 +90,7 @@ class CommonPagingController<T> {
     required int start,
     required int end,
   }) {
-    pagingController.itemList?.clear();
+    pagingController.items?.clear();
     // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
     pagingController.notifyListeners();
   }

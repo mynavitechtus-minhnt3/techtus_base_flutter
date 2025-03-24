@@ -5,7 +5,7 @@ import '../../index.dart';
 part 'server_error.freezed.dart';
 
 @freezed
-class ServerError with _$ServerError {
+sealed class ServerError with _$ServerError {
   const ServerError._();
   const factory ServerError({
     /// server-defined status code

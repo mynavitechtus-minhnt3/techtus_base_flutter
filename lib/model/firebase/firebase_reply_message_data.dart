@@ -6,7 +6,7 @@ part 'firebase_reply_message_data.freezed.dart';
 part 'firebase_reply_message_data.g.dart';
 
 @freezed
-class FirebaseReplyMessageData with _$FirebaseReplyMessageData {
+sealed class FirebaseReplyMessageData with _$FirebaseReplyMessageData {
   const FirebaseReplyMessageData._();
 
   const factory FirebaseReplyMessageData({

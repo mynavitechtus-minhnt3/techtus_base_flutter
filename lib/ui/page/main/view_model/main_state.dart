@@ -5,6 +5,8 @@ import '../../../../index.dart';
 part 'main_state.freezed.dart';
 
 @freezed
-class MainState extends BaseState with _$MainState {
+sealed class MainState extends BaseState with _$MainState {
+  const MainState._();
+
   const factory MainState() = _MainState;
 }

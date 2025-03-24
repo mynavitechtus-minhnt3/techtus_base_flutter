@@ -5,7 +5,9 @@ import '../../../../index.dart';
 part 'chat_state.freezed.dart';
 
 @freezed
-class ChatState extends BaseState with _$ChatState {
+sealed class ChatState extends BaseState with _$ChatState {
+  const ChatState._();
+  
   const factory ChatState({
     required FirebaseConversationData conversation,
     @Default([]) List<LocalMessageData> messages,

@@ -98,30 +98,43 @@ class CommonPagedGridView<T> extends StatelessWidget {
           noMoreItemsIndicator ?? const CommonNoMoreItemsIndicator(),
     );
 
-    final pagedView = PagedGridView<int, T>(
-      pagingController: pagingController.pagingController,
-      builderDelegate: builderDelegate,
-      gridDelegate: gridDelegate,
-      scrollDirection: scrollDirection,
-      reverse: reverse,
-      scrollController: scrollController,
-      primary: primary,
-      physics: physics,
-      shrinkWrap: shrinkWrap,
-      padding: padding,
-      cacheExtent: cacheExtent,
-      dragStartBehavior: dragStartBehavior,
-      keyboardDismissBehavior: keyboardDismissBehavior,
-      restorationId: restorationId,
-      clipBehavior: clipBehavior,
-      addAutomaticKeepAlives: addAutomaticKeepAlives,
-      addRepaintBoundaries: addRepaintBoundaries,
-      addSemanticIndexes: addSemanticIndexes,
-      showNewPageErrorIndicatorAsGridChild: showNewPageErrorIndicatorAsGridChild,
-      showNewPageProgressIndicatorAsGridChild: showNewPageProgressIndicatorAsGridChild,
-      showNoMoreItemsIndicatorAsGridChild: showNoMoreItemsIndicatorAsGridChild,
-    );
+    PagedGridView<int, T> pagedView({
+      required PagingState<int, T> state,
+      required void Function() fetchNextPage,
+    }) =>
+        PagedGridView<int, T>(
+          state: state,
+          fetchNextPage: fetchNextPage,
+          builderDelegate: builderDelegate,
+          gridDelegate: gridDelegate,
+          scrollDirection: scrollDirection,
+          reverse: reverse,
+          scrollController: scrollController,
+          primary: primary,
+          physics: physics,
+          shrinkWrap: shrinkWrap,
+          padding: padding,
+          cacheExtent: cacheExtent,
+          dragStartBehavior: dragStartBehavior,
+          keyboardDismissBehavior: keyboardDismissBehavior,
+          restorationId: restorationId,
+          clipBehavior: clipBehavior,
+          addAutomaticKeepAlives: addAutomaticKeepAlives,
+          addRepaintBoundaries: addRepaintBoundaries,
+          addSemanticIndexes: addSemanticIndexes,
+          showNewPageErrorIndicatorAsGridChild: showNewPageErrorIndicatorAsGridChild,
+          showNewPageProgressIndicatorAsGridChild: showNewPageProgressIndicatorAsGridChild,
+          showNoMoreItemsIndicatorAsGridChild: showNoMoreItemsIndicatorAsGridChild,
+        );
 
-    return pagedView;
+    return PagingListener(
+      controller: pagingController.pagingController,
+      builder: (context, state, fetchNextPage) {
+        return pagedView(
+          state: state,
+          fetchNextPage: fetchNextPage,
+        );
+      },
+    );
   }
 }

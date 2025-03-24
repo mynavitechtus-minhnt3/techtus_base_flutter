@@ -290,8 +290,11 @@ void main() {
                       true,
                     ),
               ))).called(1);
-
-          verify(() => navigator.popAndPush(ChatRoute(conversation: conversation)));
+          verify(() => navigator.popAndPush(
+                any(
+                    that: isA<ChatRoute>()
+                        .having((route) => route.args?.conversation, 'conversation', conversation)),
+              )).called(1);
         },
         build: () => AllUsersViewModel(null, ref),
       );

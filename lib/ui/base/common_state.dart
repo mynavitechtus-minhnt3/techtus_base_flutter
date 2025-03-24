@@ -5,7 +5,7 @@ import '../../index.dart';
 part 'common_state.freezed.dart';
 
 @freezed
-class CommonState<T extends BaseState> with _$CommonState<T> {
+sealed class CommonState<T extends BaseState> with _$CommonState<T> {
   const factory CommonState({
     required T data,
     AppException? appException,

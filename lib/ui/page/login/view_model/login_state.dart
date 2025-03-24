@@ -5,7 +5,7 @@ import '../../../../index.dart';
 part 'login_state.freezed.dart';
 
 @freezed
-class LoginState extends BaseState with _$LoginState {
+sealed class LoginState extends BaseState with _$LoginState {
   const LoginState._();
 
   const factory LoginState({
