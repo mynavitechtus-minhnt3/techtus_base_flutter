@@ -1,0 +1,176 @@
+# This file contains the fastlane.tools configuration
+# You can find the documentation at https://docs.fastlane.tools
+#
+# For a list of all available actions, check out
+#
+#     https://docs.fastlane.tools/actions
+#
+# For a list of all available plugins, check out
+#
+#     https://docs.fastlane.tools/plugins/available-plugins
+#
+
+# Uncomment the line if you want fastlane to automatically update itself
+# update_fastlane
+
+default_platform(:ios)
+
+platform :ios do
+  # secrets
+  ISSUER_ID = ENV["ISSUER_ID"]
+
+  # config
+  TEST_FLIGHT_EXTERNAL_GROUPS = "testers"
+  TEAM_ID = "AB69DU2Z36"
+  KEY_ID = "5654J275D7"
+  KEY_FILEPATH = "./AuthKey_5654J275D7.p8"
+  DEV_APP_STORE_ID = "6500000000"
+  DEV_BUNDLE_ID = "jp.flutter.app.dev"
+  QA_APP_STORE_ID = "6500000000"
+  QA_BUNDLE_ID = "jp.flutter.app.qa"
+  STG_APP_STORE_ID = "6500000000"
+  STG_BUNDLE_ID = "jp.flutter.app.stg"
+
+  # config slack notification
+  SLACK_HOOKS_URL = "https://hooks.slack.com/services/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"
+  MENTIONS = "@channel"
+  MESSAGE = "Xin các anh chị tester nhẹ tay giúp!"
+
+  # build info
+  DEV_FLAVOR = "develop"
+  QA_FLAVOR = "qa"
+  STG_FLAVOR = "staging"
+  DEV_XCCONFIG_PATH = "Flutter/Develop.xcconfig"
+  QA_XCCONFIG_PATH = "Flutter/Qa.xcconfig"
+  STG_XCCONFIG_PATH = "Flutter/Staging.xcconfig"
+  BUILD_NUMBER_KEY = "FLUTTER_BUILD_NUMBER"
+  BUILD_NAME_KEY = "FLUTTER_BUILD_NAME"
+  DEV_IPA_PATH = "../build/ios/ipa/Develop.ipa"
+  QA_IPA_PATH = "../build/ios/ipa/Qa.ipa"
+  STG_IPA_PATH = "../build/ios/ipa/Staging.ipa"
+  RELEASE_NOTES_PATH = "../RELEASE_NOTES.md"
+
+  # ===== deploy to testflight =====
+  desc "Develop: Deploy app to TestFlight"
+  lane :testflight_upload_develop do
+    deployToTestFlight(DEV_BUNDLE_ID, DEV_APP_STORE_ID, DEV_IPA_PATH, DEV_XCCONFIG_PATH, DEV_FLAVOR)
+  end
+
+  desc "Develop: Increase version, build & deploy app to TestFlight"
+  lane :increase_version_build_and_up_testflight_develop do
+    increaseVersionAndBuildAndDeployToTestFlight(DEV_BUNDLE_ID, DEV_XCCONFIG_PATH, DEV_FLAVOR)
+  end
+
+  desc "Qa: Deploy app to TestFlight"
+  lane :testflight_upload_qa do
+    deployToTestFlight(QA_BUNDLE_ID, QA_APP_STORE_ID, QA_IPA_PATH, QA_XCCONFIG_PATH, QA_FLAVOR)
+  end
+
+  desc "Qa: Increase version, build & deploy app to TestFlight"
+  lane :increase_version_build_and_up_testflight_qa do
+    increaseVersionAndBuildAndDeployToTestFlight(QA_BUNDLE_ID, QA_XCCONFIG_PATH, QA_FLAVOR)
+  end
+
+  desc "Staging: Deploy app to TestFlight"
+  lane :testflight_upload_staging do
+    deployToTestFlight(STG_BUNDLE_ID, STG_APP_STORE_ID, STG_IPA_PATH, STG_XCCONFIG_PATH, STG_FLAVOR)
+  end
+
+  desc "Staging: Increase version, build & deploy app to TestFlight"
+  lane :increase_version_build_and_up_testflight_staging do
+    increaseVersionAndBuildAndDeployToTestFlight(STG_BUNDLE_ID, STG_XCCONFIG_PATH, STG_FLAVOR)
+  end
+
+  def deployToTestFlight(bundle_id, app_store_id, ipa_path, xcconfig, flavor)
+    begin
+      api_key = app_store_connect_api_key(
+        key_id: KEY_ID,
+        issuer_id: ISSUER_ID,
+        key_filepath: KEY_FILEPATH,
+        duration: 1200, # optional (maximum 1200)
+        in_house: false # optional but may be required if using match/sigh
+      )
+      changelog = File.read("../#{RELEASE_NOTES_PATH}")
+      upload_to_testflight(
+        api_key: api_key,
+        changelog: changelog,
+        ipa: ipa_path,
+        distribute_external: true,
+        notify_external_testers: true,
+        groups: TEST_FLIGHT_EXTERNAL_GROUPS,
+        apple_id: app_store_id,
+        itc_provider: TEAM_ID
+      )
+      version_name = get_xcconfig_value(
+        path: xcconfig,
+        name: BUILD_NAME_KEY
+      )
+      latest_release = latest_testflight_build_number(
+        api_key: api_key,
+        team_id: TEAM_ID,
+        app_identifier: bundle_id,
+        version: version_name
+      )
+      version = "#{version_name}(#{latest_release})"
+      sendSlack("#{MENTIONS} *Test Flight iOS #{flavor} #{version}*\n*Release notes:* #{changelog}\n#{MESSAGE}")
+    rescue => exception
+      error(exception)
+    end
+  end
+
+  def increaseVersionAndBuildAndDeployToTestFlight(bundle_id, xcconfig, flavor)
+    begin
+      api_key = app_store_connect_api_key(
+        key_id: KEY_ID,
+        issuer_id: ISSUER_ID,
+        key_filepath: KEY_FILEPATH,
+        duration: 1200, # optional (maximum 1200)
+        in_house: false # optional but may be required if using match/sigh
+      )
+      version_name = get_xcconfig_value(
+        path: xcconfig,
+        name: BUILD_NAME_KEY
+      )
+      latest_release = latest_testflight_build_number(
+        api_key: api_key,
+        team_id: TEAM_ID,
+        app_identifier: bundle_id,
+        version: version_name
+      )
+      update_xcconfig_value(
+        path: xcconfig,
+        name: BUILD_NUMBER_KEY,
+        value: (latest_release.to_i + 1).to_s
+      )
+      if flavor == DEV_FLAVOR
+        sh("cd ../.. && make build_dev_ipa")
+        testflight_upload_develop
+      elsif flavor == QA_FLAVOR
+        sh("cd ../.. && make build_qa_ipa")
+        testflight_upload_qa
+      elsif flavor == STG_FLAVOR
+        sh("cd ../.. && make build_stg_ipa")
+        testflight_upload_staging
+      else
+        raise "flavor #{flavor} is invalid"
+      end
+      
+    rescue => exception
+      error(exception)
+    end
+  end
+
+  def sendSlack(message, success = true)
+    slack(
+      message: message,
+      success: success,
+      slack_url: SLACK_HOOKS_URL,
+      link_names: true,
+      default_payloads: [:git_branch, :lane]
+    )
+  end
+
+  def error(exception)
+    sendSlack("#{MENTIONS} Build failed: #{exception.to_s}", false)
+  end
+end
