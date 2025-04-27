@@ -44,7 +44,7 @@ class CommonScaffold extends StatelessWidget {
             location: BannerLocation.topStart,
             message: Env.flavor.name,
             // ignore: avoid_hard_coded_colors
-            color: Colors.green.withOpacity(0.6),
+            color: Colors.green.withValues(alpha: 0.6),
             textStyle: const TextStyle(
               fontWeight: FontWeight.w700,
               fontSize: 12,

@@ -190,8 +190,8 @@ class AllUsersPage extends BasePage<AllUsersState,
                         Size(double.infinity, 48.rps),
                       ),
                       backgroundColor: WidgetStateProperty.all(
-                        color.black.withOpacity(
-                          isAddButtonEnabled ? 1 : 0.5,
+                        color.black.withValues(
+                          alpha: isAddButtonEnabled ? 1 : 0.5,
                         ),
                       ),
                       shape: WidgetStateProperty.all<RoundedRectangleBorder>(
