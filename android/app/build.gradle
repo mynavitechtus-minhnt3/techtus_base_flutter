@@ -1,65 +1,37 @@
-def dartEnvironmentVariables = []
-if (project.hasProperty('dart-defines')) {
-    dartEnvironmentVariables = project.property('dart-defines')
-        .split(',')
-        .collectEntries { entry ->
-            def pair = new String(entry.decodeBase64(), 'UTF-8').split('=')
-            [(pair.first()): pair.last()]
-        }
+plugins {
+    id "com.android.application"
+    id "kotlin-android"
+    // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
+    id "dev.flutter.flutter-gradle-plugin"
+    id "com.google.gms.google-services"
+    id "com.google.firebase.crashlytics"
 }
-
-def localProperties = new Properties()
-def localPropertiesFile = rootProject.file('local.properties')
-if (localPropertiesFile.exists()) {
-    localPropertiesFile.withReader('UTF-8') { reader ->
-        localProperties.load(reader)
-    }
-}
-
-def flutterRoot = localProperties.getProperty('flutter.sdk')
-if (flutterRoot == null) {
-    throw new GradleException("Flutter SDK not found. Define location with flutter.sdk in the local.properties file.")
-}
-
-def flutterVersionCode = localProperties.getProperty('flutter.versionCode')
-if (flutterVersionCode == null) {
-    flutterVersionCode = '1'
-}
-
-def flutterVersionName = localProperties.getProperty('flutter.versionName')
-if (flutterVersionName == null) {
-    flutterVersionName = '1.0'
-}
-
-apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android'
-apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
 android {
-    compileSdkVersion 34
+    namespace = "jp.flutter.app"
+    compileSdk = 35
+    ndkVersion = flutter.ndkVersion
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        coreLibraryDesugaringEnabled true
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
     }
 
     kotlinOptions {
-        jvmTarget = '1.8'
-    }
-
-    sourceSets {
-        main.java.srcDirs += 'src/main/kotlin'
+        jvmTarget = JavaVersion.VERSION_1_8
     }
 
     defaultConfig {
-        applicationId "jp.flutter.app"
-        minSdkVersion 26
-        targetSdkVersion 34
-        versionCode flutterVersionCode.toInteger()
-        versionName flutterVersionName
+        applicationId = "jp.flutter.app"
+        minSdk = 26
+        targetSdk = 35
+        versionCode = flutter.versionCode
+        versionName = flutter.versionName
+        multiDexEnabled true
     }
 
-   signingConfigs {
+    signingConfigs {
         release {
             if (System.getenv()["CI"]) { // CI=true is exported by Codemagic
                 storeFile file(System.getenv()["CM_KEYSTORE_PATH"])
@@ -67,6 +39,13 @@ android {
                 keyAlias System.getenv()["CM_KEY_ALIAS"]
                 keyPassword System.getenv()["CM_KEYSTORE_PASSWORD"]
             } else {
+                def localProperties = new Properties()
+                def localPropertiesFile = rootProject.file('local.properties')
+                if (localPropertiesFile.exists()) {
+                    localPropertiesFile.withReader('UTF-8') { reader ->
+                        localProperties.load(reader)
+                    }
+                }
                 keyAlias localProperties.getProperty('keystore.keyAlias')
                 keyPassword localProperties.getProperty('keystore.keyPassword')
                 storeFile localProperties.getProperty('keystore.storeFile') ? file(localProperties.getProperty('keystore.storeFile')) : null
@@ -85,10 +64,6 @@ android {
         }
     }
 
-    lintOptions {
-        checkReleaseBuilds false
-    }
-
     flavorDimensions("flavor-type")
     productFlavors {
         develop {
@@ -98,10 +73,6 @@ android {
             applicationId "jp.flutter.app.dev"
             manifestPlaceholders["host"] = "dev.chatwork.com"
             manifestPlaceholders["applicationName"] = "Develop"
-            // manifestPlaceholders["apiKey"] = dartEnvironmentVariables.API_KEY
-            // manifestPlaceholders["apiSecret"] = dartEnvironmentVariables.API_SECRET
-            // buildConfigField "String", "API_KEY", "\"${dartEnvironmentVariables.API_KEY}\""
-            // buildConfigField "String", "API_SECRET", "\"${dartEnvironmentVariables.API_SECRET}\""
         }
 
         qa {
@@ -111,10 +82,6 @@ android {
             applicationId "jp.flutter.app.qa"
             manifestPlaceholders["host"] = "dev.chatwork.com"
             manifestPlaceholders["applicationName"] = "Qa"
-            // manifestPlaceholders["apiKey"] = dartEnvironmentVariables.API_KEY
-            // manifestPlaceholders["apiSecret"] = dartEnvironmentVariables.API_SECRET
-            // buildConfigField "String", "API_KEY", "\"${dartEnvironmentVariables.API_KEY}\""
-            // buildConfigField "String", "API_SECRET", "\"${dartEnvironmentVariables.API_SECRET}\""
         }
 
         staging {
@@ -124,18 +91,6 @@ android {
             applicationId "jp.flutter.app.stg"
             manifestPlaceholders["host"] = "stg.facebook.com"
             manifestPlaceholders["applicationName"] = "Staging"
-            // manifestPlaceholders["apiKey"] = dartEnvironmentVariables.API_KEY
-            // manifestPlaceholders["apiSecret"] = dartEnvironmentVariables.API_SECRET
-            // buildConfigField(
-            //     type = "String",
-            //     name = "API_KEY",
-            //     value = dartEnvironmentVariables.API_KEY
-            // )
-            // buildConfigField(
-            //     type = "String",
-            //     name = "API_SECRET",
-            //     value = dartEnvironmentVariables.API_SECRET
-            // )
         }
 
         production {
@@ -145,29 +100,14 @@ android {
             applicationId "jp.flutter.app"
             manifestPlaceholders["host"] = "chatwork.com"
             manifestPlaceholders["applicationName"] = "Production"
-            // manifestPlaceholders["apiKey"] = dartEnvironmentVariables.API_KEY
-            // manifestPlaceholders["apiSecret"] = dartEnvironmentVariables.API_SECRET
-            // buildConfigField(
-            //     type = "String",
-            //     name = "API_KEY",
-            //     value = dartEnvironmentVariables.API_KEY
-            // )
-            // buildConfigField(
-            //     type = "String",
-            //     name = "API_SECRET",
-            //     value = dartEnvironmentVariables.API_SECRET
-            // )
         }
+    }
+
+    dependencies {
+        coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.2.2'
     }
 }
 
 flutter {
-    source '../..'
+    source = "../.."
 }
-
-dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-}
-
-apply plugin: 'com.google.gms.google-services'
-apply plugin: 'com.google.firebase.crashlytics'
