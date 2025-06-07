@@ -145,8 +145,15 @@ void main() {
             that: isA<Future<void> Function(String)>(),
           ))).called(1);
       verify(() => navigator.getCurrentRouteName()).called(1);
+
       verify(() => navigator.push(
-            ChatRoute(conversation: const FirebaseConversationData(id: conversationId)),
+            any(
+              that: isA<ChatRoute>().having(
+                (route) => route.args?.conversation,
+                'conversation',
+                const FirebaseConversationData(id: conversationId),
+              ),
+            ),
           )).called(1);
     });
   });
@@ -184,9 +191,15 @@ void main() {
 
       verify(() => remoteMessageAppNotificationMapper.mapToLocal(remoteMessage)).called(1);
       verify(() => navigator.getCurrentRouteName()).called(1);
-      verify(() => navigator.push(ChatRoute(
-            conversation: FirebaseConversationData(id: appNotification.conversationId),
-          ))).called(1);
+      verify(() => navigator.push(
+            any(
+              that: isA<ChatRoute>().having(
+                (route) => route.args?.conversation,
+                'conversation',
+                FirebaseConversationData(id: appNotification.conversationId),
+              ),
+            ),
+          )).called(1);
     });
   });
 
@@ -211,9 +224,15 @@ void main() {
 
       verify(() => localPushNotificationHelper.cancelAll()).called(1);
       verify(() => remoteMessageAppNotificationMapper.mapToLocal(remoteMessage)).called(1);
-      verify(() => navigator.push(ChatRoute(
-            conversation: FirebaseConversationData(id: appNotification.conversationId),
-          ))).called(1);
+      verify(() => navigator.push(
+            any(
+              that: isA<ChatRoute>().having(
+                (route) => route.args?.conversation,
+                'conversation',
+                FirebaseConversationData(id: appNotification.conversationId),
+              ),
+            ),
+          )).called(1);
     });
   });
 
@@ -238,7 +257,13 @@ void main() {
       await mainViewModel.goToChatPage(appNotification);
 
       verify(() => navigator.push(
-            ChatRoute(conversation: const FirebaseConversationData(id: conversationId)),
+            any(
+              that: isA<ChatRoute>().having(
+                (route) => route.args?.conversation,
+                'conversation',
+                FirebaseConversationData(id: appNotification.conversationId),
+              ),
+            ),
           )).called(1);
       verifyNever(() => navigator.pop());
     });
@@ -277,9 +302,14 @@ void main() {
 
         await mainViewModel.goToChatPage(appNotification);
 
-        verify(() => navigator.push(ChatRoute(
-              conversation: const FirebaseConversationData(id: destinationConversationId),
-            ))).called(1);
+        final capturedRoute =
+            verify(() => navigator.push(captureAny(that: isA<ChatRoute>()))).captured.single;
+
+        expect(
+          (capturedRoute as ChatRoute).args?.conversation,
+          isNot(const FirebaseConversationData(id: destinationConversationId)),
+        );
+
         verify(() => navigator.pop()).called(1);
       },
     );

@@ -6,7 +6,7 @@ part 'api_user_data.freezed.dart';
 part 'api_user_data.g.dart';
 
 @freezed
-class ApiUserData with _$ApiUserData {
+sealed class ApiUserData with _$ApiUserData {
   const ApiUserData._();
 
   const factory ApiUserData({

@@ -6,7 +6,7 @@ import '../../../../index.dart';
 part 'all_users_state.freezed.dart';
 
 @freezed
-class AllUsersState extends BaseState with _$AllUsersState {
+sealed class AllUsersState extends BaseState with _$AllUsersState {
   const AllUsersState._();
 
   const factory AllUsersState({

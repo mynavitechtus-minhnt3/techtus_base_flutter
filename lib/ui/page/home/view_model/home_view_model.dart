@@ -16,12 +16,10 @@ class HomeViewModel extends BaseViewModel<HomeState> {
 
   final Ref _ref;
 
-  Future<void> fetchInitialUsers() async {
-    await _getUsers(isInitialLoad: true);
-  }
-
-  FutureOr<void> fetchMoreUsers() async {
-    await _getUsers(isInitialLoad: false);
+  Future<void> fetchUsers({
+    required bool isInitialLoad,
+  }) {
+    return _getUsers(isInitialLoad: isInitialLoad);
   }
 
   Future<void> _getUsers({

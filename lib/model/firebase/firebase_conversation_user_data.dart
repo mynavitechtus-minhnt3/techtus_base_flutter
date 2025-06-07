@@ -8,7 +8,7 @@ part 'firebase_conversation_user_data.freezed.dart';
 part 'firebase_conversation_user_data.g.dart';
 
 @freezed
-class FirebaseConversationUserData with _$FirebaseConversationUserData {
+sealed class FirebaseConversationUserData with _$FirebaseConversationUserData {
   const FirebaseConversationUserData._();
 
   const factory FirebaseConversationUserData({

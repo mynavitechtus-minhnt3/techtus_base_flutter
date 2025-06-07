@@ -5,7 +5,7 @@ import '../../../../index.dart';
 part 'contact_list_state.freezed.dart';
 
 @freezed
-class ContactListState extends BaseState with _$ContactListState {
+sealed class ContactListState extends BaseState with _$ContactListState {
   const ContactListState._();
 
   const factory ContactListState({

@@ -5,7 +5,7 @@ import '../../index.dart';
 part 'load_more_output.freezed.dart';
 
 @freezed
-class LoadMoreOutput<T> with _$LoadMoreOutput<T> {
+sealed class LoadMoreOutput<T> with _$LoadMoreOutput<T> {
   const LoadMoreOutput._();
 
   const factory LoadMoreOutput({

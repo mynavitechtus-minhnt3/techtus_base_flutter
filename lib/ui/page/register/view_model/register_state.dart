@@ -5,7 +5,7 @@ import '../../../../index.dart';
 part 'register_state.freezed.dart';
 
 @freezed
-class RegisterState extends BaseState with _$RegisterState {
+sealed class RegisterState extends BaseState with _$RegisterState {
   const RegisterState._();
 
   const factory RegisterState({

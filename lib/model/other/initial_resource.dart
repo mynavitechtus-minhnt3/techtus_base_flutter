@@ -5,7 +5,7 @@ import '../../index.dart';
 part 'initial_resource.freezed.dart';
 
 @freezed
-class InitialResource with _$InitialResource {
+sealed class InitialResource with _$InitialResource {
   const InitialResource._();
 
   const factory InitialResource({

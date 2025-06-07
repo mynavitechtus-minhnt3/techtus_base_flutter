@@ -182,7 +182,7 @@ class RegisterPage extends BasePage<RegisterState,
                             Size(double.infinity, 48.rps),
                           ),
                           backgroundColor: WidgetStateProperty.all(
-                            color.black.withOpacity(isRegisterButtonEnabled ? 1 : 0.5),
+                            color.black.withValues(alpha: isRegisterButtonEnabled ? 1 : 0.5),
                           ),
                           shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                             RoundedRectangleBorder(

@@ -37,7 +37,7 @@ void main() {
           when(() => loadMoreUsersExecutor.execute(isInitialLoad: true))
               .thenAnswer((_) async => dummyUsers);
         },
-        actions: (vm) => vm.fetchInitialUsers(),
+        actions: (vm) => vm.fetchUsers(isInitialLoad: true),
         expect: () {
           final state1 = seed.copyWithData(isShimmerLoading: true, loadUsersException: null);
           final state2 = state1.copyWithData(users: dummyUsers);
@@ -77,7 +77,7 @@ void main() {
           when(() => loadMoreUsersExecutor.execute(isInitialLoad: true))
               .thenAnswer((_) async => dummyUsers);
         },
-        actions: (vm) => vm.fetchInitialUsers(),
+        actions: (vm) => vm.fetchUsers(isInitialLoad: true),
         expect: () {
           final state1 = seed.copyWithData(isShimmerLoading: true, loadUsersException: null);
           final state2 = state1.copyWithData(users: dummyUsers);
@@ -112,7 +112,7 @@ void main() {
         setUp: () {
           when(() => loadMoreUsersExecutor.execute(isInitialLoad: true)).thenThrow(exception);
         },
-        actions: (vm) => vm.fetchInitialUsers(),
+        actions: (vm) => vm.fetchUsers(isInitialLoad: true),
         expect: () {
           final state1 = seed.copyWithData(isShimmerLoading: true, loadUsersException: null);
           final state2 = state1.copyWithData(isShimmerLoading: false);
@@ -149,7 +149,7 @@ void main() {
         setUp: () {
           when(() => loadMoreUsersExecutor.execute(isInitialLoad: false)).thenThrow(exception);
         },
-        actions: (vm) => vm.fetchMoreUsers(),
+        actions: (vm) => vm.fetchUsers(isInitialLoad: false),
         expect: () {
           final state1 = seed.copyWithData(loadUsersException: exception);
 
@@ -186,7 +186,7 @@ void main() {
           when(() => loadMoreUsersExecutor.execute(isInitialLoad: false))
               .thenAnswer((_) async => dummyUsers);
         },
-        actions: (vm) => vm.fetchMoreUsers(),
+        actions: (vm) => vm.fetchUsers(isInitialLoad: false),
         expect: () {
           final state1 = seed.copyWithData(users: dummyUsers);
 
@@ -224,7 +224,7 @@ void main() {
           when(() => loadMoreUsersExecutor.execute(isInitialLoad: false))
               .thenAnswer((_) async => dummyUsers);
         },
-        actions: (vm) => vm.fetchMoreUsers(),
+        actions: (vm) => vm.fetchUsers(isInitialLoad: false),
         expect: () {
           final state1 = seed.copyWithData(loadUsersException: null);
           final state2 = state1.copyWithData(users: dummyUsers);

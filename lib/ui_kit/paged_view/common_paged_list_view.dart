@@ -113,10 +113,13 @@ class CommonPagedListView<T> extends StatelessWidget {
     PagedListView<int, T> pagedView({
       required double maxWidth,
       required double maxHeight,
+      required PagingState<int, T> state,
+      required void Function() fetchNextPage,
     }) =>
         separatorBuilder != null
             ? PagedListView.separated(
-                pagingController: pagingController.pagingController,
+                state: state,
+                fetchNextPage: fetchNextPage,
                 builderDelegate: builderDelegate,
                 separatorBuilder: separatorBuilder!,
                 scrollDirection: scrollDirection,
@@ -145,7 +148,8 @@ class CommonPagedListView<T> extends StatelessWidget {
                 itemExtent: itemExtent,
               )
             : PagedListView<int, T>(
-                pagingController: pagingController.pagingController,
+                state: state,
+                fetchNextPage: fetchNextPage,
                 builderDelegate: builderDelegate,
                 scrollDirection: scrollDirection,
                 reverse: reverse,
@@ -175,7 +179,16 @@ class CommonPagedListView<T> extends StatelessWidget {
 
     return LayoutBuilder(
       builder: (BuildContext ctx, BoxConstraints constraint) {
-        return pagedView(maxWidth: constraint.maxWidth, maxHeight: constraint.maxHeight);
+        return PagingListener(
+            controller: pagingController.pagingController,
+            builder: (context, state, fetchNextPage) {
+              return pagedView(
+                maxWidth: constraint.maxWidth,
+                maxHeight: constraint.maxHeight,
+                state: state,
+                fetchNextPage: fetchNextPage,
+              );
+            });
       },
     );
   }

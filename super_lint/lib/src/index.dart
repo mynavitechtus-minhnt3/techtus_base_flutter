@@ -9,7 +9,7 @@ export 'package:analyzer/dart/ast/visitor.dart';
 export 'package:analyzer/dart/element/element.dart';
 export 'package:analyzer/dart/element/nullability_suffix.dart';
 export 'package:analyzer/dart/element/type.dart';
-export 'package:analyzer/error/error.dart';
+export 'package:analyzer/error/error.dart' hide LintCode;
 export 'package:analyzer/error/listener.dart';
 export 'package:analyzer/source/line_info.dart';
 export 'package:analyzer/source/source_range.dart';
@@ -21,6 +21,7 @@ export 'package:analyzer_plugin/utilities/change_builder/change_builder_dart.dar
 export 'package:analyzer_plugin/utilities/range_factory.dart';
 export 'package:custom_lint_builder/custom_lint_builder.dart';
 export 'package:dart_style/dart_style.dart';
+// export 'package:analyzer/src/dart/error/lint_codes.dart' hide LintCode;
 export 'package:path/path.dart';
 export 'package:yaml/yaml.dart';
 

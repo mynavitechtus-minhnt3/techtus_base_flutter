@@ -4,7 +4,7 @@ part 'results_response.freezed.dart';
 part 'results_response.g.dart';
 
 @Freezed(genericArgumentFactories: true)
-class ResultsListResponse<T> with _$ResultsListResponse<T> {
+sealed class ResultsListResponse<T> with _$ResultsListResponse<T> {
   const factory ResultsListResponse({
     @JsonKey(name: 'results') List<T>? results,
     @JsonKey(name: 'page') int? page,

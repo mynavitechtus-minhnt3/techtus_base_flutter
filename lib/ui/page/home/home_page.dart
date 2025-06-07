@@ -23,29 +23,22 @@ class HomePage extends BasePage<HomeState,
 
   @override
   Widget buildPage(BuildContext context, WidgetRef ref) {
-    final pagingController = useMemoized(() => CommonPagingController<ApiUserData>());
+    final pagingController = useMemoized(() => CommonPagingController<ApiUserData>(
+          fetchPage: (_, isInitialLoad) async {
+            await ref.read(provider.notifier).fetchUsers(isInitialLoad: isInitialLoad);
+            final output = ref.read(provider.select((value) => value.data.users)).data;
+            return output;
+          },
+        ));
 
     useEffect(
       () {
-        Future.microtask(() {
-          ref.read(provider.notifier).fetchInitialUsers();
-        });
-        pagingController.listen(
-          onLoadMore: () => ref.read(provider.notifier).fetchMoreUsers(),
-        );
-
         return () {
           pagingController.dispose();
         };
       },
       [],
     );
-
-    ref.listen(provider.select((value) => value.data.users), (previous, next) {
-      if (previous != next) {
-        pagingController.appendLoadMoreOutput(next);
-      }
-    });
 
     ref.listen(provider.select((value) => value.data.loadUsersException), (previous, next) {
       if (previous != next && next != null) {
@@ -73,11 +66,12 @@ class HomePage extends BasePage<HomeState,
                     ref.watch(provider.select((value) => value.data.isShimmerLoading));
 
                 return RefreshIndicator(
-                  onRefresh: ref.read(provider.notifier).fetchInitialUsers,
+                  onRefresh: () async => pagingController.refresh(),
                   child: isShimmerLoading && users.data.isEmpty
                       ? const _ListViewLoader()
                       : CommonPagedListView<ApiUserData>(
                           pagingController: pagingController,
+                          animateTransitions: false,
                           itemBuilder: (context, user, index) {
                             return Padding(
                               padding: EdgeInsets.symmetric(

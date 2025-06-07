@@ -138,8 +138,8 @@ class LoginPage extends BasePage<LoginState,
                             Size(double.infinity, 48.rps),
                           ),
                           backgroundColor: WidgetStateProperty.all(
-                            color.black.withOpacity(
-                              isLoginButtonEnabled ? 1 : 0.5,
+                            color.black.withValues(
+                              alpha: isLoginButtonEnabled ? 1 : 0.5,
                             ),
                           ),
                           shape: WidgetStateProperty.all<RoundedRectangleBorder>(

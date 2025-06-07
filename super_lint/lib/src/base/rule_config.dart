@@ -21,7 +21,7 @@
 // SOFTWARE.
 
 // ignore: depend_on_referenced_packages
-import 'package:analyzer/error/error.dart';
+import 'package:analyzer/error/error.dart' hide LintCode;
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 
 /// Type definition of a value factory which allows us to map data from

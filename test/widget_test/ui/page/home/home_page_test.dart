@@ -20,7 +20,7 @@ class MockHomeViewModel extends StateNotifier<CommonState<HomeState>>
 HomeViewModel _buildHomeViewModel(CommonState<HomeState> state) {
   final vm = MockHomeViewModel(state);
 
-  when(() => vm.fetchInitialUsers()).thenAnswer((_) async {});
+  when(() => vm.fetchUsers(isInitialLoad: true)).thenAnswer((_) async {});
 
   return vm;
 }
@@ -115,18 +115,22 @@ void main() {
             final widget = tester.widget<CommonPagedListView<ApiUserData>>(
               find.byType(CommonPagedListView<ApiUserData>).isDescendantOf(find.byKey(key), find),
             );
-            widget.pagingController.appendLoadMoreOutput(
-              LoadMoreOutput(
-                data: List.generate(
-                  Constant.itemsPerPage,
-                  (index) => ApiUserData(
-                    id: 1,
-                    email: 'duynn@gmail.com',
-                    birthday: DateTime(2000, 1, 1),
-                  ),
-                ),
+            when(
+              () => widget.pagingController.fetchPage(
+                1,
+                false,
               ),
-            );
+            ).thenAnswer((_) async {
+              return List.generate(
+                Constant.itemsPerPage,
+                (index) => ApiUserData(
+                  id: 1,
+                  email: 'nghiand1@nals.vn',
+                  birthday: DateTime(2000, 1, 1),
+                ),
+              );
+            });
+
             await tester.pump(30.seconds);
           },
           overrides: [
