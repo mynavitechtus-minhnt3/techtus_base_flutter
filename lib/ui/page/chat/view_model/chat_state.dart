@@ -7,7 +7,7 @@ part 'chat_state.freezed.dart';
 @freezed
 sealed class ChatState extends BaseState with _$ChatState {
   const ChatState._();
-  
+
   const factory ChatState({
     required FirebaseConversationData conversation,
     @Default([]) List<LocalMessageData> messages,

@@ -48,51 +48,56 @@ class CommonPagingController<T> {
     required int index,
     required T item,
   }) {
-    _pagingController.items?.insert(index, item);
-    // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
-    pagingController.notifyListeners();
+    if (pagingController.value.pages == null) return;
+    final newPages = pagingController.value.pages!.map((page) => List<T>.from(page)).toList();
+    newPages[0].insert(index, item);
+    pagingController.value = pagingController.value.copyWith(pages: newPages);
   }
 
   void insertAllItemsAt({
     required int index,
-    required Iterable<T> items,
+    required List<T> items,
   }) {
-    pagingController.items?.insertAll(index, items);
-    // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
-    pagingController.notifyListeners();
+    if (pagingController.value.pages == null) return;
+    final newPages = pagingController.value.pages!.map((page) => List<T>.from(page)).toList();
+    newPages[0].insertAll(index, items);
+    pagingController.value = pagingController.value.copyWith(pages: newPages);
   }
 
   void updateItemAt({
     required int index,
-    required T newItem,
+    required T item,
   }) {
-    pagingController.items?[index] = newItem;
-    // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
-    pagingController.notifyListeners();
+    if (pagingController.value.pages == null) return;
+    final newPages = pagingController.value.pages!.map((page) => List<T>.from(page)).toList();
+    newPages[0][index] = item;
+    pagingController.value = pagingController.value.copyWith(pages: newPages);
   }
 
-  void removeItemAt(int index) {
-    pagingController.items?.removeAt(index);
-    // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
-    pagingController.notifyListeners();
+  void removeItemAt({
+    required int index,
+  }) {
+    if (pagingController.value.pages == null) return;
+    final newPages = pagingController.value.pages!.map((page) => List<T>.from(page)).toList();
+    newPages[0].removeAt(index);
+    pagingController.value = pagingController.value.copyWith(pages: newPages);
   }
 
   void removeRange({
     required int start,
     required int end,
   }) {
-    pagingController.items?.removeRange(start, end);
-    // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
-    pagingController.notifyListeners();
+    if (pagingController.value.pages == null) return;
+    final newPages = pagingController.value.pages!.map((page) => List<T>.from(page)).toList();
+    newPages[0].removeRange(start, end);
+    pagingController.value = pagingController.value.copyWith(pages: newPages);
   }
 
-  void clear({
-    required int start,
-    required int end,
-  }) {
-    pagingController.items?.clear();
-    // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
-    pagingController.notifyListeners();
+  void clear() {
+    if (pagingController.value.pages == null) return;
+    final newPages = pagingController.value.pages!.map((page) => List<T>.from(page)).toList();
+    newPages[0].clear();
+    pagingController.value = pagingController.value.copyWith(pages: newPages);
   }
 
   void dispose() {

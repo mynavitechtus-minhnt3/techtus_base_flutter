@@ -140,7 +140,7 @@ void main() {
       when(() => navigator.replaceAll([const LoginRoute()])).thenAnswer((_) async => true);
     });
 
-    test('when loggout success', () async {
+    test('when logout success', () async {
       await sharedViewModel.logout();
 
       verify(() => firebaseFirestoreService.updateCurrentUser(
