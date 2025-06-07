@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:dartx/dartx.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 

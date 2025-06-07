@@ -13,7 +13,7 @@ class BigDecimal implements Comparable<BigDecimal> {
 
   Decimal get decimal => _decimal ?? Decimal.zero;
 
-  int get signum => decimal.signum;
+  int get sign => decimal.sign;
 
   int get precision => decimal.precision;
 
