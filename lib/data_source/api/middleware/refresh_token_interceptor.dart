@@ -18,7 +18,8 @@ class RefreshTokenInterceptor extends BaseInterceptor {
   final NoneAuthAppServerApiClient noneAuthAppServerApiClient;
 
   var _isRefreshing = false;
-  final _queue = Queue<({RequestOptions options, ErrorInterceptorHandler handler})>();
+  final _queue =
+      Queue<({RequestOptions options, ErrorInterceptorHandler handler})>();
 
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) {
@@ -68,13 +69,15 @@ class RefreshTokenInterceptor extends BaseInterceptor {
   }
 
   Future<void> _onRefreshTokenSuccess(String newToken) async {
-    await Future.wait(_queue.map(
-      (requestInfo) => _requestWithNewToken(
-        options: requestInfo.options,
-        handler: requestInfo.handler,
-        newAccessToken: newToken,
+    await Future.wait(
+      _queue.map(
+        (requestInfo) => _requestWithNewToken(
+          options: requestInfo.options,
+          handler: requestInfo.handler,
+          newAccessToken: newToken,
+        ),
       ),
-    ));
+    );
   }
 
   void _onRefreshTokenError(Object? error) {
@@ -100,22 +103,24 @@ class RefreshTokenInterceptor extends BaseInterceptor {
     }
   }
 
-  Future<DataResponse<ApiRefreshTokenData>?> _callRefreshTokenApi(String refreshToken) async {
+  Future<DataResponse<ApiRefreshTokenData>?> _callRefreshTokenApi(
+    String refreshToken,
+  ) async {
     try {
-      final respone = await refreshTokenApiClient
+      final response = await refreshTokenApiClient
           .request<ApiRefreshTokenData, DataResponse<ApiRefreshTokenData>>(
-        method: RestMethod.post,
-        path: 'v1/auth/refresh',
-        body: {
-          'refresh_token': refreshToken,
-        },
-        decoder: (json) => ApiRefreshTokenData.fromJson(json as Map<String, dynamic>),
-      );
+            method: RestMethod.post,
+            path: 'v1/auth/refresh',
+            body: {'refresh_token': refreshToken},
+            decoder: (json) =>
+                ApiRefreshTokenData.fromJson(json as Map<String, dynamic>),
+          );
 
-      return respone;
+      return response;
     } catch (e) {
       // TODO(minh): fix depend on project #0
-      if (e is RemoteException && e.generalServerErrorId == Constant.refreshTokenFailedErrorId) {
+      if (e is RemoteException &&
+          e.generalServerErrorId == Constant.refreshTokenFailedErrorId) {
         throw RemoteException(kind: RemoteExceptionKind.refreshTokenFailed);
       }
 
