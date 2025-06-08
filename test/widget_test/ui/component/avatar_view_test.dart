@@ -11,21 +11,21 @@ void main() {
     () {
       testGoldens('when text is empty', (tester) async {
         await tester.testWidget(
-          filename: 'avatar_view/${TestUtil.filename('when_text_is_empty')}',
+          filename: 'avatar_view/when_text_is_empty',
           widget: const UnconstrainedBox(child: AvatarView(text: '')),
         );
       });
 
       testGoldens('when text is not empty', (tester) async {
         await tester.testWidget(
-          filename: 'avatar_view/${TestUtil.filename('when_text_is_not_empty')}',
+          filename: 'avatar_view/when_text_is_not_empty',
           widget: const UnconstrainedBox(child: AvatarView(text: 'Minh')),
         );
       });
 
       testGoldens('when isActive is true', (tester) async {
         await tester.testWidget(
-          filename: 'avatar_view/${TestUtil.filename('when_isActive_is_true')}',
+          filename: 'avatar_view/when_isActive_is_true',
           widget: const UnconstrainedBox(child: AvatarView(text: 'Minh', isActive: true)),
         );
       });
@@ -34,8 +34,7 @@ void main() {
         'when backgroundColor is red textColor is blue',
         (tester) async {
           await tester.testWidget(
-            filename:
-                'avatar_view/${TestUtil.filename('when_backgroundColor_is_red_textColor_is_blue')}',
+            filename: 'avatar_view/when_backgroundColor_is_red_textColor_is_blue',
             widget: const UnconstrainedBox(
               child: AvatarView(
                 text: 'Minh',

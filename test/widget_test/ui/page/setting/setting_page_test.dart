@@ -24,7 +24,7 @@ void main() {
           (tester) async {
             await tester.testWidget(
               filename:
-                  'setting/${TestUtil.filename('when_theme_is_${isDarkMode ? 'dark' : 'light'}_and_language_is_$languageCode')}',
+                  'setting/when_theme_is_${isDarkMode ? 'dark' : 'light'}_and_language_is_$languageCode',
               widget: const SettingPage(),
               isDarkMode: isDarkMode,
               locale: languageCode.locale,

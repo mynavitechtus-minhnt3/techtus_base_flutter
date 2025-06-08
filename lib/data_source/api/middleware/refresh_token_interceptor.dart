@@ -18,8 +18,7 @@ class RefreshTokenInterceptor extends BaseInterceptor {
   final NoneAuthAppServerApiClient noneAuthAppServerApiClient;
 
   var _isRefreshing = false;
-  final _queue =
-      Queue<({RequestOptions options, ErrorInterceptorHandler handler})>();
+  final _queue = Queue<({RequestOptions options, ErrorInterceptorHandler handler})>();
 
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) {
@@ -109,18 +108,16 @@ class RefreshTokenInterceptor extends BaseInterceptor {
     try {
       final response = await refreshTokenApiClient
           .request<ApiRefreshTokenData, DataResponse<ApiRefreshTokenData>>(
-            method: RestMethod.post,
-            path: 'v1/auth/refresh',
-            body: {'refresh_token': refreshToken},
-            decoder: (json) =>
-                ApiRefreshTokenData.fromJson(json as Map<String, dynamic>),
-          );
+        method: RestMethod.post,
+        path: 'v1/auth/refresh',
+        body: {'refresh_token': refreshToken},
+        decoder: (json) => ApiRefreshTokenData.fromJson(json as Map<String, dynamic>),
+      );
 
       return response;
     } catch (e) {
       // TODO(minh): fix depend on project #0
-      if (e is RemoteException &&
-          e.generalServerErrorId == Constant.refreshTokenFailedErrorId) {
+      if (e is RemoteException && e.generalServerErrorId == Constant.refreshTokenFailedErrorId) {
         throw RemoteException(kind: RemoteExceptionKind.refreshTokenFailed);
       }
 

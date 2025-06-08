@@ -70,14 +70,77 @@ custom_lint:
     - incorrect_parent_class:
       excludes:
         - "lib/navigation/routes/app_router.dart"
+        - "lib/src/navigation/routes/app_router.dart"
         - "lib/ui/base/*.dart"
+        - "lib/src/ui/base/*.dart"
     - missing_expanded_or_flexible:
+    - prefer_common_widgets:
+      excludes:
+        - "test/*.dart"
+        - "test/**/*.dart"
+        - "integration_test/*.dart"
+        - "integration_test/**/*.dart"
     - prefer_importing_index_file:
       excludes:
         - "test/*.dart"
         - "test/**/*.dart"
         - "integration_test/*.dart"
         - "integration_test/**/*.dart"
+    - avoid_using_text_style_constructor_directly:
+    - incorrect_screen_name:
+    - incorrect_event_parameter:
+    - avoid_dynamic:
+      excludes:
+        - "test/*.dart"
+        - "test/**/*.dart"
+        - "integration_test/*.dart"
+        - "integration_test/**/*.dart"
+    - avoid_using_unsafe_cast:
+      excludes:
+        - "lib/data_source/api/json_decoder/*.dart"
+        - "lib/src/data_source/api/json_decoder/*.dart"
+        - "lib/data_source/api/json_decoder/**/*.dart"
+        - "lib/src/data_source/api/json_decoder/**/*.dart"
+        - "test/*.dart"
+        - "test/**/*.dart"
+        - "integration_test/*.dart"
+        - "integration_test/**/*.dart"
+    - avoid_using_if_else_with_enums:
+      include_conditional_expression: false
+      excludes:
+        - "test/*.dart"
+        - "test/**/*.dart"
+        - "integration_test/*.dart"
+        - "integration_test/**/*.dart"
+    - avoid_nested_conditions:
+      - acceptable_level: 3
+    - missing_log_in_catch_block:
+    - util_functions_must_be_static:
+    - missing_run_catching:
+      starts_with_patterns_excludes:
+        - "ref.nav."
+        - "ref.update"
+        - "ref.permissionHelper"
+        - "ref.remoteMessageAppNotificationMapper"
+        - "ref.localPushNotificationHelper"
+      excludes:
+        - lib/ui/shared/shared_view_model.dart
+        - lib/src/ui/shared/shared_view_model.dart
+        - "test/*.dart"
+        - "test/**/*.dart"
+        - "integration_test/*.dart"
+        - "integration_test/**/*.dart"
+    - missing_extension_method_for_events: false
+    - missing_common_scrollbar:
+      excludes:
+        - "test/*.dart"
+        - "test/**/*.dart"
+        - "integration_test/*.dart"
+        - "integration_test/**/*.dart"
+    - prefer_single_widget_per_file:
+      includes:
+        - "apps/**/lib/ui/*.dart"
+        - "apps/**/lib/ui/**/*.dart"
 
 dart_code_metrics:
   metrics:

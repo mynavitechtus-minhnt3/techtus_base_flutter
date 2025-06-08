@@ -52,8 +52,7 @@ class LoginPage extends BasePage<LoginState,
 
   @override
   Widget buildPage(BuildContext context, WidgetRef ref) {
-    return CommonScaffold(
-      hideKeyboardWhenTouchOutside: true,
+    return Scaffold(
       body: SafeArea(
         child: Stack(
           children: [
