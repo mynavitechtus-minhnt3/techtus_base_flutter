@@ -13,15 +13,15 @@ A VSCode extension used for this code base.
     - [1.5. autoExportOnSave](#15-autoexportonsave)
     - [1.6. excludeFilesWhenAutoExport](#16-excludefileswhenautoexport)
 - [2. Commands](#2-commands)
-    - [2.1. nals:Create new Page](#21-nalscreate-new-page)
-    - [2.2. nals:Auto export](#22-nalsauto-export)
-    - [2.3. nals:[API] Clipboard to Data Model](#23-nalsapi-clipboard-to-data-model)
-    - [2.4. nals:[API] Json to Data Model](#24-nalsapi-json-to-data-model)
-    - [2.5. nals:[API] Json to Params](#25-nalsapi-json-to-params)
-    - [2.6. nals:Create test file](#26-nalscreate-test-file)
-    - [2.7. nals:[API] Extract API URL](#27-nalsapi-extract-api-url)
-    - [2.8. nals: Translate and extract value to arb files](#28-nals-translate-and-extract-value-to-arb-files)
-    - [2.9. nals: Sort arb files](#29-nals-sort-arb-files)
+    - [2.1. mynavi:Create new Page](#21-mynavicreate-new-page)
+    - [2.2. mynavi:Auto export](#22-mynaviauto-export)
+    - [2.3. mynavi:[API] Clipboard to Data Model](#23-mynaviapi-clipboard-to-data-model)
+    - [2.4. mynavi:[API] Json to Data Model](#24-mynaviapi-json-to-data-model)
+    - [2.5. mynavi:[API] Json to Params](#25-mynaviapi-json-to-params)
+    - [2.6. mynavi:Create test file](#26-mynavicreate-test-file)
+    - [2.7. mynavi:[API] Extract API URL](#27-mynaviapi-extract-api-url)
+    - [2.8. mynavi: Translate and extract value to arb files](#28-mynavi-translate-and-extract-value-to-arb-files)
+    - [2.9. mynavi: Sort arb files](#29-mynavi-sort-arb-files)
 
 - [3. Snippets](#3-snippets)
     - [3.1. Data model](#31-data-model)
@@ -45,12 +45,12 @@ A VSCode extension used for this code base.
 Add this to file `.vscode/settings.json`
 ```
 {
-    "nalsMobileBrain.appName": "nalsflutter",
-    "nalsMobileBrain.uiFolderPath": "lib/ui/page",
-    "nalsMobileBrain.dataModelPath": "lib/model/api",
-    "nalsMobileBrain.autoExportBarrier": "",
-    "nalsMobileBrain.autoExportOnSave": false,
-    "nalsMobileBrain.excludeFilesWhenAutoExport": [
+    "mynavimobiletool.appName": "nalsflutter",
+    "mynavimobiletool.uiFolderPath": "lib/ui/page",
+    "mynavimobiletool.dataModelPath": "lib/model/api",
+    "mynavimobiletool.autoExportBarrier": "",
+    "mynavimobiletool.autoExportOnSave": false,
+    "mynavimobiletool.excludeFilesWhenAutoExport": [
         "g.dart",
         "config.dart",
         "freezed.dart",
@@ -72,7 +72,7 @@ name: nalsflutter
 * settings.json
 ```
 {
-    "nalsMobileBrain.appName": "nalsflutter"
+    "mynavimobiletool.appName": "nalsflutter"
 }
 ```
 
@@ -80,19 +80,19 @@ name: nalsflutter
 
 ### 1.2. uiFolderPath
 
-Path to the Folder that contains the generated files from the command [nals:Create new Page](#21-nalscreate-new-page)
+Path to the Folder that contains the generated files from the command [mynavi:Create new Page](#21-mynavicreate-new-page)
 
 * Default value: `"lib/ui/page"`
 
 ### 1.3. dataModelPath
 
-Path to the Folder that contains the generated files from the command [nals:[API] Clipboard to Data Model](#23-nalsapi-clipboard-to-data-model)
+Path to the Folder that contains the generated files from the command [mynavi:[API] Clipboard to Data Model](#23-mynaviapi-clipboard-to-data-model)
 
 * Default value: `"lib/model/api"`
 
 ### 1.4 autoExportBarrier
 
-It is used for the [nals:Auto export](#22-nalsauto-export) command. It is a String placed in the [index.dart](../../lib/index.dart) file. All code above this string will not be replaced by the tool. For example:
+It is used for the [mynavi:Auto export](#22-mynaviauto-export) command. It is a String placed in the [index.dart](../../lib/index.dart) file. All code above this string will not be replaced by the tool. For example:
 
 ```
 library app;
@@ -106,19 +106,19 @@ export 'src/app/view_model/app_state.dart';
 ...
 ```
 
-When setting `"nalsMobileBrain.autoExportBarrier": "// GENERATED"`, all code above the string `// GENERATED` will not be replaced but all code below the string `// GENERATED` will be replaced. If this setting is empty or omitted, then all code in the file will be replaced.
+When setting `"mynavimobiletool.autoExportBarrier": "// GENERATED"`, all code above the string `// GENERATED` will not be replaced but all code below the string `// GENERATED` will be replaced. If this setting is empty or omitted, then all code in the file will be replaced.
 
 * Default value: `""`
 
 ### 1.5. autoExportOnSave
 
-If this setting is `true`, the tool will automatically call the [nals:Auto export](#22-nalsauto-export) command when saving the file. Be careful when using it because it can cause your computer to lag due to too many commands being called.
+If this setting is `true`, the tool will automatically call the [mynavi:Auto export](#22-mynaviauto-export) command when saving the file. Be careful when using it because it can cause your computer to lag due to too many commands being called.
 
 * Default value: `false`
 
 ### 1.6. excludeFilesWhenAutoExport
 
-File extensions that the [nals:Auto export](#22-nalsauto-export) command will ignore.
+File extensions that the [mynavi:Auto export](#22-mynaviauto-export) command will ignore.
 
 * Default value: `[
         "g.dart",
@@ -129,20 +129,20 @@ File extensions that the [nals:Auto export](#22-nalsauto-export) command will ig
 
 ## 2. Commands
 
-### 2.1. nals:Create new Page
+### 2.1. mynavi:Create new Page
 
-Generate 3 classes in the `[nalsMobileBrain.uiFolderPath]` folder: 
+Generate 3 classes in the `[mynavimobiletool.uiFolderPath]` folder: 
 - 1 class extends `BasePage`
 - 1 class extends `BaseState`
 - 1 class extends `BaseViewModel`
 
-### 2.2. nals:Auto export
+### 2.2. mynavi:Auto export
 
 Export all files in lib folder to the [index.dart](../../lib/index.dart) file
 
-### 2.3. nals:[API] Clipboard to Data Model
+### 2.3. mynavi:[API] Clipboard to Data Model
 
-Copy a Json and run this command, it will generate all data model files in the `[nalsMobileBrain.dataModelPath]` folder. Both of following text are valid:
+Copy a Json and run this command, it will generate all data model files in the `[mynavimobiletool.dataModelPath]` folder. Both of following text are valid:
 ```
 {
     "id": 13,
@@ -154,7 +154,7 @@ Copy a Json and run this command, it will generate all data model files in the `
 "email": "abc@gmail.com",
 ```
 
-### 2.4. nals:[API] Json to Data Model
+### 2.4. mynavi:[API] Json to Data Model
 
 It is useful when you implement the GET method APIs.
 
@@ -185,7 +185,7 @@ Output:
 @Default('')  @JsonKey(name: 'classifies') String classifies,
 ```
 
-### 2.5. nals:[API] Json to Params
+### 2.5. mynavi:[API] Json to Params
 
 It is useful when you implement the POST method APIs.
 
@@ -227,11 +227,11 @@ required String classifies,
 'classifies': classifies,
 ```
 
-### 2.6. nals:Create test file
+### 2.6. mynavi:Create test file
 
 It's used to generate a test file for the `.dart` file currently displayed in the active Text Editor. If the test file was generated, it will open the test file in the active Text Editor. The test file path will mirror the code file path in the lib folder. For example, if the code file is `lib/ui/page/login/view_model/login_view_model.dart`, the test file will be `test/unit_test/ui/page/login/view_model/login_view_model_test.dart`.
 
-### 2.7. nals:[API] Extract API URL
+### 2.7. mynavi:[API] Extract API URL
 
 It is used to convert the API URL to args of Dio.
 
@@ -346,11 +346,11 @@ Future<XXX> get() {
 }
 ```
 
-### 2.8. nals: Translate and extract value to arb files
+### 2.8. mynavi: Translate and extract value to arb files
 
 Copy a text and run this command, it will generate a key-value pair in all arb files in the `lib/resource/l10n` folder. 
 
-### 2.9. nals: Sort arb files
+### 2.9. mynavi: Sort arb files
 
 Sort all arb files in the `lib/resource/l10n` folder in alphabetical order.
 
