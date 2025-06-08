@@ -17,9 +17,9 @@ void main() {
     const conversation = FirebaseConversationData(id: '1');
 
     testGoldens(
-      TestUtil.description('when members is empty'),
+      'when members is empty',
       (tester) async {
-        await tester.testWidgetWithDeviceBuilder(
+        await tester.testWidget(
           filename: 'rename_conversation_page/${TestUtil.filename('when_members_is_empty')}',
           widget: const RenameConversationPage(conversation: conversation),
           overrides: [
@@ -39,9 +39,9 @@ void main() {
       },
     );
     testGoldens(
-      TestUtil.description('when members is not empty'),
+      'when members is not empty',
       (tester) async {
-        await tester.testWidgetWithDeviceBuilder(
+        await tester.testWidget(
           filename: 'rename_conversation_page/${TestUtil.filename('when_members_is_not_empty')}',
           widget: const RenameConversationPage(conversation: conversation),
           overrides: [

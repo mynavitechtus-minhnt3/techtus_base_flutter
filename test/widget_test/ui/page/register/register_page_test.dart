@@ -17,9 +17,9 @@ void main() {
     'RegisterPage',
     () {
       testGoldens(
-        TestUtil.description('when register button is disabled'),
+        'when register button is disabled',
         (tester) async {
-          await tester.testWidgetWithDeviceBuilder(
+          await tester.testWidget(
             filename: 'register_page/${TestUtil.filename('when_register_button_is_disabled')}',
             widget: const RegisterPage(),
             overrides: [
@@ -37,14 +37,13 @@ void main() {
       );
 
       testGoldens(
-        TestUtil.description('when register button is enabled'),
+        'when register button is enabled',
         (tester) async {
-          await tester.testWidgetWithDeviceBuilder(
+          await tester.testWidget(
             filename: 'register_page/${TestUtil.filename('when_register_button_is_enabled')}',
             widget: const RegisterPage(),
-            onCreate: (tester, key) async {
-              final primaryTextFieldFinder =
-                  find.byType(PrimaryTextField).isDescendantOf(find.byKey(key), find);
+            onCreate: (tester) async {
+              final primaryTextFieldFinder = find.byType(PrimaryTextField);
               expect(primaryTextFieldFinder, findsExactly(3));
               final emailTextField = primaryTextFieldFinder.first;
               final passwordTextField = primaryTextFieldFinder.at(1);
@@ -75,9 +74,9 @@ void main() {
       );
 
       testGoldens(
-        TestUtil.description('when error text is visible'),
+        'when error text is visible',
         (tester) async {
-          await tester.testWidgetWithDeviceBuilder(
+          await tester.testWidget(
             filename: 'register_page/${TestUtil.filename('when_error_text_is_visible')}',
             widget: const RegisterPage(),
             overrides: [

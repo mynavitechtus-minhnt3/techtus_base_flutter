@@ -24,7 +24,7 @@ void main() {
   });
 
   group('MainPage', () {
-    testGoldens(TestUtil.description('when current bottom navigation index is 0'), (tester) async {
+    testGoldens('when current bottom navigation index is 0', (tester) async {
       await tester.runAsync(() async {
         await tester.pumpWidgetBuilder(
           ProviderScope(
@@ -68,7 +68,7 @@ void main() {
       );
     });
 
-    testGoldens(TestUtil.description('when current bottom navigation index is 1'), (tester) async {
+    testGoldens('when current bottom navigation index is 1', (tester) async {
       await tester.runAsync(() async {
         await tester.pumpWidgetBuilder(
           ProviderScope(

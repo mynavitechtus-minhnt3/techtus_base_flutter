@@ -8,11 +8,11 @@ void main() {
   group(
     'MoreMenuIconButton',
     () {
-      testGoldens(TestUtil.description('when it is normal state'), (tester) async {
-        await tester.testWidgetWithWidgetBuilder(
+      testGoldens('when it is normal state', (tester) async {
+        await tester.testWidget(
           filename: 'more_menu_icon_button/${TestUtil.filename('when_it_is_normal_state')}',
           widget: MoreMenuIconButton(onCopy: () {}, onReply: () {}),
-          mergeIntoSingleImage: false,
+          useMultiScreenGolden: true,
         );
       });
     },

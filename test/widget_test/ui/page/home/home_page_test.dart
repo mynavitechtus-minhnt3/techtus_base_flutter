@@ -28,7 +28,7 @@ HomeViewModel _buildHomeViewModel(CommonState<HomeState> state) {
 void main() {
   group('HomePage', () {
     testGoldens(
-      TestUtil.description('when fetching background image failed'),
+      'when fetching background image failed',
       (tester) async {
         await runZonedGuarded(
           () async {
@@ -42,7 +42,7 @@ void main() {
               oldCallback?.call(details);
             };
 
-            await tester.testWidgetWithDeviceBuilder(
+            await tester.testWidget(
               filename: 'home_page/${TestUtil.filename('when_fetching_background_image_failed')}',
               widget: HomePage(cacheManager: MockInvalidCacheManager()),
               overrides: [
@@ -63,9 +63,9 @@ void main() {
     );
 
     testGoldens(
-      TestUtil.description('when `isShimmerLoading` is true'),
+      'when `isShimmerLoading` is true',
       (tester) async {
-        await tester.testWidgetWithDeviceBuilder(
+        await tester.testWidget(
           filename: 'home_page/${TestUtil.filename('when_isShimmerLoading_is_true')}',
           widget: HomePage(cacheManager: MockCacheManager()),
           overrides: [
@@ -85,9 +85,9 @@ void main() {
     );
 
     testGoldens(
-      TestUtil.description('when `users` is empty'),
+      'when `users` is empty',
       (tester) async {
-        await tester.testWidgetWithDeviceBuilder(
+        await tester.testWidget(
           filename: 'home_page/${TestUtil.filename('when_users_is_empty')}',
           widget: HomePage(cacheManager: MockCacheManager()),
           overrides: [
@@ -105,15 +105,15 @@ void main() {
     );
 
     testGoldens(
-      TestUtil.description('when `users` is not empty'),
+      'when `users` is not empty',
       (tester) async {
-        await tester.testWidgetWithDeviceBuilder(
+        await tester.testWidget(
           filename: 'home_page/${TestUtil.filename('when_users_is_not_empty')}',
           widget: HomePage(cacheManager: MockCacheManager()),
-          onCreate: (tester, key) async {
+          onCreate: (tester) async {
             await tester.pump(30.seconds);
             final widget = tester.widget<CommonPagedListView<ApiUserData>>(
-              find.byType(CommonPagedListView<ApiUserData>).isDescendantOf(find.byKey(key), find),
+              find.byType(CommonPagedListView<ApiUserData>),
             );
             when(
               () => widget.pagingController.fetchPage(

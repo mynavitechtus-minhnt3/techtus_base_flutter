@@ -17,10 +17,9 @@ void main() {
     group('test', () {
       void _baseTestGoldens(LanguageCode languageCode) {
         testGoldens(
-          TestUtil.description(
-              'when theme is ${TestConfig.isDarkMode ? 'dark' : 'light'} and language is $languageCode'),
+          'when theme is ${TestConfig.isDarkMode ? 'dark' : 'light'} and language is $languageCode',
           (tester) async {
-            await tester.testWidgetWithDeviceBuilder(
+            await tester.testWidget(
               filename:
                   'setting/${TestUtil.filename('when_theme_is_${TestConfig.isDarkMode ? 'dark' : 'light'}_and_language_is_$languageCode')}',
               widget: const SettingPage(),
