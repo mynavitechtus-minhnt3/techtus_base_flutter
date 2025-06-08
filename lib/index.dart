@@ -41,9 +41,9 @@ export 'data_source/api/json_decoder/error_response_decoder/json_object_error_re
 export 'data_source/api/json_decoder/error_response_decoder/line_error_response_decoder.dart';
 export 'data_source/api/json_decoder/error_response_decoder/server_graphql_error_decoder.dart';
 export 'data_source/api/json_decoder/success_response_decoder/data_json_array_response_decoder.dart';
-export 'data_source/api/json_decoder/success_response_decoder/data_json_object_reponse_decoder.dart';
+export 'data_source/api/json_decoder/success_response_decoder/data_json_object_response_decoder.dart';
 export 'data_source/api/json_decoder/success_response_decoder/json_array_response_decoder.dart';
-export 'data_source/api/json_decoder/success_response_decoder/json_object_reponse_decoder.dart';
+export 'data_source/api/json_decoder/success_response_decoder/json_object_response_decoder.dart';
 export 'data_source/api/json_decoder/success_response_decoder/plain_response_decoder.dart';
 export 'data_source/api/json_decoder/success_response_decoder/records_json_array_response_decoder.dart';
 export 'data_source/api/json_decoder/success_response_decoder/results_json_array_response_decoder.dart';
