@@ -1,12 +1,15 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:clock/clock.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart' hide DeviceType;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:golden_toolkit/golden_toolkit.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:mocktail_image_network/mocktail_image_network.dart';
+import 'package:mocktail/mocktail.dart';
 import 'package:nalsflutter/index.dart';
+// ignore: depend_on_referenced_packages
+import 'package:octo_image/octo_image.dart';
 
 import 'index.dart';
 
@@ -14,11 +17,7 @@ class TestUtil {
   const TestUtil._();
 
   static String filename(String filename) {
-    return '${TestConfig.isDarkMode ? 'dark_mode/' : ''}$filename';
-  }
-
-  static String description(String description) {
-    return '$description${TestConfig.isDarkMode ? ' dark mode' : ''}';
+    return filename;
   }
 
   static ProviderContainer createContainer({
@@ -41,8 +40,7 @@ class TestUtil {
     required PageRouteInfo<dynamic> initialRoute,
     required AppRouter appRouter,
   }) {
-    AppThemeSetting.currentAppThemeType =
-        TestConfig.isDarkMode ? AppThemeType.dark : AppThemeType.light;
+    AppThemeSetting.currentAppThemeType = AppThemeType.light;
 
     return MediaQuery(
       data: const MediaQueryData(
@@ -70,15 +68,17 @@ class TestUtil {
             routeInformationParser: appRouter.defaultRouteParser(),
             title: Constant.materialAppTitle,
             color: Constant.taskMenuMaterialAppColor,
-            themeMode: TestConfig.isDarkMode ? ThemeMode.dark : ThemeMode.light,
+            themeMode: ThemeMode.light,
             theme: lightTheme,
-            darkTheme: darkTheme,
+            darkTheme: lightTheme,
             debugShowCheckedModeBanner: false,
             localeResolutionCallback: (Locale? locale, Iterable<Locale> supportedLocales) =>
-                supportedLocales.contains(locale) ? locale : TestConfig.goldenTestsLocale,
-            locale: TestConfig.goldenTestsLocale,
+                supportedLocales.contains(locale) ? locale : TestConfig.l10nTestLocale,
+            locale: TestConfig.l10nTestLocale,
             supportedLocales: AppString.supportedLocales,
-            localizationsDelegates: const [
+            localizationsDelegates: [
+              if (TestConfig.additionalLocalizationsDelegate != null)
+                ...TestConfig.additionalLocalizationsDelegate!,
               AppString.delegate,
               GlobalMaterialLocalizations.delegate,
               GlobalWidgetsLocalizations.delegate,
@@ -93,26 +93,24 @@ class TestUtil {
   // ignore: prefer_named_parameters
   static Widget buildMaterialApp(
     Widget wrapper, {
-    TargetPlatform platform = TestConfig.targetPlatform,
+    required bool isTextScaling,
   }) {
-    AppThemeSetting.currentAppThemeType =
-        TestConfig.isDarkMode ? AppThemeType.dark : AppThemeType.light;
-
     return materialAppWrapper(
-      platform: platform,
-      localizations: const [
+      platform: TestConfig.targetPlatform,
+      localizations: [
+        if (TestConfig.additionalLocalizationsDelegate != null)
+          ...TestConfig.additionalLocalizationsDelegate!,
         AppString.delegate,
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
-      localeOverrides: [TestConfig.goldenTestsLocale],
-      theme: TestConfig.isDarkMode ? darkTheme : lightTheme,
+      localeOverrides: [TestConfig.l10nTestLocale],
+      theme: lightTheme,
     ).call(
-      MediaQuery(
-        data: const MediaQueryData(
-          size: Size(Constant.designDeviceWidth, Constant.designDeviceHeight),
-        ),
+      MediaQuery.withClampedTextScaling(
+        minScaleFactor: isTextScaling ? Constant.appMinTextScaleFactor : 1,
+        maxScaleFactor: isTextScaling ? Constant.appMaxTextScaleFactor : 1,
         child: ScreenUtilInit(
           designSize: const Size(Constant.designDeviceWidth, Constant.designDeviceHeight),
           builder: (context, __) {
@@ -137,136 +135,189 @@ extension CommonStateExt<T extends BaseState> on CommonState<T> {
 }
 
 extension WidgetTesterExt on WidgetTester {
-  Future<void> testWidgetWithWidgetBuilder({
+  Future<void> testWidget({
     required String filename,
     required Widget widget,
     Future<void> Function(WidgetTester)? onCreate,
     List<Override> overrides = const [],
-    bool mergeIntoSingleImage = true,
+    bool runAsynchronous = true,
+    bool hasNetworkImage = false,
+    DateTime? mockToday,
+    List<TestDevice> additionalDevices = const [],
+    Future<void> Function(WidgetTester)? customPump,
+    bool useMultiScreenGolden = false,
+    bool includeFullHeightCase = true,
+    bool includeTextScalingCase = true,
+  }) async {
+    await withClock(Clock.fixed(mockToday ?? clock.now()), () async {
+      await Future.forEach(TestConfig.targetGoldenTestDevices(additionalDevices: additionalDevices),
+          (device) async {
+        when(() => deviceHelper.deviceType).thenReturn(
+          device.type.deviceType,
+        );
+
+        await _testWidget(
+          filename: '$filename/${device.device.name}_${device.device.size}',
+          widget: widget,
+          device: device.device,
+          onCreate: onCreate,
+          overrides: overrides,
+          runAsynchronous: runAsynchronous,
+          customPump: customPump,
+          isTextScaling: false,
+          hasNetworkImage: hasNetworkImage,
+          autoHeight: false,
+          useMultiScreenGolden: useMultiScreenGolden,
+          additionalDevices: additionalDevices,
+        );
+        if (includeTextScalingCase)
+          await _testWidget(
+            filename: '$filename/text_scaling/${device.device.name}_${device.device.size}',
+            widget: widget,
+            device: device.device,
+            onCreate: onCreate,
+            overrides: overrides,
+            runAsynchronous: runAsynchronous,
+            customPump: customPump,
+            isTextScaling: true,
+            hasNetworkImage: hasNetworkImage,
+            autoHeight: false,
+            useMultiScreenGolden: useMultiScreenGolden,
+            additionalDevices: additionalDevices,
+          );
+        if (includeFullHeightCase)
+          await _testWidget(
+            filename: '$filename/full_height/${device.device.name}_${device.device.size}',
+            widget: widget,
+            device: device.device,
+            onCreate: onCreate,
+            overrides: overrides,
+            runAsynchronous: runAsynchronous,
+            customPump: customPump,
+            isTextScaling: true,
+            autoHeight: true,
+            hasNetworkImage: hasNetworkImage,
+            useMultiScreenGolden: useMultiScreenGolden,
+            additionalDevices: additionalDevices,
+          );
+      });
+    });
+  }
+
+  Future<void> _testWidget({
+    required String filename,
+    required Widget widget,
+    required Device device,
+    required bool isTextScaling,
+    Future<void> Function(WidgetTester)? onCreate,
+    List<Override> overrides = const [],
     bool runAsynchronous = true,
     Future<void> Function(WidgetTester)? customPump,
+    bool hasNetworkImage = false,
+    bool autoHeight = false,
+    bool useMultiScreenGolden = false,
+    List<TestDevice> additionalDevices = const [],
   }) async {
     final fullOverrides = [...TestConfig.baseOverrides, ...overrides];
     if (runAsynchronous) {
-      await runAsync(() async => await _pumpWidgetBuilder(
-            widget: widget,
-            overrides: fullOverrides,
-          ));
+      await runAsync(() async {
+        await _pumpWidgetBuilder(
+          widget: widget,
+          overrides: fullOverrides,
+          device: device,
+          isTextScaling: isTextScaling,
+        );
+        if (hasNetworkImage) {
+          for (final element in find.byType(OctoImage).evaluate()) {
+            final widget = element.widget.safeCast<OctoImage>();
+            // ignore: avoid_nested_conditions
+            if (widget != null) {
+              final image = widget.image;
+              await precacheImage(image, element);
+            }
+          }
+          await pumpAndSettle();
+        }
+      });
     } else {
       await _pumpWidgetBuilder(
         widget: widget,
         overrides: fullOverrides,
+        device: device,
+        isTextScaling: isTextScaling,
       );
+      if (hasNetworkImage) {
+        for (final element in find.byType(OctoImage).evaluate()) {
+          final widget = element.widget.safeCast<OctoImage>();
+          // ignore: avoid_nested_conditions
+          if (widget != null) {
+            final image = widget.image;
+            await precacheImage(image, element);
+          }
+        }
+        await pumpAndSettle();
+      }
     }
 
-    await pumpAndSettle();
     await onCreate?.call(this);
 
     await _takeScreenshot(
       filename: filename,
-      mergeIntoSingleImage: mergeIntoSingleImage,
       customPump: customPump,
-    );
-  }
-
-  Future<void> testWidgetWithDeviceBuilder({
-    required String filename,
-    required Widget widget,
-    Future<void> Function(WidgetTester, Key)? onCreate,
-    List<Override> overrides = const [],
-    bool mergeIntoSingleImage = true,
-    bool runAsynchronous = true,
-    Future<void> Function(WidgetTester)? customPump,
-  }) async {
-    final builder = DeviceBuilder()
-      ..addScenario(
-        widget: widget,
-        onCreate: onCreate == null ? null : (key) => onCreate.call(this, key),
-      );
-    final fullOverrides = [...TestConfig.baseOverrides, ...overrides];
-
-    if (runAsynchronous) {
-      await runAsync(
-        () async => await _pumpDeviceBuilder(
-          builder: builder,
-          overrides: fullOverrides,
-        ),
-      );
-    } else {
-      await _pumpDeviceBuilder(
-        builder: builder,
-        overrides: fullOverrides,
-      );
-    }
-
-    await _takeScreenshot(
-      filename: filename,
-      mergeIntoSingleImage: mergeIntoSingleImage,
-      customPump: customPump,
+      autoHeight: autoHeight,
+      useMultiScreenGolden: useMultiScreenGolden,
+      additionalDevices: additionalDevices,
+      isTextScaling: isTextScaling,
     );
   }
 
   Future<void> _pumpWidgetBuilder({
     required Widget widget,
+    required Device device,
+    required bool isTextScaling,
     List<Override> overrides = const [],
   }) {
-    return mockNetworkImages(
-      () async => await pumpWidgetBuilder(
-        widget,
-        wrapper: (wrapper) => ProviderScope(
-          overrides: overrides,
-          child: _buildMaterialApp(
-            wrapper,
-            overrides: overrides,
-          ),
-        ),
-      ),
-    );
-  }
-
-  Future<void> _pumpDeviceBuilder({
-    required DeviceBuilder builder,
-    List<Override> overrides = const [],
-  }) {
-    return mockNetworkImages(
-      () async => await pumpDeviceBuilder(
-        builder,
-        wrapper: (wrapper) => _buildMaterialApp(
-          wrapper,
-          overrides: overrides,
-        ),
-      ),
-    );
-  }
-
-  Widget _buildMaterialApp(
-    Widget wrapper, {
-    List<Override> overrides = const [],
-  }) =>
-      ProviderScope(
+    return pumpWidgetBuilder(
+      widget,
+      wrapper: (wrapper) => ProviderScope(
         overrides: overrides,
-        child: TestUtil.buildMaterialApp(wrapper),
-      );
+        child: TestUtil.buildMaterialApp(
+          wrapper,
+          isTextScaling: isTextScaling,
+        ),
+      ),
+      surfaceSize: device.size,
+      textScaleSize: isTextScaling ? 2 : 1,
+    );
+  }
 
   Future<void> _takeScreenshot({
     required String filename,
-    bool mergeIntoSingleImage = true,
     Future<void> Function(WidgetTester)? customPump,
+    bool autoHeight = false,
+    bool useMultiScreenGolden = false,
+    List<TestDevice> additionalDevices = const [],
+    bool isTextScaling = false,
   }) async {
-    if (mergeIntoSingleImage) {
-      await screenMatchesGolden(
+    if (useMultiScreenGolden) {
+      return multiScreenGolden(
         this,
         filename,
         customPump: customPump,
-      );
-    } else {
-      await multiScreenGolden(
-        this,
-        filename,
-        devices: TestConfig.targetGoldenTestDevices,
-        customPump: customPump,
+        autoHeight: autoHeight,
+        devices: TestConfig.targetGoldenTestDevices(
+          additionalDevices: additionalDevices,
+          isTextScaling: isTextScaling,
+        ).map((e) => e.device).toList(),
       );
     }
+
+    await screenMatchesGolden(
+      this,
+      filename,
+      customPump: customPump,
+      autoHeight: autoHeight,
+    );
   }
 
   Future<void> tapOnBottomNavigationTab(int index) async {
@@ -275,6 +326,13 @@ extension WidgetTesterExt on WidgetTester {
     final bottomBarWidget = widget<BottomNavigationBar>(bottomNavigatorBarFinder);
     expect(bottomBarWidget.onTap, isNotNull);
     bottomBarWidget.onTap!.call(index);
+    await pumpAndSettle();
+  }
+
+  Future<void> safelyTap(Finder finder) async {
+    await ensureVisible(finder);
+    await pumpAndSettle();
+    await tap(finder, warnIfMissed: false);
     await pumpAndSettle();
   }
 }

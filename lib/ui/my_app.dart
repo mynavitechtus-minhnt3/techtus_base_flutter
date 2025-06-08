@@ -41,7 +41,9 @@ class MyApp extends HookConsumerWidget {
             enabled: Config.enableDevicePreview,
             builder: (_) => MaterialApp.router(
               builder: (context, child) {
-                final widget = MediaQuery.withNoTextScaling(
+                final widget = MediaQuery.withClampedTextScaling(
+                  maxScaleFactor: Constant.appMaxTextScaleFactor,
+                  minScaleFactor: Constant.appMinTextScaleFactor,
                   child: child ?? const SizedBox.shrink(),
                 );
 

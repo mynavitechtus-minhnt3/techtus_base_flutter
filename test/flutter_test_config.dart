@@ -12,6 +12,10 @@ import 'package:platform/platform.dart';
 import 'common/base_test.dart' as base;
 
 Future<void> testExecutable(FutureOr<void> Function() testMain) async {
+  return runWithConfiguration(testMain);
+}
+
+Future<void> runWithConfiguration(FutureOr<void> Function() testMain) {
   return GoldenToolkit.runWithConfiguration(
     () async {
       TestWidgetsFlutterBinding.ensureInitialized();
@@ -22,11 +26,6 @@ Future<void> testExecutable(FutureOr<void> Function() testMain) async {
     },
     config: GoldenToolkitConfiguration(
       enableRealShadows: true,
-      defaultDevices: const [
-        Device.phone,
-        Device.iphone11,
-        Device.tabletPortrait,
-      ],
     ),
   );
 }
@@ -58,7 +57,40 @@ Future<void> loadFonts() async {
   final materialIconsFontLoader = FontLoader('MaterialIcons')..addFont(materialIconsFont);
   await materialIconsFontLoader.load();
 
-  // load CupertinoIcons font
+  final binary = rootBundle.load('assets/fonts/Noto_Sans_JP/static/NotoSansJP-Regular.ttf');
+  final binary1 = rootBundle.load('assets/fonts/Noto_Sans_JP/static/NotoSansJP-Thin.ttf');
+  final binary2 = rootBundle.load('assets/fonts/Noto_Sans_JP/static/NotoSansJP-ExtraLight.ttf');
+  final binary3 = rootBundle.load('assets/fonts/Noto_Sans_JP/static/NotoSansJP-Light.ttf');
+  final binary4 = rootBundle.load('assets/fonts/Noto_Sans_JP/static/NotoSansJP-Medium.ttf');
+  final binary5 = rootBundle.load('assets/fonts/Noto_Sans_JP/static/NotoSansJP-SemiBold.ttf');
+  final binary6 = rootBundle.load('assets/fonts/Noto_Sans_JP/static/NotoSansJP-Bold.ttf');
+  final binary7 = rootBundle.load('assets/fonts/Noto_Sans_JP/static/NotoSansJP-ExtraBold.ttf');
+  final binary8 = rootBundle.load('assets/fonts/Noto_Sans_JP/static/NotoSansJP-Black.ttf');
+
+  final fontSFDisplayLoader = FontLoader('CupertinoSystemDisplay')
+    ..addFont(binary)
+    ..addFont(binary1)
+    ..addFont(binary2)
+    ..addFont(binary3)
+    ..addFont(binary4)
+    ..addFont(binary5)
+    ..addFont(binary6)
+    ..addFont(binary7)
+    ..addFont(binary8);
+  await fontSFDisplayLoader.load();
+
+  final fontSFTextLoader = FontLoader('CupertinoSystemText')
+    ..addFont(binary)
+    ..addFont(binary1)
+    ..addFont(binary2)
+    ..addFont(binary3)
+    ..addFont(binary4)
+    ..addFont(binary5)
+    ..addFont(binary6)
+    ..addFont(binary7)
+    ..addFont(binary8);
+  await fontSFTextLoader.load();
+
   final cupertinoIconsFontLoader = FontLoader('packages/cupertino_icons/CupertinoIcons')
     ..addFont(
       rootBundle.load('assets/fonts/Cupertino/CupertinoIcons.ttf'),

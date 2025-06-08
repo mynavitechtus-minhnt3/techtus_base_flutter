@@ -12,6 +12,9 @@ class Constant {
   static const designDeviceWidth = 375.0;
   static const designDeviceHeight = 667.0;
 
+  static const appMinTextScaleFactor = 0.9;
+  static const appMaxTextScaleFactor = 1.3;
+
   // Paging
   static const initialPage = 1;
   static const itemsPerPage = 30;

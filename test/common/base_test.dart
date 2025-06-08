@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:auto_route/auto_route.dart';
 import 'package:dio/dio.dart';
 import 'package:file/local.dart';
@@ -14,9 +16,12 @@ import 'index.dart';
 
 Future<void> main() async {
   l10n = await AppString.delegate.load(TestConfig.l10nTestLocale);
+  AppColor.current = AppColor.defaultAppColor;
+  AppThemeSetting.currentAppThemeType = AppThemeType.light;
 
   setUpAll(() async {
     VisibilityDetectorController.instance.updateInterval = Duration.zero;
+    HttpOverrides.global = null;
 
     // ViewModels
     registerFallbackValue(_MockConversationMembersMapStateController());

@@ -12,7 +12,7 @@ final deviceHelperProvider = Provider<DeviceHelper>(
   (ref) => getIt.get<DeviceHelper>(),
 );
 
-enum DeviceType { mobile, tablet }
+enum DeviceType { smallPhone, phone, tablet }
 
 @LazySingleton()
 class DeviceHelper {
@@ -40,7 +40,7 @@ class DeviceHelper {
                 .size
                 .shortestSide <
             _maxMobileWidthForDeviceType
-        ? DeviceType.mobile
+        ? DeviceType.phone
         : DeviceType.tablet;
   }
 

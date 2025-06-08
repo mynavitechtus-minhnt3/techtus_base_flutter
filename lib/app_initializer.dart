@@ -10,7 +10,7 @@ class AppInitializer {
     await configureInjection();
     await getIt.get<PackageHelper>().init();
     await SystemChrome.setPreferredOrientations(
-      getIt.get<DeviceHelper>().deviceType == DeviceType.mobile
+      getIt.get<DeviceHelper>().deviceType == DeviceType.phone
           ? Constant.mobileOrientation
           : Constant.tabletOrientation,
     );
