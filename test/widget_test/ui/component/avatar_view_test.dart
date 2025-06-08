@@ -34,8 +34,7 @@ void main() {
         'when backgroundColor is red textColor is blue',
         (tester) async {
           await tester.testWidget(
-            filename:
-                'avatar_view/when_backgroundColor_is_red_textColor_is_blue',
+            filename: 'avatar_view/when_backgroundColor_is_red_textColor_is_blue',
             widget: const UnconstrainedBox(
               child: AvatarView(
                 text: 'Minh',

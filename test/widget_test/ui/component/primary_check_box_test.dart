@@ -10,8 +10,7 @@ void main() {
   group(
     'PrimaryCheckBox',
     () {
-      testGoldens(
-          'when text is null and init value is false and isEnabled is false',
+      testGoldens('when text is null and init value is false and isEnabled is false',
           (tester) async {
         await tester.testWidget(
           filename:
@@ -24,8 +23,7 @@ void main() {
         );
       });
 
-      testGoldens(
-          'when text is not null and init value is true and isEnabled is true',
+      testGoldens('when text is not null and init value is true and isEnabled is true',
           (tester) async {
         await tester.testWidget(
           filename:
@@ -38,8 +36,7 @@ void main() {
         );
       });
 
-      testGoldens(
-          'when text is not null and init value is true and isEnabled is false',
+      testGoldens('when text is not null and init value is true and isEnabled is false',
           (tester) async {
         await tester.testWidget(
           filename:

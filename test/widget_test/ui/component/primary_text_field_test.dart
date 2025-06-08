@@ -50,8 +50,7 @@ void main() {
         'when keyboardType is TextInputType.visiblePassword',
         (tester) async {
           await tester.testWidget(
-            filename:
-                'primary_text_field/when_keyboardType_is_TextInputType.visiblePassword',
+            filename: 'primary_text_field/when_keyboardType_is_TextInputType.visiblePassword',
             widget: PrimaryTextField(
               title: 'Password',
               hintText: 'Password',
@@ -66,8 +65,7 @@ void main() {
         'when tapping on the eye icon once',
         (tester) async {
           await tester.testWidget(
-            filename:
-                'primary_text_field/when_tapping_on_the_eye_icon_once',
+            filename: 'primary_text_field/when_tapping_on_the_eye_icon_once',
             widget: PrimaryTextField(
               title: 'Password',
               hintText: 'Password',
