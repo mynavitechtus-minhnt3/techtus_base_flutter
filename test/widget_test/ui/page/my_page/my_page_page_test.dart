@@ -15,9 +15,9 @@ class MockMyPageViewModel extends StateNotifier<CommonState<MyPageState>>
 void main() {
   group('MyPagePage', () {
     testGoldens(
-      TestUtil.description('when current user is not vip member'),
+      'when current user is not vip member',
       (tester) async {
-        await tester.testWidgetWithDeviceBuilder(
+        await tester.testWidget(
           filename: 'my_page_page/${TestUtil.filename('when_current_user_is_not_vip_member')}',
           widget: const MyPagePage(),
           overrides: [
@@ -38,9 +38,9 @@ void main() {
     );
 
     testGoldens(
-      TestUtil.description('when current user is vip member'),
+      'when current user is vip member',
       (tester) async {
-        await tester.testWidgetWithDeviceBuilder(
+        await tester.testWidget(
           filename: 'my_page_page/${TestUtil.filename('when_current_user_is_vip_member')}',
           widget: const MyPagePage(),
           overrides: [

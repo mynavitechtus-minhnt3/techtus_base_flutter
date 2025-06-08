@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:dartx/dartx.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -20,7 +19,7 @@ class MockHomeViewModel extends StateNotifier<CommonState<HomeState>>
 HomeViewModel _buildHomeViewModel(CommonState<HomeState> state) {
   final vm = MockHomeViewModel(state);
 
-  when(() => vm.fetchUsers(isInitialLoad: true)).thenAnswer((_) async {});
+  when(() => vm.fetchUsers(isInitialLoad: any(named: 'isInitialLoad'))).thenAnswer((_) async {});
 
   return vm;
 }
@@ -28,7 +27,7 @@ HomeViewModel _buildHomeViewModel(CommonState<HomeState> state) {
 void main() {
   group('HomePage', () {
     testGoldens(
-      TestUtil.description('when fetching background image failed'),
+      'when fetching background image failed',
       (tester) async {
         await runZonedGuarded(
           () async {
@@ -42,7 +41,7 @@ void main() {
               oldCallback?.call(details);
             };
 
-            await tester.testWidgetWithDeviceBuilder(
+            await tester.testWidget(
               filename: 'home_page/${TestUtil.filename('when_fetching_background_image_failed')}',
               widget: HomePage(cacheManager: MockInvalidCacheManager()),
               overrides: [
@@ -63,9 +62,9 @@ void main() {
     );
 
     testGoldens(
-      TestUtil.description('when `isShimmerLoading` is true'),
+      'when `isShimmerLoading` is true',
       (tester) async {
-        await tester.testWidgetWithDeviceBuilder(
+        await tester.testWidget(
           filename: 'home_page/${TestUtil.filename('when_isShimmerLoading_is_true')}',
           widget: HomePage(cacheManager: MockCacheManager()),
           overrides: [
@@ -85,9 +84,9 @@ void main() {
     );
 
     testGoldens(
-      TestUtil.description('when `users` is empty'),
+      'when `users` is empty',
       (tester) async {
-        await tester.testWidgetWithDeviceBuilder(
+        await tester.testWidget(
           filename: 'home_page/${TestUtil.filename('when_users_is_empty')}',
           widget: HomePage(cacheManager: MockCacheManager()),
           overrides: [
@@ -105,44 +104,32 @@ void main() {
     );
 
     testGoldens(
-      TestUtil.description('when `users` is not empty'),
+      'when `users` is not empty',
       (tester) async {
-        await tester.testWidgetWithDeviceBuilder(
+        await tester.testWidget(
           filename: 'home_page/${TestUtil.filename('when_users_is_not_empty')}',
           widget: HomePage(cacheManager: MockCacheManager()),
-          onCreate: (tester, key) async {
-            await tester.pump(30.seconds);
-            final widget = tester.widget<CommonPagedListView<ApiUserData>>(
-              find.byType(CommonPagedListView<ApiUserData>).isDescendantOf(find.byKey(key), find),
-            );
-            when(
-              () => widget.pagingController.fetchPage(
-                1,
-                false,
-              ),
-            ).thenAnswer((_) async {
-              return List.generate(
-                Constant.itemsPerPage,
-                (index) => ApiUserData(
-                  id: 1,
-                  email: 'nghiand1@nals.vn',
-                  birthday: DateTime(2000, 1, 1),
-                ),
-              );
-            });
-
-            await tester.pump(30.seconds);
-          },
           overrides: [
             homeViewModelProvider.overrideWith(
               (_) => _buildHomeViewModel(
                 CommonState(
-                  data: HomeState(),
+                  data: HomeState(
+                    users: LoadMoreOutput(
+                      data: List.generate(
+                        Constant.itemsPerPage,
+                        (index) => ApiUserData(
+                          id: 1,
+                          email: 'nghiand1@nals.vn',
+                          birthday: DateTime(2000, 1, 1),
+                        ),
+                      ),
+                    ),
+                  ),
                 ),
               ),
             ),
           ],
-          customPump: (t) => t.pump(30.seconds),
+          customPump: (t) => t.pump(const Duration(seconds: 1)),
         );
       },
     );

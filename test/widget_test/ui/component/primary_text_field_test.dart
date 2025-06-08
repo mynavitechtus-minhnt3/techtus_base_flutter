@@ -9,8 +9,8 @@ void main() {
   group(
     'PrimaryTextField',
     () {
-      testGoldens(TestUtil.description('when text is empty'), (tester) async {
-        await tester.testWidgetWithDeviceBuilder(
+      testGoldens('when text is empty', (tester) async {
+        await tester.testWidget(
           filename: 'primary_text_field/${TestUtil.filename('when_text_is_empty')}',
           widget: PrimaryTextField(
             title: 'Email',
@@ -20,8 +20,8 @@ void main() {
         );
       });
 
-      testGoldens(TestUtil.description('when text is not empty'), (tester) async {
-        await tester.testWidgetWithDeviceBuilder(
+      testGoldens('when text is not empty', (tester) async {
+        await tester.testWidget(
           filename: 'primary_text_field/${TestUtil.filename('when_text_is_not_empty')}',
           widget: PrimaryTextField(
             title: 'Email',
@@ -31,8 +31,8 @@ void main() {
         );
       });
 
-      testGoldens(TestUtil.description('when it has suffixIcon'), (tester) async {
-        await tester.testWidgetWithDeviceBuilder(
+      testGoldens('when it has suffixIcon', (tester) async {
+        await tester.testWidget(
           filename: 'primary_text_field/${TestUtil.filename('when_it_has_suffixIcon')}',
           widget: PrimaryTextField(
             title: 'Password',
@@ -47,9 +47,9 @@ void main() {
       });
 
       testGoldens(
-        TestUtil.description('when keyboardType is TextInputType.visiblePassword'),
+        'when keyboardType is TextInputType.visiblePassword',
         (tester) async {
-          await tester.testWidgetWithDeviceBuilder(
+          await tester.testWidget(
             filename:
                 'primary_text_field/${TestUtil.filename('when_keyboardType_is_TextInputType.visiblePassword')}',
             widget: PrimaryTextField(
@@ -63,9 +63,9 @@ void main() {
       );
 
       testGoldens(
-        TestUtil.description('when tapping on the eye icon once'),
+        'when tapping on the eye icon once',
         (tester) async {
-          await tester.testWidgetWithDeviceBuilder(
+          await tester.testWidget(
             filename:
                 'primary_text_field/${TestUtil.filename('when_tapping_on_the_eye_icon_once')}',
             widget: PrimaryTextField(
@@ -74,9 +74,8 @@ void main() {
               controller: TextEditingController(text: '123456'),
               keyboardType: TextInputType.visiblePassword,
             ),
-            onCreate: (tester, key) async {
-              final eyeIconFinder =
-                  find.byType(GestureDetector).isDescendantOf(find.byKey(key), find);
+            onCreate: (tester) async {
+              final eyeIconFinder = find.byType(GestureDetector);
 
               expect(eyeIconFinder, findsOneWidget);
 

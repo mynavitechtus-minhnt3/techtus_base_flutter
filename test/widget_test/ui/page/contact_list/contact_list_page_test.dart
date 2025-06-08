@@ -16,9 +16,9 @@ class MockContactListViewModel extends StateNotifier<CommonState<ContactListStat
 void main() {
   group('ContactListPage', () {
     testGoldens(
-      TestUtil.description('when conversationList is empty'),
+      'when conversationList is empty',
       (tester) async {
-        await tester.testWidgetWithDeviceBuilder(
+        await tester.testWidget(
           filename: 'contact_list_page/${TestUtil.filename('when_conversationList_is_empty')}',
           widget: const ContactListPage(),
           overrides: [
@@ -39,13 +39,13 @@ void main() {
     );
 
     testGoldens(
-      TestUtil.description('when conversationList is not empty'),
+      'when conversationList is not empty',
       (tester) async {
-        await tester.testWidgetWithDeviceBuilder(
+        await tester.testWidget(
           filename: 'contact_list_page/${TestUtil.filename('when_conversationList_is_not_empty')}',
           widget: const ContactListPage(),
-          onCreate: (tester, key) async {
-            final textFieldFinder = find.byType(TextField).isDescendantOf(find.byKey(key), find);
+          onCreate: (tester) async {
+            final textFieldFinder = find.byType(TextField);
             expect(textFieldFinder, findsOneWidget);
 
             await tester.enterText(textFieldFinder, 'dog');
@@ -74,9 +74,9 @@ void main() {
     );
 
     testGoldens(
-      TestUtil.description('when current user is vip member'),
+      'when current user is vip member',
       (tester) async {
-        await tester.testWidgetWithDeviceBuilder(
+        await tester.testWidget(
           filename: 'contact_list_page/${TestUtil.filename('when_current_user_is_vip_member')}',
           widget: const ContactListPage(),
           overrides: [

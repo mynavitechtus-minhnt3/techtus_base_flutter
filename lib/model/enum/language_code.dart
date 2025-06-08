@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:dartx/dartx.dart';
 
 import '../../index.dart';
@@ -11,6 +13,8 @@ enum LanguageCode {
     localeCode: 'ja',
     value: Constant.ja,
   );
+
+  Locale get locale => Locale(localeCode);
 
   const LanguageCode({
     required this.localeCode,

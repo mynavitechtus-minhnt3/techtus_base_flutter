@@ -9,19 +9,19 @@ void main() {
   group(
     'SearchTextField',
     () {
-      testGoldens(TestUtil.description('when text is empty'), (tester) async {
-        await tester.testWidgetWithDeviceBuilder(
+      testGoldens('when text is empty', (tester) async {
+        await tester.testWidget(
           filename: 'search_text_field/${TestUtil.filename('when_text_is_empty')}',
           widget: const SearchTextField(),
         );
       });
 
-      testGoldens(TestUtil.description('when text is not empty'), (tester) async {
-        await tester.testWidgetWithDeviceBuilder(
+      testGoldens('when text is not empty', (tester) async {
+        await tester.testWidget(
           filename: 'search_text_field/${TestUtil.filename('when_text_is_not_empty')}',
           widget: const SearchTextField(),
-          onCreate: (tester, key) async {
-            final textFieldFinder = find.byType(TextField).isDescendantOf(find.byKey(key), find);
+          onCreate: (tester) async {
+            final textFieldFinder = find.byType(TextField);
             expect(textFieldFinder, findsOneWidget);
 
             await tester.enterText(textFieldFinder, 'ntminh');

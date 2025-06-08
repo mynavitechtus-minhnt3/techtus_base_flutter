@@ -17,7 +17,7 @@ class MockChatViewModel extends StateNotifier<CommonState<ChatState>>
 void main() {
   group('ChatPage', () {
     testGoldens(
-      TestUtil.description('when `messages` is empty'),
+      'when `messages` is empty',
       (tester) async {
         const currentUserId = '1';
         const members = [
@@ -37,7 +37,7 @@ void main() {
           email: 'ntminhdn@gmail.com',
         );
 
-        await tester.testWidgetWithDeviceBuilder(
+        await tester.testWidget(
           filename: 'chat_page/${TestUtil.filename('when_messages_is_empty')}',
           widget: const ChatPage(conversation: conversation),
           overrides: [
@@ -64,7 +64,7 @@ void main() {
     );
 
     testGoldens(
-      TestUtil.description('when `messages` is not empty'),
+      'when `messages` is not empty',
       (tester) async {
         const currentUserId = '1';
         const thinhId = '2';
@@ -97,7 +97,7 @@ void main() {
           email: 'ntminhdn@gmail.com',
         );
 
-        await tester.testWidgetWithDeviceBuilder(
+        await tester.testWidget(
           filename: 'chat_page/${TestUtil.filename('when_messages_is_not_empty')}',
           widget: const ChatPage(conversation: conversation),
           overrides: [
@@ -219,7 +219,7 @@ void main() {
     );
 
     testGoldens(
-      TestUtil.description('when user is typing'),
+      'when user is typing',
       (tester) async {
         const currentUserId = '1';
         const members = [
@@ -239,11 +239,11 @@ void main() {
           email: 'ntminhdn@gmail.com',
         );
 
-        await tester.testWidgetWithDeviceBuilder(
+        await tester.testWidget(
           filename: 'chat_page/${TestUtil.filename('when_user_is_typing')}',
           widget: const ChatPage(conversation: conversation),
-          onCreate: (tester, key) async {
-            final textFieldFinder = find.byType(TextField).isDescendantOf(find.byKey(key), find);
+          onCreate: (tester) async {
+            final textFieldFinder = find.byType(TextField);
             expect(textFieldFinder, findsOneWidget);
 
             await tester.enterText(textFieldFinder, 'dog and cat');
@@ -272,7 +272,7 @@ void main() {
     );
 
     testGoldens(
-      TestUtil.description('when users are replying themselves'),
+      'when users are replying themselves',
       (tester) async {
         const currentUserId = '1';
         const members = [
@@ -292,13 +292,12 @@ void main() {
           email: 'duynn@gmail.com',
         );
 
-        await tester.testWidgetWithDeviceBuilder(
+        await tester.testWidget(
           filename: 'chat_page/${TestUtil.filename('when_users_are_replying_themselves')}',
           widget: const ChatPage(conversation: conversation),
-          onCreate: (tester, key) async {
+          onCreate: (tester) async {
             await tester.pump(5.seconds);
-            final moreMenuIconFinder =
-                find.byType(MoreMenuIconButton).isDescendantOf(find.byKey(key), find);
+            final moreMenuIconFinder = find.byType(MoreMenuIconButton);
             expect(moreMenuIconFinder, findsOneWidget);
             await tester.tap(moreMenuIconFinder);
             await tester.pump();
@@ -338,7 +337,7 @@ void main() {
     );
 
     testGoldens(
-      TestUtil.description('when users are replying to other users'),
+      'when users are replying to other users',
       (tester) async {
         const currentUserId = '1';
         const otherUserId = '2';
@@ -363,13 +362,12 @@ void main() {
           email: 'duynn@gmail.com',
         );
 
-        await tester.testWidgetWithDeviceBuilder(
+        await tester.testWidget(
           filename: 'chat_page/${TestUtil.filename('when_users_are_replying_to_other_users')}',
           widget: const ChatPage(conversation: conversation),
-          onCreate: (tester, key) async {
+          onCreate: (tester) async {
             await tester.pump(5.seconds);
-            final moreMenuIconFinder =
-                find.byType(MoreMenuIconButton).isDescendantOf(find.byKey(key), find);
+            final moreMenuIconFinder = find.byType(MoreMenuIconButton);
             expect(moreMenuIconFinder, findsOneWidget);
             await tester.tap(moreMenuIconFinder);
             await tester.pump();
@@ -408,7 +406,7 @@ void main() {
       },
     );
 
-    testGoldens(TestUtil.description('when displaying the menu'), (tester) async {
+    testGoldens('when displaying the menu', (tester) async {
       const currentUserId = '1';
       const members = [
         FirebaseConversationUserData(
@@ -428,15 +426,15 @@ void main() {
       );
       const message = 'Hello';
 
-      await tester.testWidgetWithDeviceBuilder(
+      await tester.testWidget(
         filename: 'chat_page/${TestUtil.filename('when_displaying_the_menu')}',
         widget: const ChatPage(conversation: conversation),
-        onCreate: (tester, key) async {
+        onCreate: (tester) async {
           await tester.pump(5.seconds);
           final menuFinder = find
               .byType(IconButton)
               .isAncestorOf(find.byType(AnimatedIcon), find)
-              .isDescendantOf(find.byKey(key), find);
+              .isDescendantOf(find.byType(ChatPage), find);
           await tester.tap(menuFinder);
           await tester.pumpAndSettle();
         },

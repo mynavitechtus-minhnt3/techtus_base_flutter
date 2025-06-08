@@ -17,13 +17,12 @@ void main() {
     'LoginPage',
     () {
       testGoldens(
-        TestUtil.description('when login button is disabled'),
+        'when login button is disabled',
         (tester) async {
-          await tester.testWidgetWithDeviceBuilder(
+          await tester.testWidget(
             filename: 'login_page/${TestUtil.filename('when_login_button_is_disabled')}',
             widget: const LoginPage(),
             overrides: [
-              isDarkModeProvider.overrideWith((_) => TestConfig.isDarkMode),
               loginViewModelProvider.overrideWith((ref) => MockLoginViewModel(
                     const CommonState(
                       data: LoginState(),
@@ -35,14 +34,13 @@ void main() {
       );
 
       testGoldens(
-        TestUtil.description('when login button is enabled'),
+        'when login button is enabled',
         (tester) async {
-          await tester.testWidgetWithDeviceBuilder(
+          await tester.testWidget(
             filename: 'login_page/${TestUtil.filename('when_login_button_is_enabled')}',
             widget: const LoginPage(),
-            onCreate: (tester, key) async {
-              final primaryTextFieldFinder =
-                  find.byType(PrimaryTextField).isDescendantOf(find.byKey(key), find);
+            onCreate: (tester) async {
+              final primaryTextFieldFinder = find.byType(PrimaryTextField);
               expect(primaryTextFieldFinder, findsExactly(2));
               final emailTextField = primaryTextFieldFinder.first;
               final passwordTextField = primaryTextFieldFinder.at(1);
@@ -53,7 +51,6 @@ void main() {
               await tester.enterText(passwordTextField, '1234567890987654321!@#%^&*()_+');
             },
             overrides: [
-              isDarkModeProvider.overrideWith((_) => TestConfig.isDarkMode),
               loginViewModelProvider.overrideWith(
                 (ref) => MockLoginViewModel(
                   const CommonState(
@@ -70,13 +67,12 @@ void main() {
       );
 
       testGoldens(
-        TestUtil.description('when error text is visible'),
+        'when error text is visible',
         (tester) async {
-          await tester.testWidgetWithDeviceBuilder(
+          await tester.testWidget(
             filename: 'login_page/${TestUtil.filename('when_error_text_is_visible')}',
             widget: const LoginPage(),
             overrides: [
-              isDarkModeProvider.overrideWith((_) => TestConfig.isDarkMode),
               loginViewModelProvider.overrideWith(
                 (ref) => MockLoginViewModel(
                   const CommonState(
