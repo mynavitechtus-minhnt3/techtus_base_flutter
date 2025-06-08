@@ -23,7 +23,6 @@ void main() {
             filename: 'login_page/${TestUtil.filename('when_login_button_is_disabled')}',
             widget: const LoginPage(),
             overrides: [
-              isDarkModeProvider.overrideWith((_) => TestConfig.isDarkMode),
               loginViewModelProvider.overrideWith((ref) => MockLoginViewModel(
                     const CommonState(
                       data: LoginState(),
@@ -52,7 +51,6 @@ void main() {
               await tester.enterText(passwordTextField, '1234567890987654321!@#%^&*()_+');
             },
             overrides: [
-              isDarkModeProvider.overrideWith((_) => TestConfig.isDarkMode),
               loginViewModelProvider.overrideWith(
                 (ref) => MockLoginViewModel(
                   const CommonState(
@@ -75,7 +73,6 @@ void main() {
             filename: 'login_page/${TestUtil.filename('when_error_text_is_visible')}',
             widget: const LoginPage(),
             overrides: [
-              isDarkModeProvider.overrideWith((_) => TestConfig.isDarkMode),
               loginViewModelProvider.overrideWith(
                 (ref) => MockLoginViewModel(
                   const CommonState(

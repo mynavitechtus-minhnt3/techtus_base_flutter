@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:dartx/dartx.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -20,7 +19,7 @@ class MockHomeViewModel extends StateNotifier<CommonState<HomeState>>
 HomeViewModel _buildHomeViewModel(CommonState<HomeState> state) {
   final vm = MockHomeViewModel(state);
 
-  when(() => vm.fetchUsers(isInitialLoad: true)).thenAnswer((_) async {});
+  when(() => vm.fetchUsers(isInitialLoad: any(named: 'isInitialLoad'))).thenAnswer((_) async {});
 
   return vm;
 }
@@ -110,39 +109,27 @@ void main() {
         await tester.testWidget(
           filename: 'home_page/${TestUtil.filename('when_users_is_not_empty')}',
           widget: HomePage(cacheManager: MockCacheManager()),
-          onCreate: (tester) async {
-            await tester.pump(30.seconds);
-            final widget = tester.widget<CommonPagedListView<ApiUserData>>(
-              find.byType(CommonPagedListView<ApiUserData>),
-            );
-            when(
-              () => widget.pagingController.fetchPage(
-                1,
-                false,
-              ),
-            ).thenAnswer((_) async {
-              return List.generate(
-                Constant.itemsPerPage,
-                (index) => ApiUserData(
-                  id: 1,
-                  email: 'nghiand1@nals.vn',
-                  birthday: DateTime(2000, 1, 1),
-                ),
-              );
-            });
-
-            await tester.pump(30.seconds);
-          },
           overrides: [
             homeViewModelProvider.overrideWith(
               (_) => _buildHomeViewModel(
                 CommonState(
-                  data: HomeState(),
+                  data: HomeState(
+                    users: LoadMoreOutput(
+                      data: List.generate(
+                        Constant.itemsPerPage,
+                        (index) => ApiUserData(
+                          id: 1,
+                          email: 'nghiand1@nals.vn',
+                          birthday: DateTime(2000, 1, 1),
+                        ),
+                      ),
+                    ),
+                  ),
                 ),
               ),
             ),
           ],
-          customPump: (t) => t.pump(30.seconds),
+          customPump: (t) => t.pump(const Duration(seconds: 1)),
         );
       },
     );

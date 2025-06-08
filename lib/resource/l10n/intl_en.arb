@@ -1,4 +1,5 @@
 {
+  "@@locale": "en",
   "add": "Add",
   "addNewMembers": "Add new members",
   "allUsers": "All users",
@@ -29,7 +30,7 @@
   "login": "Login",
   "logout": "Logout",
   "logoutConfirm": "Are you sure you want to log out?",
-  "maintenanceTimeTitle": "メンテナンス期間",
+  "maintenanceTimeTitle": "Maintenance Period",
   "maintenanceTitle": "Server is under maintenance.",
   "members": "Members",
   "myPage": "My Page",

@@ -15,14 +15,19 @@ class MockSettingViewModel extends StateNotifier<CommonState<SettingState>>
 void main() {
   group('SettingPage', () {
     group('test', () {
-      void _baseTestGoldens(LanguageCode languageCode) {
+      void _baseTestGoldens({
+        required LanguageCode languageCode,
+        required bool isDarkMode,
+      }) {
         testGoldens(
-          'when theme is ${TestConfig.isDarkMode ? 'dark' : 'light'} and language is $languageCode',
+          'when theme is ${isDarkMode ? 'dark' : 'light'} and language is ${languageCode.localeCode}',
           (tester) async {
             await tester.testWidget(
               filename:
-                  'setting/${TestUtil.filename('when_theme_is_${TestConfig.isDarkMode ? 'dark' : 'light'}_and_language_is_$languageCode')}',
+                  'setting/${TestUtil.filename('when_theme_is_${isDarkMode ? 'dark' : 'light'}_and_language_is_$languageCode')}',
               widget: const SettingPage(),
+              isDarkMode: isDarkMode,
+              locale: languageCode.locale,
               overrides: [
                 settingViewModelProvider.overrideWith(
                   (_) => MockSettingViewModel(
@@ -31,7 +36,7 @@ void main() {
                     ),
                   ),
                 ),
-                isDarkModeProvider.overrideWith((_) => TestConfig.isDarkMode),
+                isDarkModeProvider.overrideWith((_) => isDarkMode),
                 languageCodeProvider.overrideWith((_) => languageCode),
               ],
             );
@@ -39,8 +44,10 @@ void main() {
         );
       }
 
-      _baseTestGoldens(LanguageCode.en);
-      _baseTestGoldens(LanguageCode.ja);
+      _baseTestGoldens(languageCode: LanguageCode.en, isDarkMode: false);
+      _baseTestGoldens(languageCode: LanguageCode.ja, isDarkMode: false);
+      _baseTestGoldens(languageCode: LanguageCode.en, isDarkMode: true);
+      _baseTestGoldens(languageCode: LanguageCode.ja, isDarkMode: true);
     });
   });
 }

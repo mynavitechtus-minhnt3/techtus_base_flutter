@@ -39,8 +39,10 @@ class TestUtil {
   static Widget buildRouterMaterialApp({
     required PageRouteInfo<dynamic> initialRoute,
     required AppRouter appRouter,
+    bool isDarkMode = false,
+    Locale locale = TestConfig.defaultLocale,
   }) {
-    AppThemeSetting.currentAppThemeType = AppThemeType.light;
+    AppThemeSetting.currentAppThemeType = isDarkMode ? AppThemeType.dark : AppThemeType.light;
 
     return MediaQuery(
       data: const MediaQueryData(
@@ -68,13 +70,13 @@ class TestUtil {
             routeInformationParser: appRouter.defaultRouteParser(),
             title: Constant.materialAppTitle,
             color: Constant.taskMenuMaterialAppColor,
-            themeMode: ThemeMode.light,
+            themeMode: isDarkMode ? ThemeMode.dark : ThemeMode.light,
             theme: lightTheme,
-            darkTheme: lightTheme,
+            darkTheme: darkTheme,
             debugShowCheckedModeBanner: false,
-            localeResolutionCallback: (Locale? locale, Iterable<Locale> supportedLocales) =>
-                supportedLocales.contains(locale) ? locale : TestConfig.l10nTestLocale,
-            locale: TestConfig.l10nTestLocale,
+            localeResolutionCallback: (Locale? l, Iterable<Locale> supportedLocales) =>
+                supportedLocales.contains(l) ? l : locale,
+            locale: locale,
             supportedLocales: AppString.supportedLocales,
             localizationsDelegates: [
               if (TestConfig.additionalLocalizationsDelegate != null)
@@ -94,7 +96,11 @@ class TestUtil {
   static Widget buildMaterialApp(
     Widget wrapper, {
     required bool isTextScaling,
+    bool isDarkMode = false,
+    Locale locale = TestConfig.defaultLocale,
   }) {
+    AppThemeSetting.currentAppThemeType = isDarkMode ? AppThemeType.dark : AppThemeType.light;
+
     return materialAppWrapper(
       platform: TestConfig.targetPlatform,
       localizations: [
@@ -105,8 +111,8 @@ class TestUtil {
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
-      localeOverrides: [TestConfig.l10nTestLocale],
-      theme: lightTheme,
+      localeOverrides: [locale],
+      theme: isDarkMode ? darkTheme : lightTheme,
     ).call(
       MediaQuery.withClampedTextScaling(
         minScaleFactor: isTextScaling ? Constant.appMinTextScaleFactor : 1,
@@ -148,6 +154,8 @@ extension WidgetTesterExt on WidgetTester {
     bool useMultiScreenGolden = false,
     bool includeFullHeightCase = true,
     bool includeTextScalingCase = true,
+    bool isDarkMode = false,
+    Locale locale = TestConfig.defaultLocale,
   }) async {
     await withClock(Clock.fixed(mockToday ?? clock.now()), () async {
       await Future.forEach(TestConfig.targetGoldenTestDevices(additionalDevices: additionalDevices),
@@ -169,6 +177,8 @@ extension WidgetTesterExt on WidgetTester {
           autoHeight: false,
           useMultiScreenGolden: useMultiScreenGolden,
           additionalDevices: additionalDevices,
+          isDarkMode: isDarkMode,
+          locale: locale,
         );
         if (includeTextScalingCase)
           await _testWidget(
@@ -184,6 +194,8 @@ extension WidgetTesterExt on WidgetTester {
             autoHeight: false,
             useMultiScreenGolden: useMultiScreenGolden,
             additionalDevices: additionalDevices,
+            isDarkMode: isDarkMode,
+            locale: locale,
           );
         if (includeFullHeightCase)
           await _testWidget(
@@ -199,6 +211,8 @@ extension WidgetTesterExt on WidgetTester {
             hasNetworkImage: hasNetworkImage,
             useMultiScreenGolden: useMultiScreenGolden,
             additionalDevices: additionalDevices,
+            isDarkMode: isDarkMode,
+            locale: locale,
           );
       });
     });
@@ -209,16 +223,21 @@ extension WidgetTesterExt on WidgetTester {
     required Widget widget,
     required Device device,
     required bool isTextScaling,
-    Future<void> Function(WidgetTester)? onCreate,
-    List<Override> overrides = const [],
-    bool runAsynchronous = true,
-    Future<void> Function(WidgetTester)? customPump,
-    bool hasNetworkImage = false,
-    bool autoHeight = false,
-    bool useMultiScreenGolden = false,
-    List<TestDevice> additionalDevices = const [],
+    required Future<void> Function(WidgetTester)? onCreate,
+    required List<Override> overrides,
+    required bool runAsynchronous,
+    required Future<void> Function(WidgetTester)? customPump,
+    required bool hasNetworkImage,
+    required bool autoHeight,
+    required bool useMultiScreenGolden,
+    required bool isDarkMode,
+    required Locale locale,
+    required List<TestDevice> additionalDevices,
   }) async {
-    final fullOverrides = [...TestConfig.baseOverrides, ...overrides];
+    final fullOverrides = [
+      ...TestConfig.baseOverrides(),
+      ...overrides,
+    ];
     if (runAsynchronous) {
       await runAsync(() async {
         await _pumpWidgetBuilder(
@@ -226,6 +245,8 @@ extension WidgetTesterExt on WidgetTester {
           overrides: fullOverrides,
           device: device,
           isTextScaling: isTextScaling,
+          isDarkMode: isDarkMode,
+          locale: locale,
         );
         if (hasNetworkImage) {
           for (final element in find.byType(OctoImage).evaluate()) {
@@ -245,6 +266,8 @@ extension WidgetTesterExt on WidgetTester {
         overrides: fullOverrides,
         device: device,
         isTextScaling: isTextScaling,
+        isDarkMode: isDarkMode,
+        locale: locale,
       );
       if (hasNetworkImage) {
         for (final element in find.byType(OctoImage).evaluate()) {
@@ -275,7 +298,9 @@ extension WidgetTesterExt on WidgetTester {
     required Widget widget,
     required Device device,
     required bool isTextScaling,
-    List<Override> overrides = const [],
+    required bool isDarkMode,
+    required Locale locale,
+    required List<Override> overrides,
   }) {
     return pumpWidgetBuilder(
       widget,
@@ -284,6 +309,8 @@ extension WidgetTesterExt on WidgetTester {
         child: TestUtil.buildMaterialApp(
           wrapper,
           isTextScaling: isTextScaling,
+          isDarkMode: isDarkMode,
+          locale: locale,
         ),
       ),
       surfaceSize: device.size,
@@ -293,11 +320,11 @@ extension WidgetTesterExt on WidgetTester {
 
   Future<void> _takeScreenshot({
     required String filename,
-    Future<void> Function(WidgetTester)? customPump,
-    bool autoHeight = false,
-    bool useMultiScreenGolden = false,
-    List<TestDevice> additionalDevices = const [],
-    bool isTextScaling = false,
+    required Future<void> Function(WidgetTester)? customPump,
+    required bool autoHeight,
+    required bool useMultiScreenGolden,
+    required List<TestDevice> additionalDevices,
+    required bool isTextScaling,
   }) async {
     if (useMultiScreenGolden) {
       return multiScreenGolden(

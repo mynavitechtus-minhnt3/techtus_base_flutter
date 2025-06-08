@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:golden_toolkit/golden_toolkit.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:nalsflutter/index.dart';
 
 import 'index.dart';
@@ -8,17 +9,18 @@ class TestConfig {
   const TestConfig._();
 
   static const targetPlatform = TargetPlatform.android;
-  static const l10nTestLocale = Locale('ja');
+  static const defaultLocale = Locale('ja');
   static List<LocalizationsDelegate<dynamic>>? additionalLocalizationsDelegate;
 
-  static final baseOverrides = [
-    analyticsHelperProvider.overrideWith(
-      (_) => analyticsHelper,
-    ),
-    deviceHelperProvider.overrideWith(
-      (_) => deviceHelper,
-    ),
-  ];
+  static List<Override> baseOverrides() => [
+        analyticsHelperProvider.overrideWith(
+          (_) => analyticsHelper,
+        ),
+        deviceHelperProvider.overrideWith(
+          (_) => deviceHelper,
+        ),
+        isDarkModeProvider.overrideWith((ref) => false),
+      ];
 
   static List<TestDevice> targetGoldenTestDevices({
     List<TestDevice> additionalDevices = const [],

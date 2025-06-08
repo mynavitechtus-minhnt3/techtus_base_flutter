@@ -23,7 +23,6 @@ void main() {
             filename: 'register_page/${TestUtil.filename('when_register_button_is_disabled')}',
             widget: const RegisterPage(),
             overrides: [
-              isDarkModeProvider.overrideWith((_) => TestConfig.isDarkMode),
               registerViewModelProvider.overrideWith(
                 (ref) => MockRegisterViewModel(
                   const CommonState(
@@ -56,7 +55,6 @@ void main() {
               await tester.enterText(passwordConfirmationTextField, '123456789098');
             },
             overrides: [
-              isDarkModeProvider.overrideWith((_) => TestConfig.isDarkMode),
               registerViewModelProvider.overrideWith(
                 (ref) => MockRegisterViewModel(
                   const CommonState(
@@ -80,7 +78,6 @@ void main() {
             filename: 'register_page/${TestUtil.filename('when_error_text_is_visible')}',
             widget: const RegisterPage(),
             overrides: [
-              isDarkModeProvider.overrideWith((_) => TestConfig.isDarkMode),
               registerViewModelProvider.overrideWith(
                 (ref) => MockRegisterViewModel(
                   const CommonState(
