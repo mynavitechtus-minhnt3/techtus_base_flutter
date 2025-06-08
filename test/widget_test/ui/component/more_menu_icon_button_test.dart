@@ -10,7 +10,7 @@ void main() {
     () {
       testGoldens('when it is normal state', (tester) async {
         await tester.testWidget(
-          filename: 'more_menu_icon_button/${TestUtil.filename('when_it_is_normal_state')}',
+          filename: 'more_menu_icon_button/when_it_is_normal_state',
           widget: MoreMenuIconButton(onCopy: () {}, onReply: () {}),
           useMultiScreenGolden: true,
         );

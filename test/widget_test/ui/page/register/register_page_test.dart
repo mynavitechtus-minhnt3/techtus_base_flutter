@@ -20,7 +20,7 @@ void main() {
         'when register button is disabled',
         (tester) async {
           await tester.testWidget(
-            filename: 'register_page/${TestUtil.filename('when_register_button_is_disabled')}',
+            filename: 'register_page/when_register_button_is_disabled',
             widget: const RegisterPage(),
             overrides: [
               registerViewModelProvider.overrideWith(
@@ -39,7 +39,7 @@ void main() {
         'when register button is enabled',
         (tester) async {
           await tester.testWidget(
-            filename: 'register_page/${TestUtil.filename('when_register_button_is_enabled')}',
+            filename: 'register_page/when_register_button_is_enabled',
             widget: const RegisterPage(),
             onCreate: (tester) async {
               final primaryTextFieldFinder = find.byType(PrimaryTextField);
@@ -75,7 +75,7 @@ void main() {
         'when error text is visible',
         (tester) async {
           await tester.testWidget(
-            filename: 'register_page/${TestUtil.filename('when_error_text_is_visible')}',
+            filename: 'register_page/when_error_text_is_visible',
             widget: const RegisterPage(),
             overrides: [
               registerViewModelProvider.overrideWith(

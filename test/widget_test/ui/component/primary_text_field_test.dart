@@ -11,7 +11,7 @@ void main() {
     () {
       testGoldens('when text is empty', (tester) async {
         await tester.testWidget(
-          filename: 'primary_text_field/${TestUtil.filename('when_text_is_empty')}',
+          filename: 'primary_text_field/when_text_is_empty',
           widget: PrimaryTextField(
             title: 'Email',
             hintText: 'Email',
@@ -22,7 +22,7 @@ void main() {
 
       testGoldens('when text is not empty', (tester) async {
         await tester.testWidget(
-          filename: 'primary_text_field/${TestUtil.filename('when_text_is_not_empty')}',
+          filename: 'primary_text_field/when_text_is_not_empty',
           widget: PrimaryTextField(
             title: 'Email',
             hintText: 'Email',
@@ -33,7 +33,7 @@ void main() {
 
       testGoldens('when it has suffixIcon', (tester) async {
         await tester.testWidget(
-          filename: 'primary_text_field/${TestUtil.filename('when_it_has_suffixIcon')}',
+          filename: 'primary_text_field/when_it_has_suffixIcon',
           widget: PrimaryTextField(
             title: 'Password',
             hintText: 'Password',
@@ -51,7 +51,7 @@ void main() {
         (tester) async {
           await tester.testWidget(
             filename:
-                'primary_text_field/${TestUtil.filename('when_keyboardType_is_TextInputType.visiblePassword')}',
+                'primary_text_field/when_keyboardType_is_TextInputType.visiblePassword',
             widget: PrimaryTextField(
               title: 'Password',
               hintText: 'Password',
@@ -67,7 +67,7 @@ void main() {
         (tester) async {
           await tester.testWidget(
             filename:
-                'primary_text_field/${TestUtil.filename('when_tapping_on_the_eye_icon_once')}',
+                'primary_text_field/when_tapping_on_the_eye_icon_once',
             widget: PrimaryTextField(
               title: 'Password',
               hintText: 'Password',

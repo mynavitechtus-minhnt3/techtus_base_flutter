@@ -16,10 +16,6 @@ import 'index.dart';
 class TestUtil {
   const TestUtil._();
 
-  static String filename(String filename) {
-    return filename;
-  }
-
   static ProviderContainer createContainer({
     ProviderContainer? parent,
     List<Override> overrides = const [],

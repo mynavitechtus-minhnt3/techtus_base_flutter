@@ -38,7 +38,7 @@ void main() {
         );
 
         await tester.testWidget(
-          filename: 'chat_page/${TestUtil.filename('when_messages_is_empty')}',
+          filename: 'chat_page/when_messages_is_empty',
           widget: const ChatPage(conversation: conversation),
           overrides: [
             chatViewModelProvider.overrideWith(
@@ -98,7 +98,7 @@ void main() {
         );
 
         await tester.testWidget(
-          filename: 'chat_page/${TestUtil.filename('when_messages_is_not_empty')}',
+          filename: 'chat_page/when_messages_is_not_empty',
           widget: const ChatPage(conversation: conversation),
           overrides: [
             chatViewModelProvider.overrideWith(
@@ -240,7 +240,7 @@ void main() {
         );
 
         await tester.testWidget(
-          filename: 'chat_page/${TestUtil.filename('when_user_is_typing')}',
+          filename: 'chat_page/when_user_is_typing',
           widget: const ChatPage(conversation: conversation),
           onCreate: (tester) async {
             final textFieldFinder = find.byType(TextField);
@@ -293,7 +293,7 @@ void main() {
         );
 
         await tester.testWidget(
-          filename: 'chat_page/${TestUtil.filename('when_users_are_replying_themselves')}',
+          filename: 'chat_page/when_users_are_replying_themselves',
           widget: const ChatPage(conversation: conversation),
           onCreate: (tester) async {
             await tester.pump(5.seconds);
@@ -363,7 +363,7 @@ void main() {
         );
 
         await tester.testWidget(
-          filename: 'chat_page/${TestUtil.filename('when_users_are_replying_to_other_users')}',
+          filename: 'chat_page/when_users_are_replying_to_other_users',
           widget: const ChatPage(conversation: conversation),
           onCreate: (tester) async {
             await tester.pump(5.seconds);
@@ -427,7 +427,7 @@ void main() {
       const message = 'Hello';
 
       await tester.testWidget(
-        filename: 'chat_page/${TestUtil.filename('when_displaying_the_menu')}',
+        filename: 'chat_page/when_displaying_the_menu',
         widget: const ChatPage(conversation: conversation),
         onCreate: (tester) async {
           await tester.pump(5.seconds);

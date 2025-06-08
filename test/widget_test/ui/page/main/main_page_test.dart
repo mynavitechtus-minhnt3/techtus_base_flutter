@@ -64,7 +64,7 @@ void main() {
 
       await screenMatchesGolden(
         tester,
-        'main_page/${TestUtil.filename('when_current_bottom_navigation_index_is_0')}',
+        'main_page/when_current_bottom_navigation_index_is_0',
       );
     });
 
@@ -109,7 +109,7 @@ void main() {
 
       await screenMatchesGolden(
         tester,
-        'main_page/${TestUtil.filename('when_current_bottom_navigation_index_is_1')}',
+        'main_page/when_current_bottom_navigation_index_is_1',
       );
     });
   });
