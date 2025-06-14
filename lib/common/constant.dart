@@ -73,18 +73,7 @@ class Constant {
   );
 
   // Base API URL
-  static String get appApiBaseUrl {
-    switch (Env.flavor) {
-      case Flavor.develop:
-        return 'http://api.dev.nals.vn/api/';
-      case Flavor.qa:
-        return 'http://api.dev.nals.vn/api/';
-      case Flavor.staging:
-        return 'http://api.dev.nals.vn/api/';
-      case Flavor.production:
-        return 'http://api.dev.nals.vn/api/';
-    }
-  }
+  static String get appApiBaseUrl => '${Env.appDomain}/api/';
 
   // FCM
   static const fcmImage = 'image';
