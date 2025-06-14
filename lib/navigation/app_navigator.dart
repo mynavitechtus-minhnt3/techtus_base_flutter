@@ -53,7 +53,7 @@ class AppNavigator with LogMixin {
           .current
           .name;
 
-  RouteData getCurrentRouteData({bool useRootNavigator = false}) =>
+  RouteData<dynamic> getCurrentRouteData({bool useRootNavigator = false}) =>
       AutoRouter.of(useRootNavigator ? _rootRouterContext : _currentTabContextOrRootContext)
           .current;
 

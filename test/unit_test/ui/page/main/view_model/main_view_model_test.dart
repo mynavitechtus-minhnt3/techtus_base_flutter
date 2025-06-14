@@ -15,7 +15,7 @@ abstract class InitFunctionCall extends Mock {
 
 class _MockInitFunctionCall extends Mock implements InitFunctionCall {}
 
-class _FakeRouteData extends Fake implements RouteData {
+class _FakeRouteData extends Fake implements RouteData<dynamic> {
   final String conversationId;
 
   _FakeRouteData(this.conversationId);

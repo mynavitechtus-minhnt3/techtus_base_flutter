@@ -1,3 +1,4 @@
+// ignore_for_file: avoid_using_unsafe_cast, avoid_hard_coded_strings
 import 'dart:io';
 import 'dart:math';
 import 'dart:typed_data';
@@ -6,6 +7,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cached_network_image_platform_interface/cached_network_image_platform_interface.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../index.dart';
 
@@ -281,7 +284,9 @@ class CommonImage extends StatelessWidget {
     double? height,
     Color? foregroundColor,
     Widget Function(BuildContext context)? placeholderBuilder,
+    // ignore: avoid_dynamic
     Widget Function(BuildContext context, dynamic error)? errorBuilder,
+    Widget Function(BuildContext context)? loadingBuilder,
     Alignment? alignment,
     ImageRepeat? repeat,
     FilterQuality? filterQuality,
@@ -341,7 +346,13 @@ class CommonImage extends StatelessWidget {
             maxWidthDiskCache: maxWidthDiskCache,
             maxHeightDiskCache: maxHeightDiskCache,
             imageBuilder: imageBuilder,
+            loadingBuilder: loadingBuilder,
             httpHeaders: httpHeaders,
+            // httpHeaders: httpHeaders ??
+            //     {
+            //       Constant.basicAuthorization:
+            //           'Basic ${base64Encode(utf8.encode('${Env.appBasicAuthName}:${Env.appBasicAuthPassword}'))}'
+            //     },
             useOldImageOnUrlChange: useOldImageOnUrlChange,
             imageRenderMethodForWeb: imageRenderMethodForWeb,
             cacheManager: cacheManager,
@@ -374,17 +385,23 @@ class CommonImage extends StatelessWidget {
     switch (imageInputType) {
       case ImageInputType.svg:
         final _style = style as _CommonSvgImageStyle;
-        image = (source as SvgGenImage).svg(
+        image = SizedBox(
           width: _style.width,
           height: _style.height,
-          colorFilter: _style.foregroundColor
-              ?.let((it) => ColorFilter.mode(it, _style.colorBlendMode ?? BlendMode.srcIn)),
-          fit: _style.fit ?? BoxFit.contain,
-          alignment: _style.alignment ?? Alignment.center,
-          matchTextDirection: _style.matchTextDirection ?? false,
-          clipBehavior: _style.clipBehavior ?? Clip.hardEdge,
-          allowDrawingOutsideViewBox: _style.allowDrawingOutsideViewBox ?? false,
-          placeholderBuilder: _style.placeholderBuilder,
+          child: Center(
+            child: (source as SvgGenImage).svg(
+              width: _style.width,
+              height: _style.height,
+              colorFilter: _style.foregroundColor
+                  ?.let((it) => ColorFilter.mode(it, _style.colorBlendMode ?? BlendMode.srcIn)),
+              fit: _style.fit ?? BoxFit.contain,
+              alignment: _style.alignment ?? Alignment.center,
+              matchTextDirection: _style.matchTextDirection ?? false,
+              clipBehavior: _style.clipBehavior ?? Clip.hardEdge,
+              allowDrawingOutsideViewBox: _style.allowDrawingOutsideViewBox ?? false,
+              placeholderBuilder: _style.placeholderBuilder,
+            ),
+          ),
         );
         break;
       case ImageInputType.asset:
@@ -410,6 +427,7 @@ class CommonImage extends StatelessWidget {
         break;
       case ImageInputType.network:
         final _style = style as _CommonNetworkImageStyle;
+        final imageUrl = (source as String?) ?? '';
         if (_style.useCachedNetworkImage) {
           final maxWidth =
               min(AppDimen.current.screenWidth, _style.width ?? AppDimen.current.screenWidth);
@@ -423,15 +441,14 @@ class CommonImage extends StatelessWidget {
               (_style.height != null
                   ? maxHeight.times(AppDimen.current.devicePixelRatio).toInt()
                   : null);
-          Log.d('memCacheWidth: $memCacheWidth, memCacheHeight: $memCacheHeight');
           // ignore: prefer_common_widgets
           image = CachedNetworkImage(
-            imageUrl: (source as String?) ?? '',
+            imageUrl: imageUrl,
             width: _style.width,
             height: _style.height,
             color: _style.foregroundColor,
             errorWidget: _style.errorBuilder != null
-                // ignore:avoid-dynamic
+                // ignore:avoid_dynamic
                 ? (context, url, dynamic error) => _style.errorBuilder!.call(context, error)
                 : null,
             colorBlendMode: _style.colorBlendMode,
@@ -463,24 +480,26 @@ class CommonImage extends StatelessWidget {
           );
         } else {
           // ignore: prefer_common_widgets
-          image = Image.network(
-            (source as String?) ?? '',
+          image = _RetryNetworkImage(
+            imageUrl: imageUrl,
             width: _style.width,
             height: _style.height,
             color: _style.foregroundColor,
             errorBuilder: _style.errorBuilder != null
-                // ignore:avoid-dynamic
+                // ignore:avoid_dynamic
                 ? (context, error, stackTrace) => _style.errorBuilder!.call(context, error)
                 : null,
-            loadingBuilder: _style.placeholderBuilder != null
-                ? (context, child, loadingProgress) => _style.placeholderBuilder!(context)
-                : null,
             colorBlendMode: _style.colorBlendMode,
+            loadingBuilder: (context, child, loadingProgress) {
+              if (loadingProgress == null) return child;
+              return _showProgressIndicator(_style);
+            },
             fit: _style.fit,
             alignment: _style.alignment ?? Alignment.center,
             repeat: _style.repeat ?? ImageRepeat.noRepeat,
             matchTextDirection: _style.matchTextDirection ?? false,
             filterQuality: _style.filterQuality ?? FilterQuality.low,
+            headers: _style.httpHeaders,
             cacheWidth: _style.width?.isInfinite == false && _style.width?.isNaN == false
                 ? _style.width?.times(AppDimen.current.devicePixelRatio).toInt()
                 : AppDimen.current.screenWidth.times(AppDimen.current.devicePixelRatio).toInt(),
@@ -814,6 +833,7 @@ class _CommonNetworkImageStyle extends _CommonImageStyle {
     required this.foregroundColor,
     required this.placeholderBuilder,
     required this.errorBuilder,
+    required this.loadingBuilder,
     required this.alignment,
     required this.repeat,
     required this.filterQuality,
@@ -851,7 +871,9 @@ class _CommonNetworkImageStyle extends _CommonImageStyle {
   final double? height;
   final Color? foregroundColor;
   final Widget Function(BuildContext context)? placeholderBuilder;
+  // ignore: avoid_dynamic
   final Widget Function(BuildContext context, dynamic error)? errorBuilder;
+  final Widget Function(BuildContext context)? loadingBuilder;
   final BoxFit? fit;
   final Alignment? alignment;
   final ImageRepeat? repeat;
@@ -874,4 +896,102 @@ class _CommonNetworkImageStyle extends _CommonImageStyle {
   final bool? useOldImageOnUrlChange;
   final ImageRenderMethodForWeb? imageRenderMethodForWeb;
   final BaseCacheManager? cacheManager;
+}
+
+Widget _showProgressIndicator(_CommonNetworkImageStyle _style) {
+  return SizedBox(
+    width: _style.width,
+    height: _style.height,
+    child: Center(
+      child: SizedBox(
+        width: 20.rps,
+        height: 20.rps,
+        child: const CommonProgressIndicator(),
+      ),
+    ),
+  );
+}
+
+class _RetryNetworkImage extends HookConsumerWidget {
+  const _RetryNetworkImage({
+    required this.imageUrl,
+    this.width,
+    this.height,
+    this.fit,
+    this.alignment,
+    this.color,
+    this.errorBuilder,
+    this.loadingBuilder,
+    this.headers,
+    this.repeat,
+    this.filterQuality,
+    this.matchTextDirection,
+    this.colorBlendMode,
+    this.cacheWidth,
+  });
+
+  final String imageUrl;
+  final double? width;
+  final double? height;
+  final BoxFit? fit;
+  final Alignment? alignment;
+  final Color? color;
+  final Widget Function(BuildContext context, Object error, StackTrace? stackTrace)? errorBuilder;
+  final Widget Function(BuildContext context, Widget child, ImageChunkEvent? loadingProgress)?
+      loadingBuilder;
+  final Map<String, String>? headers;
+  final ImageRepeat? repeat;
+  final FilterQuality? filterQuality;
+  final bool? matchTextDirection;
+  final BlendMode? colorBlendMode;
+  final int? cacheWidth;
+
+  static const int maxRetries = 3;
+  static const Duration retryDelay = Duration(seconds: 1);
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    // Use hooks to manage state
+    final retryCount = useState(0);
+    final imageKey = useState(UniqueKey());
+
+    // Function to handle retry logic
+    void retryLoading() {
+      if (retryCount.value < maxRetries) {
+        retryCount.value++;
+        imageKey.value = UniqueKey(); // Force reload by changing the key
+      }
+    }
+
+    // ignore: prefer_common_widgets
+    return Image.network(
+      imageUrl,
+      key: imageKey.value,
+      width: width,
+      height: height,
+      color: color,
+      headers: headers,
+      repeat: repeat ?? ImageRepeat.noRepeat,
+      filterQuality: filterQuality ?? FilterQuality.low,
+      matchTextDirection: matchTextDirection ?? false,
+      colorBlendMode: colorBlendMode,
+      cacheWidth: cacheWidth,
+      fit: fit,
+      alignment: alignment ?? Alignment.center,
+      loadingBuilder: loadingBuilder,
+      errorBuilder: (context, error, stackTrace) {
+        if (retryCount.value < maxRetries) {
+          // Schedule a retry after a short delay to avoid immediate reload loops
+          Future.delayed(retryDelay, () {
+            if (context.mounted) retryLoading();
+          });
+          return SizedBox(width: width, height: height);
+        } else {
+          return errorBuilder != null
+              ? errorBuilder!(context, error, stackTrace)
+              : SizedBox(width: width, height: height);
+        }
+      },
+    );
+  }
 }

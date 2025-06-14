@@ -52,7 +52,7 @@ class LoginPage extends BasePage<LoginState,
 
   @override
   Widget buildPage(BuildContext context, WidgetRef ref) {
-    return Scaffold(
+    return CommonScaffold(
       body: SafeArea(
         child: Stack(
           children: [

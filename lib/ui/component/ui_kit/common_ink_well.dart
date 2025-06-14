@@ -21,7 +21,9 @@ class CommonInkWell extends StatelessWidget {
         assert(decoration == null || decoration.debugAssertIsValid()),
         assert(
           color == null || decoration == null,
+          // ignore: avoid_hard_coded_strings
           'Cannot provide both a color and a decoration\n'
+          // ignore: avoid_hard_coded_strings
           'The color argument is just a shorthand for "decoration: BoxDecoration(color: color)".',
         ),
         decoration = decoration ?? (color != null ? BoxDecoration(color: color) : null);
