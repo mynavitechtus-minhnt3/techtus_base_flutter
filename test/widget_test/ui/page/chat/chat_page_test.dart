@@ -271,140 +271,142 @@ void main() {
       },
     );
 
-    // testGoldens(
-    //   'when users are replying themselves',
-    //   (tester) async {
-    //     const currentUserId = '1';
-    //     const members = [
-    //       FirebaseConversationUserData(
-    //         userId: currentUserId,
-    //         isConversationAdmin: true,
-    //         email: 'Dog',
-    //       ),
-    //       FirebaseConversationUserData(userId: '2', isConversationAdmin: false, email: 'Cat'),
-    //     ];
-    //     const conversation = FirebaseConversationData(
-    //       id: '1',
-    //       members: members,
-    //     );
-    //     const me = FirebaseUserData(
-    //       id: currentUserId,
-    //       email: 'duynn@gmail.com',
-    //     );
+    testGoldens(
+      'when users are replying themselves',
+      skip: true,
+      (tester) async {
+        const currentUserId = '1';
+        const members = [
+          FirebaseConversationUserData(
+            userId: currentUserId,
+            isConversationAdmin: true,
+            email: 'Dog',
+          ),
+          FirebaseConversationUserData(userId: '2', isConversationAdmin: false, email: 'Cat'),
+        ];
+        const conversation = FirebaseConversationData(
+          id: '1',
+          members: members,
+        );
+        const me = FirebaseUserData(
+          id: currentUserId,
+          email: 'duynn@gmail.com',
+        );
 
-    //     await tester.testWidget(
-    //       filename: 'chat_page/when_users_are_replying_themselves',
-    //       widget: const ChatPage(conversation: conversation),
-    //       onCreate: (tester) async {
-    //         await tester.pump(5.seconds);
-    //         final moreMenuIconFinder = find.byType(MoreMenuIconButton);
-    //         expect(moreMenuIconFinder, findsOneWidget);
-    //         await tester.tap(moreMenuIconFinder);
-    //         await tester.pump();
-    //         final replyFinder = find.text(l10n.reply);
-    //         await tester.tap(replyFinder);
-    //       },
-    //       overrides: [
-    //         chatViewModelProvider.overrideWith(
-    //           (_, conversation) => MockChatViewModel(
-    //             CommonState(
-    //               data: ChatState(
-    //                 conversation: conversation,
-    //                 messages: [
-    //                   LocalMessageData(
-    //                     uniqueId: '1',
-    //                     conversationId: conversation.id,
-    //                     senderId: currentUserId,
-    //                     message: 'Hello',
-    //                     createdAt: 1,
-    //                     status: MessageStatus.sent,
-    //                   ),
-    //                 ],
-    //               ),
-    //             ),
-    //           ),
-    //         ),
-    //         currentUserProvider.overrideWith((ref) => me),
-    //         conversationMembersMapProvider.overrideWith(
-    //           (_) => {conversation.id: members},
-    //         ),
-    //         conversationNameProvider.overrideWith(
-    //           (_, __) => 'Dog, Cat',
-    //         ),
-    //       ],
-    //     );
-    //   },
-    // );
+        await tester.testWidget(
+          filename: 'chat_page/when_users_are_replying_themselves',
+          widget: const ChatPage(conversation: conversation),
+          onCreate: (tester) async {
+            await tester.pump(5.seconds);
+            final moreMenuIconFinder = find.byType(MoreMenuIconButton);
+            expect(moreMenuIconFinder, findsOneWidget);
+            await tester.tap(moreMenuIconFinder);
+            await tester.pump();
+            final replyFinder = find.text(l10n.reply);
+            await tester.tap(replyFinder);
+          },
+          overrides: [
+            chatViewModelProvider.overrideWith(
+              (_, conversation) => MockChatViewModel(
+                CommonState(
+                  data: ChatState(
+                    conversation: conversation,
+                    messages: [
+                      LocalMessageData(
+                        uniqueId: '1',
+                        conversationId: conversation.id,
+                        senderId: currentUserId,
+                        message: 'Hello',
+                        createdAt: 1,
+                        status: MessageStatus.sent,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            currentUserProvider.overrideWith((ref) => me),
+            conversationMembersMapProvider.overrideWith(
+              (_) => {conversation.id: members},
+            ),
+            conversationNameProvider.overrideWith(
+              (_, __) => 'Dog, Cat',
+            ),
+          ],
+        );
+      },
+    );
 
-    // testGoldens(
-    //   'when users are replying to other users',
-    //   (tester) async {
-    //     const currentUserId = '1';
-    //     const otherUserId = '2';
-    //     const members = [
-    //       FirebaseConversationUserData(
-    //         userId: currentUserId,
-    //         isConversationAdmin: true,
-    //         email: 'Dog',
-    //       ),
-    //       FirebaseConversationUserData(
-    //         userId: otherUserId,
-    //         isConversationAdmin: false,
-    //         email: 'Cat',
-    //       ),
-    //     ];
-    //     const conversation = FirebaseConversationData(
-    //       id: '1',
-    //       members: members,
-    //     );
-    //     const me = FirebaseUserData(
-    //       id: currentUserId,
-    //       email: 'duynn@gmail.com',
-    //     );
+    testGoldens(
+      'when users are replying to other users',
+      skip: true,
+      (tester) async {
+        const currentUserId = '1';
+        const otherUserId = '2';
+        const members = [
+          FirebaseConversationUserData(
+            userId: currentUserId,
+            isConversationAdmin: true,
+            email: 'Dog',
+          ),
+          FirebaseConversationUserData(
+            userId: otherUserId,
+            isConversationAdmin: false,
+            email: 'Cat',
+          ),
+        ];
+        const conversation = FirebaseConversationData(
+          id: '1',
+          members: members,
+        );
+        const me = FirebaseUserData(
+          id: currentUserId,
+          email: 'duynn@gmail.com',
+        );
 
-    //     await tester.testWidget(
-    //       filename: 'chat_page/when_users_are_replying_to_other_users',
-    //       widget: const ChatPage(conversation: conversation),
-    //       onCreate: (tester) async {
-    //         await tester.pump(5.seconds);
-    //         final moreMenuIconFinder = find.byType(MoreMenuIconButton);
-    //         expect(moreMenuIconFinder, findsOneWidget);
-    //         await tester.tap(moreMenuIconFinder);
-    //         await tester.pump();
-    //         final replyFinder = find.text(l10n.reply);
-    //         await tester.tap(replyFinder);
-    //       },
-    //       overrides: [
-    //         chatViewModelProvider.overrideWith(
-    //           (_, conversation) => MockChatViewModel(
-    //             CommonState(
-    //               data: ChatState(
-    //                 conversation: conversation,
-    //                 messages: [
-    //                   LocalMessageData(
-    //                     uniqueId: '1',
-    //                     conversationId: conversation.id,
-    //                     senderId: otherUserId,
-    //                     message: 'Hello',
-    //                     createdAt: 1,
-    //                     status: MessageStatus.sent,
-    //                   ),
-    //                 ],
-    //               ),
-    //             ),
-    //           ),
-    //         ),
-    //         currentUserProvider.overrideWith((ref) => me),
-    //         conversationMembersMapProvider.overrideWith(
-    //           (_) => {conversation.id: members},
-    //         ),
-    //         conversationNameProvider.overrideWith(
-    //           (_, __) => 'Dog, Cat',
-    //         ),
-    //       ],
-    //     );
-    //   },
-    // );
+        await tester.testWidget(
+          filename: 'chat_page/when_users_are_replying_to_other_users',
+          widget: const ChatPage(conversation: conversation),
+          onCreate: (tester) async {
+            await tester.pump(5.seconds);
+            final moreMenuIconFinder = find.byType(MoreMenuIconButton);
+            expect(moreMenuIconFinder, findsOneWidget);
+            await tester.tap(moreMenuIconFinder);
+            await tester.pump();
+            final replyFinder = find.text(l10n.reply);
+            await tester.tap(replyFinder);
+          },
+          overrides: [
+            chatViewModelProvider.overrideWith(
+              (_, conversation) => MockChatViewModel(
+                CommonState(
+                  data: ChatState(
+                    conversation: conversation,
+                    messages: [
+                      LocalMessageData(
+                        uniqueId: '1',
+                        conversationId: conversation.id,
+                        senderId: otherUserId,
+                        message: 'Hello',
+                        createdAt: 1,
+                        status: MessageStatus.sent,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            currentUserProvider.overrideWith((ref) => me),
+            conversationMembersMapProvider.overrideWith(
+              (_) => {conversation.id: members},
+            ),
+            conversationNameProvider.overrideWith(
+              (_, __) => 'Dog, Cat',
+            ),
+          ],
+        );
+      },
+    );
 
     testGoldens('when displaying the menu', (tester) async {
       const currentUserId = '1';

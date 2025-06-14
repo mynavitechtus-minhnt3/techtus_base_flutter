@@ -133,7 +133,7 @@ build_stg_ipa:
 build_prod_ipa:
 	flutter build ipa --release --flavor production -t lib/main.dart --dart-define-from-file=dart_defines/production.json --export-options-plist=ios/exportOptions.plist --verbose
 
-cov_full:
+cov:
 	flutter test --coverage
 	lcov --remove coverage/lcov.info \
 	'*/*.g.dart' \
@@ -144,7 +144,7 @@ cov_full:
 	'*/*.gen.dart' \
 	'*/*.mocks.dart' \
 	'**/generated/*' \
-	-o coverage/lcov.info &
+	-o coverage/lcov.info --ignore-errors unused
 	genhtml coverage/lcov.info -o coverage/html
 	open coverage/html/index.html
 
@@ -193,13 +193,16 @@ cov_ut:
 	'*/*.gen.dart' \
 	'*/*.mocks.dart' \
 	'**/generated/*' \
-	-o coverage/lcov.ut.info &
+	-o coverage/lcov.ut.info --ignore-errors unused
 	genhtml coverage/lcov.ut.info -o coverage/html
 	open coverage/html/index.html
 
 cov_wt:
 	flutter test test/widget_test --coverage
 	lcov --remove coverage/lcov.info \
+	'lib/ui/base' \
+	'lib/ui/shared' \
+	'lib/ui/my_app.dart' \
 	'*/*.g.dart' \
 	'*/*.freezed.dart' \
 	'*/*.gr.dart' \
@@ -208,7 +211,7 @@ cov_wt:
 	'*/*.gen.dart' \
 	'*/*.mocks.dart' \
 	'**/generated/*' \
-	-o coverage/lcov.cleaned.info --ignore-errors unused &
-	lcov --extract coverage/lcov.cleaned.info "lib/ui/*" -o coverage/lcov.wt.info &
+	-o coverage/lcov.cleaned.info --ignore-errors unused
+	lcov --extract coverage/lcov.cleaned.info "lib/ui/*" -o coverage/lcov.wt.info
 	genhtml coverage/lcov.wt.info -o coverage/html
 	open coverage/html/index.html

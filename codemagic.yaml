@@ -18,7 +18,7 @@ definitions:
         - $HOME/.gradle/caches
         - $HOME/.pub-cache
   env_config: &env_config
-    flutter: 3.32.2
+    flutter: 3.32.4
     xcode: 16.0
     cocoapods: 1.16.2
     groups:
