@@ -30,19 +30,5 @@ jobs:
       - name: Run pub get and gen files
         run: make sync
 
-      - name: Run check_pubspecs
-        run: make check_pubs
-
-      - name: Run Tests
-        run: make te
-
-      - name: Check format
-        run: make fm
-
-      - name: Run lint
-        run: make lint
-
-      # - uses: mechiru/chatwork@v2
-      #   with:
-      #     roomId: 251400100
-      #     token: ${{ secrets.CHATWORK_API_TOKEN }}
+      - name: Run CI
+        run: make ci
