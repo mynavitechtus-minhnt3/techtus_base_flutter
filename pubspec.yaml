@@ -2,15 +2,9 @@ name: nalsflutter
 description: A new Flutter project.
 publish_to: "none" # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
-isar_version: &isar_version 3.1.8
 
 environment:
   sdk: ">=3.3.0 <4.0.0"
-
-dependency_overrides:
-  analyzer: 7.4.5
-  dart_style: 3.0.1
-  source_gen: 2.0.0
 
 dependencies:
   app_links: 6.4.0
@@ -62,10 +56,10 @@ dependencies:
   injectable: 2.5.0
   intl: 0.20.2
   isar:
-    version: *isar_version
+    version: 3.1.8
     hosted: https://pub.isar-community.dev/
   isar_flutter_libs: # contains Isar Core
-    version: *isar_version
+    version: 3.1.8
     hosted: https://pub.isar-community.dev/
   json_annotation: 4.9.0
   mime: 2.0.0
@@ -93,8 +87,10 @@ dev_dependencies:
     sdk: flutter
   intl_utils: 2.8.10
   isar_generator:
-    version: *isar_version
-    hosted: https://pub.isar-community.dev/
+    git:
+      url: https://github.com/mdddj/isar
+      ref: v3
+      path: packages/isar_generator/
   json_serializable: 6.9.5
   mocktail: 1.0.4
   mocktail_image_network: 1.2.0

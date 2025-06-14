@@ -5,7 +5,7 @@ on:
     types: [opened, edited, synchronize]
 
 env:
-  REVIEWER_USERNAME: "minhnt3"
+  EXCLUDED_USERNAMES: '["Copilot", "coderabbitai[bot]"]'
 
 jobs:
   check-review-comments:
@@ -17,48 +17,42 @@ jobs:
         run: |
           PR_NUMBER=${{ github.event.pull_request.number }}
           REPO=${{ github.repository }}
-          MENTION_PATTERN="@${REVIEWER_USERNAME}"
+          EXCLUDED_USERS='${{ env.EXCLUDED_USERNAMES }}'
 
           echo "🔍 Getting PR info..."
           PR_AUTHOR=$(gh api repos/$REPO/pulls/$PR_NUMBER --jq '.user.login')
           echo "👤 PR Author: $PR_AUTHOR"
 
           echo "📥 Fetching all review comments..."
-          gh api repos/$REPO/pulls/$PR_NUMBER/comments \
-            --paginate > all_comments.json
+          gh api repos/$REPO/pulls/$PR_NUMBER/comments --paginate > all_comments.json
 
-          echo "🧾 Filtering root comments (excluding PR author)..."
-          jq --arg author "$PR_AUTHOR" '[.[] | select(.in_reply_to_id == null and .user.login != $author)]' all_comments.json > root_comments.json
+          echo "🧾 Filtering root comments (excluding PR author & excluded users)..."
+          jq --argjson excluded "$EXCLUDED_USERS" --arg author "$PR_AUTHOR" '
+            [.[] | select(.in_reply_to_id == null and .user.login != $author and (.user.login | IN(excluded[]) | not))]
+          ' all_comments.json > root_comments.json
           ROOT_COUNT=$(jq length root_comments.json)
-          echo "🔢 Total Root Review Comments (excluding PR author): $ROOT_COUNT"
+          echo "🔢 Total Root Review Comments (valid authors): $ROOT_COUNT"
 
-          echo "🔁 Counting mentions of ${REVIEWER_USERNAME} in all replies..."
-          jq '[.[] | select(.in_reply_to_id != null and (.body | test("@'"$REVIEWER_USERNAME"'"; "i")))]' all_comments.json > replies_with_mentions.json
-          MENTION_COUNT=$(jq length replies_with_mentions.json)
-          echo "🔁 Number of @$REVIEWER_USERNAME mentions: $MENTION_COUNT"
+          echo "🔁 Counting valid mentions in replies..."
+          jq --argjson excluded "$EXCLUDED_USERS" '
+            [.[] | select(.in_reply_to_id != null and (.user.login | IN(excluded[]) | not) and (.body | test("@"; "i")))]
+          ' all_comments.json > replies_with_mentions.json
 
-          echo "🔍 Checking fix/fixed replies for commit hash..."
-          FAIL=0
-          for row in $(jq -c '.[]' replies_with_mentions.json); do
-            BODY=$(echo "$row" | jq -r '.body')
-            if echo "$BODY" | grep -iE '\bfix(?:ed)?\b'; then
-              if ! echo "$BODY" | grep -E '\b[a-f0-9]{7,40}\b'; then
-                echo "❌ Missing commit hash in fix/fixed reply:"
-                echo "$BODY"
-                FAIL=1
-              fi
-            fi
-          done
+          # Extract all @mentions
+          jq -r '.[] | .body' replies_with_mentions.json | grep -o "@[a-zA-Z0-9_\[\]\-]\+" | sort | uniq -c > mention_stats.txt
+          echo "📄 Mention Stats:"
+          cat mention_stats.txt
+
+          # Count total @mentions (excluding bots)
+          MENTION_COUNT=$(cat mention_stats.txt | wc -l | xargs)
+          echo "🔁 Total distinct valid mentions: $MENTION_COUNT"
 
           echo "📊 Summary:"
-          echo "🧮 Root Comments: $ROOT_COUNT"
-          echo "💬 @${REVIEWER_USERNAME} Mentions: $MENTION_COUNT"
+          echo "🧮 Root Comments (from valid authors): $ROOT_COUNT"
+          echo "💬 Mentions in replies: $MENTION_COUNT"
 
           if [ "$MENTION_COUNT" -lt "$ROOT_COUNT" ]; then
-            echo "❌ Not enough @${REVIEWER_USERNAME} mentions."
-            exit 1
-          elif [ "$FAIL" -eq 1 ]; then
-            echo "❌ Some fix/fixed replies are missing commit hashes."
+            echo "❌ Not enough mentions for the number of root comments."
             exit 1
           else
             echo "✅ All checks passed."

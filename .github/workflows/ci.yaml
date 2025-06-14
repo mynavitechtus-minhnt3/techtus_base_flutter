@@ -27,7 +27,7 @@ jobs:
       - name: Add pub cache to PATH
         run: echo "PUB_CACHE="$HOME/.pub-cache"" >> $GITHUB_ENV
 
-      - name: Run pub get and gen files
+      - name: Run make sync
         run: make sync
 
       - name: Run CI
