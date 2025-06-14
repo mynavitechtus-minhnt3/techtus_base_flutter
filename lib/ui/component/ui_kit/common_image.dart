@@ -388,19 +388,17 @@ class CommonImage extends StatelessWidget {
         image = SizedBox(
           width: _style.width,
           height: _style.height,
-          child: Center(
-            child: (source as SvgGenImage).svg(
-              width: _style.width,
-              height: _style.height,
-              colorFilter: _style.foregroundColor
-                  ?.let((it) => ColorFilter.mode(it, _style.colorBlendMode ?? BlendMode.srcIn)),
-              fit: _style.fit ?? BoxFit.contain,
-              alignment: _style.alignment ?? Alignment.center,
-              matchTextDirection: _style.matchTextDirection ?? false,
-              clipBehavior: _style.clipBehavior ?? Clip.hardEdge,
-              allowDrawingOutsideViewBox: _style.allowDrawingOutsideViewBox ?? false,
-              placeholderBuilder: _style.placeholderBuilder,
-            ),
+          child: (source as SvgGenImage).svg(
+            width: _style.width,
+            height: _style.height,
+            colorFilter: _style.foregroundColor
+                ?.let((it) => ColorFilter.mode(it, _style.colorBlendMode ?? BlendMode.srcIn)),
+            fit: _style.fit ?? BoxFit.contain,
+            alignment: _style.alignment ?? Alignment.center,
+            matchTextDirection: _style.matchTextDirection ?? false,
+            clipBehavior: _style.clipBehavior ?? Clip.hardEdge,
+            allowDrawingOutsideViewBox: _style.allowDrawingOutsideViewBox ?? false,
+            placeholderBuilder: _style.placeholderBuilder,
           ),
         );
         break;
