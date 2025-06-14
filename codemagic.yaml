@@ -96,18 +96,9 @@ definitions:
     - &build_prod_aab
       name: Build .aab production
       script: make build_prod_aab
-    - &lint
-      name: Run lint
-      script: make lint
-    - &check_pubspecs
-      name: Run check_pubspecs
-      script: make check_pubs
-    - &test
-      name: Run tests
-      script: make te
-    - &format
-      name: Format code
-      script: make fm
+    - &ci
+      name: Run CI
+      script: make ci
   email_release: &email_release
     email:
       recipients:
@@ -263,9 +254,6 @@ workflows:
     scripts:
       - *decode_dart_defines
       - *sync
-      - *check_pubspecs
-      - *test
-      - *format
-      - *lint
+      - *ci
     publishing:
       <<: *email_release
