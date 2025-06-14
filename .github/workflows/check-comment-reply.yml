@@ -5,7 +5,7 @@ on:
     types: [opened, edited, synchronize]
 
 env:
-  EXCLUDED_USERNAMES: '["Copilot", "coderabbitai[bot]"]'
+  EXCLUDED_USERS: '["Copilot", "coderabbitai[bot]"]'
 
 jobs:
   check-review-comments:
@@ -15,58 +15,48 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          echo "🔍 Getting PR info..."
           PR_NUMBER=${{ github.event.pull_request.number }}
           REPO=${{ github.repository }}
-          EXCLUDED_USERS='${{ env.EXCLUDED_USERNAMES }}'
-
-          echo "🔍 Getting PR info..."
-          PR_AUTHOR=$(gh api repos/$REPO/pulls/$PR_NUMBER --jq '.user.login')
-          echo "👤 PR Author: $PR_AUTHOR"
 
           echo "📥 Fetching all review comments..."
           gh api repos/$REPO/pulls/$PR_NUMBER/comments --paginate > all_comments.json
 
+          PR_AUTHOR=$(gh api repos/$REPO/pulls/$PR_NUMBER --jq '.user.login')
+          echo "👤 PR Author: $PR_AUTHOR"
+
           echo "🧾 Filtering root comments (excluding PR author & excluded users)..."
-          jq --argjson excluded "$EXCLUDED_USERS" --arg author "$PR_AUTHOR" '
+          echo "$EXCLUDED_USERS" > excluded_users.json
+          jq --arg author "$PR_AUTHOR" --argjson excluded "$(cat excluded_users.json)" '
             [.[] 
               | select(
-                  .in_reply_to_id == null 
-                  and .user.login != $author 
-                  and ($excluded | index(.user.login) | not)
+                  .in_reply_to_id == null
+                  and .user.login != $author
+                  and (.user.login as $u | $excluded | index($u) | not)
               )
-            ]
-          ' all_comments.json > root_comments.json
-
+            ]' all_comments.json > root_comments.json
           ROOT_COUNT=$(jq length root_comments.json)
-          echo "🔢 Total Root Review Comments (valid authors): $ROOT_COUNT"
+          echo "🔢 Total Root Review Comments: $ROOT_COUNT"
 
-          echo "🔁 Counting valid mentions in replies..."
-          jq --argjson excluded "$EXCLUDED_USERS" '
+          echo "🔁 Filtering replies with @mention from non-excluded users..."
+          jq --argjson excluded "$(cat excluded_users.json)" '
             [.[] 
               | select(
-                  .in_reply_to_id != null 
-                  and ($excluded | index(.user.login) | not) 
+                  .in_reply_to_id != null
+                  and (.user.login as $u | $excluded | index($u) | not)
                   and (.body | test("@"; "i"))
               )
-            ]
-          ' all_comments.json > replies_with_mentions.json
-
-          # Extract all @mentions
-          jq -r '.[] | .body' replies_with_mentions.json | grep -o "@[a-zA-Z0-9_\\[\\]\\-]\\+" | sort | uniq -c > mention_stats.txt
-          echo "📄 Mention Stats:"
-          cat mention_stats.txt
-
-          # Count total @mentions
-          MENTION_COUNT=$(cat mention_stats.txt | wc -l | xargs)
-          echo "🔁 Total distinct valid mentions: $MENTION_COUNT"
+            ]' all_comments.json > replies_with_mentions.json
+          MENTION_COUNT=$(jq length replies_with_mentions.json)
+          echo "💬 Reply mentions count: $MENTION_COUNT"
 
           echo "📊 Summary:"
-          echo "🧮 Root Comments (from valid authors): $ROOT_COUNT"
-          echo "💬 Mentions in replies: $MENTION_COUNT"
+          echo "🧮 Root Comments (need reply): $ROOT_COUNT"
+          echo "💬 Mentions: $MENTION_COUNT"
 
           if [ "$MENTION_COUNT" -lt "$ROOT_COUNT" ]; then
-            echo "❌ Not enough mentions for the number of root comments."
+            echo "❌ Not enough replies for the root comments."
             exit 1
           else
-            echo "✅ All checks passed."
+            echo "✅ All root comments are properly replied with @mention."
           fi
