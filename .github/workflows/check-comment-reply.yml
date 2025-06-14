@@ -32,7 +32,7 @@ jobs:
               | select(
                   .in_reply_to_id == null 
                   and .user.login != $author 
-                  and (index($excluded[]; .user.login) | not)
+                  and ($excluded | index(.user.login) | not)
               )
             ]
           ' all_comments.json > root_comments.json
@@ -45,7 +45,7 @@ jobs:
             [.[] 
               | select(
                   .in_reply_to_id != null 
-                  and (index($excluded[]; .user.login) | not) 
+                  and ($excluded | index(.user.login) | not) 
                   and (.body | test("@"; "i"))
               )
             ]
@@ -56,7 +56,7 @@ jobs:
           echo "📄 Mention Stats:"
           cat mention_stats.txt
 
-          # Count total @mentions (excluding bots)
+          # Count total @mentions
           MENTION_COUNT=$(cat mention_stats.txt | wc -l | xargs)
           echo "🔁 Total distinct valid mentions: $MENTION_COUNT"
 
