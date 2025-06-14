@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:visibility_detector/visibility_detector.dart';
+import 'package:focus_detector_v2/focus_detector_v2.dart';
 
 import '../../index.dart';
 
@@ -33,9 +33,9 @@ abstract class BaseStatefulPageState<
       },
     );
 
-    return VisibilityDetector(
+    return FocusDetector(
       key: Key(screenViewEvent.fullKey),
-      onVisibilityChanged: (info) => onVisibilityChanged(info.visibleFraction),
+      onVisibilityGained: () => onVisibilityChanged(),
       child: Stack(
         children: [
           buildPage(context),
@@ -50,10 +50,8 @@ abstract class BaseStatefulPageState<
     );
   }
 
-  void onVisibilityChanged(double visibleFraction) {
-    if (visibleFraction == 1) {
-      ref.analyticsHelper.logScreenView(screenViewEvent);
-    }
+  void onVisibilityChanged() {
+    ref.analyticsHelper.logScreenView(screenViewEvent);
   }
 
   Widget buildPageLoading() => const CommonProgressIndicator();

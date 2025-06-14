@@ -14,7 +14,8 @@ class Env {
       Flavor.values.byName(const String.fromEnvironment(_flavorKey, defaultValue: 'develop'));
   static const String appBasicAuthName = String.fromEnvironment(_appBasicAuthNameKey);
   static const String appBasicAuthPassword = String.fromEnvironment(_appBasicAuthPasswordKey);
-  static const String appDomain = String.fromEnvironment(_appDomain);
+  static const String appDomain =
+      String.fromEnvironment(_appDomain, defaultValue: 'https://api.vn');
 
   static void init() {
     Log.d(flavor, name: _flavorKey);
