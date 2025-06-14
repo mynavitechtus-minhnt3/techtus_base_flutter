@@ -13,6 +13,10 @@ definitions:
   instance_mac_os: &instance_mac_os
     instance_type: mac_mini_m1
     max_build_duration: 60
+    cache:
+      cache_paths:
+        - $HOME/.gradle/caches
+        - $HOME/.pub-cache
   env_config: &env_config
     flutter: 3.32.2
     xcode: 16.0

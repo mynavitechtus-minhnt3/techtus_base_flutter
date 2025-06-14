@@ -1,0 +1,21 @@
+name: Check PR Assignee
+
+on:
+  pull_request:
+    types: [opened, edited]
+
+jobs:
+  check-assignee:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 🔍 Check if PR has assignee
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const assignees = context.payload.pull_request.assignees;
+            if (!assignees || assignees.length === 0) {
+              core.setFailed("❌ This pull request has no assignee. Please assign someone responsible.");
+            } else {
+              console.log(`✅ PR has ${assignees.length} assignee(s):`, assignees.map(a => a.login).join(', '));
+            }

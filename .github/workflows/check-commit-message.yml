@@ -1,0 +1,39 @@
+name: Check Latest Commit Message
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+
+jobs:
+  check-latest-commit:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: ⬇️ Checkout full history
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: 🔍 Validate latest commit message
+        run: |
+          echo "🔍 Getting latest commit SHA in PR..."
+          SHA=${{ github.event.pull_request.head.sha }}
+          echo "🔎 SHA: $SHA"
+
+          COMMIT_MSG=$(git log -1 --pretty=format:"%s" $SHA)
+          echo "🔎 Commit message: $COMMIT_MSG"
+
+          # Skip merge commits (optional)
+          if [[ "$COMMIT_MSG" == Merge* ]]; then
+            echo "ℹ️ Skipping merge commit"
+            exit 0
+          fi
+
+          # Validate with regex
+          if [[ ! "$COMMIT_MSG" =~ ^(feat|fix|chore|refactor|package):\ .+ ]]; then
+            echo "❌ Invalid commit message format"
+            echo "✅ Expected format: 'type: description' (e.g. 'feat: add login form')"
+            exit 1
+          fi
+
+          echo "✅ Commit message is valid"

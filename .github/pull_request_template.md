@@ -1,14 +1,11 @@
-## Tickets
+## Issue
 
-## Checklist
-* [ ] Self test
-* [ ] Self review PR
-* [ ] Checked UI on small screens
+## Impact on existing code
 
-## Notes (optional)
+## Screenshots (only UI that do not have golden images)
 
-## Screenshot (If UI changed)
+| State    	| Screenshot                 	| Note 	|
+|----------	|----------------------------	|------	|
+| Enabled  	| <img src="" width="300" /> 	|      	|
 
-|           Before           |           After            |
-| :------------------------: | :------------------------: |
-| <img src="" width="300" /> | <img src="" width="300" /> |
+## Note

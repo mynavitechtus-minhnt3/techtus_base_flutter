@@ -32,7 +32,7 @@ Future<void> runWithConfiguration(FutureOr<void> Function() testMain) {
 
 void adjustDiff() {
   // NOTE: Tolerance specified as a number between 0 and 1, not as a percentage, where 1 corresponds to 100%.
-  const _acceptableErrorThresholdValue = 0.02 / 100;
+  const _acceptableErrorThresholdValue = 0.003 / 100;
 
   if (goldenFileComparator is LocalFileComparator) {
     final testUrl = (goldenFileComparator as LocalFileComparator).basedir;
