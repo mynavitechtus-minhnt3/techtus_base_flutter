@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:focus_detector_v2/focus_detector_v2.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../index.dart';
 
