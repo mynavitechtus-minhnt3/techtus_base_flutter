@@ -132,3 +132,86 @@ build_stg_ipa:
 
 build_prod_ipa:
 	flutter build ipa --release --flavor production -t lib/main.dart --dart-define-from-file=dart_defines/production.json --export-options-plist=ios/exportOptions.plist --verbose
+
+cov:
+	flutter test --coverage
+	lcov --remove coverage/lcov.info \
+	'*/*.g.dart' \
+	'*/*.freezed.dart' \
+	'*/*.gr.dart' \
+	'*/*.mapper.dart' \
+	'*/*.config.dart' \
+	'*/*.gen.dart' \
+	'*/*.mocks.dart' \
+	'**/generated/*' \
+	-o coverage/lcov.info --ignore-errors unused
+	genhtml coverage/lcov.info -o coverage/html
+	open coverage/html/index.html
+
+cov_ut:
+	flutter test test/unit_test --coverage
+	lcov --remove coverage/lcov.info \
+	'lib/data_source/api/client/*_client.dart' \
+	'lib/data_source/api/*_service.dart' \
+	'lib/data_source/api/middleware/custom_log_interceptor.dart' \
+	'lib/data_source/api/middleware/base_interceptor.dart' \
+	'lib/data_source/firebase' \
+	'lib/data_source/preference/app_preferences.dart' \
+	'lib/model/api/*_data.dart' \
+	'lib/model/firebase' \
+	'lib/model/other' \
+	'lib/model/mapper/base/base_data_mapper.dart' \
+	'lib/exception/app_exception.dart' \
+	'lib/exception/exception_mapper/app_exception_mapper.dart' \
+	'lib/exception/exception_handler/exception_handler.dart' \
+	'lib/common/config.dart' \
+	'lib/common/constant.dart' \
+	'lib/common/env.dart' \
+	'lib/common/helper' \
+	'lib/common/type' \
+	'lib/common/util/log.dart' \
+	'lib/common/util/file_util.dart' \
+	'lib/common/util/ref_ext.dart' \
+	'lib/common/util/view_util.dart' \
+	'lib/main.dart' \
+	'lib/ui/my_app.dart' \
+	'lib/di.dart' \
+	'lib/di.config.dart' \
+	'lib/index.dart' \
+	'lib/app_initializer.dart' \
+	'lib/ui/base' \
+	'lib/ui/component' \
+	'lib/ui/popup' \
+	'lib/ui/page/*_page.dart' \
+	'lib/navigation' \
+	'lib/resource' \
+	'*/*.g.dart' \
+	'*/*.freezed.dart' \
+	'*/*.gr.dart' \
+	'*/*.mapper.dart' \
+	'*/*.config.dart' \
+	'*/*.gen.dart' \
+	'*/*.mocks.dart' \
+	'**/generated/*' \
+	-o coverage/lcov.ut.info --ignore-errors unused
+	genhtml coverage/lcov.ut.info -o coverage/html
+	open coverage/html/index.html
+
+cov_wt:
+	flutter test test/widget_test --coverage
+	lcov --remove coverage/lcov.info \
+	'lib/ui/base' \
+	'lib/ui/shared' \
+	'lib/ui/my_app.dart' \
+	'*/*.g.dart' \
+	'*/*.freezed.dart' \
+	'*/*.gr.dart' \
+	'*/*.mapper.dart' \
+	'*/*.config.dart' \
+	'*/*.gen.dart' \
+	'*/*.mocks.dart' \
+	'**/generated/*' \
+	-o coverage/lcov.cleaned.info --ignore-errors unused
+	lcov --extract coverage/lcov.cleaned.info "lib/ui/*" -o coverage/lcov.wt.info
+	genhtml coverage/lcov.wt.info -o coverage/html
+	open coverage/html/index.html

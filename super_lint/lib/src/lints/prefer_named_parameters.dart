@@ -125,8 +125,8 @@ class _ConvertToNamedParameters extends OptionsFix<_PreferNamedParametersOption>
     );
 
     final parameters = parameterList.parameters
-        .map((e) => e.declaredElement?.type.isNullableType == true ||
-                e.declaredElement?.hasDefaultValue == true ||
+        .map((e) => e.declaredFragment?.element.type.isNullableType == true ||
+                e.declaredFragment?.element.hasDefaultValue == true ||
                 e.toString().trim().startsWith('required')
             ? e.toString()
             : 'required $e')

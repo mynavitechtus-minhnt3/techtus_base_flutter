@@ -40,7 +40,7 @@ Including Unit Tests, Widget Tests, Golden Tests, and Integration Tests
 
 ### Requirements
 
-- Flutter SDK: 3.32.2
+- Flutter SDK: 3.32.4
 - CocoaPods: 1.16.2
 
 ### How to run app
@@ -48,7 +48,7 @@ Including Unit Tests, Widget Tests, Golden Tests, and Integration Tests
 - cd to root folder of project
 - Run `make gen_env`
 - Run `make sync`
-- Run app via VSCode or using command `make run_dev`
+- Run app via IDE
 - Enjoy!
 
 ## Starting new project

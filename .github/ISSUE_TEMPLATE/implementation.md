@@ -1,9 +1,9 @@
 ---
-name: '[Task] xxx'
-about: 'Task template'
-title: '[Task] xxx'
-labels: Task
-assignees: ''
+name: '[Implementation] xxx'
+about: Implementation Issue Template
+title: '[Implementation] xxx'
+labels: Flutter, Implementation
+assignees: 'minhnt3'
 ---
 ## Purpose
 
@@ -11,5 +11,4 @@ assignees: ''
 
 ## Things to do
 
-- xxx
 - xxx

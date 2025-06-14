@@ -119,7 +119,7 @@ class _LoadingItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return RounedRectangleShimmer(
+    return RoundedRectangleShimmer(
       width: double.infinity,
       height: 60.rps,
     );

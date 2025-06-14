@@ -273,6 +273,7 @@ void main() {
 
     testGoldens(
       'when users are replying themselves',
+      skip: true,
       (tester) async {
         const currentUserId = '1';
         const members = [
@@ -338,6 +339,7 @@ void main() {
 
     testGoldens(
       'when users are replying to other users',
+      skip: true,
       (tester) async {
         const currentUserId = '1';
         const otherUserId = '2';

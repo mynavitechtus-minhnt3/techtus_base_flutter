@@ -13,12 +13,17 @@ definitions:
   instance_mac_os: &instance_mac_os
     instance_type: mac_mini_m1
     max_build_duration: 60
+    cache:
+      cache_paths:
+        - $HOME/.gradle/caches
+        - $HOME/.pub-cache
   env_config: &env_config
-    flutter: 3.32.2
+    flutter: 3.32.4
     xcode: 16.0
     cocoapods: 1.16.2
     groups:
       - secrets
+      - emails
   scripts:
     - &sync
       name: Run pub get and gen files
@@ -92,18 +97,9 @@ definitions:
     - &build_prod_aab
       name: Build .aab production
       script: make build_prod_aab
-    - &lint
-      name: Run lint
-      script: make lint
-    - &check_pubspecs
-      name: Run check_pubspecs
-      script: make check_pubs
-    - &test
-      name: Run tests
-      script: make te
-    - &format
-      name: Format code
-      script: make fm
+    - &ci
+      name: Run CI
+      script: make ci
   email_release: &email_release
     email:
       recipients:
@@ -113,10 +109,10 @@ definitions:
         - $EMAIL_4
         - $EMAIL_5
         - $EMAIL_6
-        - $EMAIL_7
-        - $EMAIL_8
-        - $EMAIL_9
-        - $EMAIL_10    
+        # - $EMAIL_7
+        # - $EMAIL_8
+        # - $EMAIL_9
+        # - $EMAIL_10    
       notify:
         success: true
         failure: true
@@ -240,7 +236,6 @@ workflows:
         #   - "testers"
         expire_build_submitted_for_review: false
         submit_to_app_store: false
-        cancel_previous_submissions: false
       <<: *email_release
 
   ci:
@@ -259,9 +254,6 @@ workflows:
     scripts:
       - *decode_dart_defines
       - *sync
-      - *check_pubspecs
-      - *test
-      - *format
-      - *lint
+      - *ci
     publishing:
       <<: *email_release

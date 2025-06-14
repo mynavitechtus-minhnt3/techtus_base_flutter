@@ -1,0 +1,34 @@
+name: Check PR Title
+
+on:
+  pull_request:
+    types: [opened, edited]
+
+jobs:
+  check-conventions:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 🔍 Check PR title
+        run: |
+          BRANCH="${{ github.head_ref }}"
+          TITLE="${{ github.event.pull_request.title }}"
+          echo "🔎 Branch: $BRANCH"
+          echo "🔎 Title: $TITLE"
+          # Extract number after slash — e.g. feat/123_abc → 123
+          RAW_NAME=$(echo "$BRANCH" | cut -d'/' -f2)
+          TICKET=$(echo "$RAW_NAME" | grep -oE '^[0-9]+')
+
+          if [[ -z "$TICKET" ]]; then
+            echo "❌ Cannot extract ticket number from branch name"
+            exit 1
+          fi
+
+          if [[ "$TITLE" != "$TICKET:"* ]]; then
+            echo "❌ PR title must start with '$TICKET: '"
+            echo "🔁 Example: '$TICKET: your feature description'"
+            exit 1
+          fi
+
+          echo "✅ PR title starts with ticket number '$TICKET'"
+          echo "✅ PR title is valid."
