@@ -236,7 +236,6 @@ workflows:
         #   - "testers"
         expire_build_submitted_for_review: false
         submit_to_app_store: false
-        cancel_previous_submissions: false
       <<: *email_release
 
   ci:
