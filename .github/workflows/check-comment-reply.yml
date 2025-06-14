@@ -28,18 +28,31 @@ jobs:
 
           echo "🧾 Filtering root comments (excluding PR author & excluded users)..."
           jq --argjson excluded "$EXCLUDED_USERS" --arg author "$PR_AUTHOR" '
-            [.[] | select(.in_reply_to_id == null and .user.login != $author and (.user.login | IN(excluded[]) | not))]
+            [.[] 
+              | select(
+                  .in_reply_to_id == null 
+                  and .user.login != $author 
+                  and (index($excluded[]; .user.login) | not)
+              )
+            ]
           ' all_comments.json > root_comments.json
+
           ROOT_COUNT=$(jq length root_comments.json)
           echo "🔢 Total Root Review Comments (valid authors): $ROOT_COUNT"
 
           echo "🔁 Counting valid mentions in replies..."
           jq --argjson excluded "$EXCLUDED_USERS" '
-            [.[] | select(.in_reply_to_id != null and (.user.login | IN(excluded[]) | not) and (.body | test("@"; "i")))]
+            [.[] 
+              | select(
+                  .in_reply_to_id != null 
+                  and (index($excluded[]; .user.login) | not) 
+                  and (.body | test("@"; "i"))
+              )
+            ]
           ' all_comments.json > replies_with_mentions.json
 
           # Extract all @mentions
-          jq -r '.[] | .body' replies_with_mentions.json | grep -o "@[a-zA-Z0-9_\[\]\-]\+" | sort | uniq -c > mention_stats.txt
+          jq -r '.[] | .body' replies_with_mentions.json | grep -o "@[a-zA-Z0-9_\\[\\]\\-]\\+" | sort | uniq -c > mention_stats.txt
           echo "📄 Mention Stats:"
           cat mention_stats.txt
 
