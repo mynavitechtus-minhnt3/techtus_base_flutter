@@ -73,9 +73,9 @@ class AvoidHardCodedColors extends OptionsLintRule<_AvoidHardCodedColorsOption> 
                 }
               },
               onVisitConstructorDeclaration: (ConstructorDeclaration node) {
-                for (var element in node.parameters.parameterElements) {
-                  if (element?.defaultValueCode != null &&
-                      _isHardCoded(element!.defaultValueCode!)) {
+                for (var element in node.parameters.parameterFragments) {
+                  if (element?.element.defaultValueCode != null &&
+                      _isHardCoded(element!.element.defaultValueCode!)) {
                     if (element is DefaultFieldFormalParameterElementImpl) {
                       reporter.atNode(element.constantInitializer!, code);
                     } else if (element is DefaultParameterElementImpl) {

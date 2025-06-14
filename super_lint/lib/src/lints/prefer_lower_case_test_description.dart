@@ -55,7 +55,7 @@ class PreferLowerCaseTestDescription
         final firstArgument = node.argumentList.arguments[0];
         if (firstArgument is StringLiteral &&
             firstArgument.stringValue?.isNotEmpty == true &&
-            firstArgument.staticParameterElement?.name == descriptionParamName) {
+            firstArgument.correspondingParameter?.displayName == descriptionParamName) {
           final firstCharacter = firstArgument.stringValue?[0];
           if (RegExp(_regex).hasMatch(firstCharacter ?? '')) {
             reporter.atNode(firstArgument, code);
@@ -102,7 +102,7 @@ class _ChangeToLowerCase extends OptionsFix<_PreferLowerCaseTestDescriptionOptio
       final firstArgument = node.argumentList.arguments[0];
       if (firstArgument is StringLiteral &&
           firstArgument.stringValue?.isNotEmpty == true &&
-          firstArgument.staticParameterElement?.name == descriptionParamName) {
+          firstArgument.correspondingParameter?.displayName == descriptionParamName) {
         final firstCharacter = firstArgument.stringValue?[0];
         if (RegExp(_regex).hasMatch(firstCharacter ?? '')) {
           final changeBuilder = reporter.createChangeBuilder(
