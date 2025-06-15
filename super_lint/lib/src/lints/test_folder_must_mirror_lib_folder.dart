@@ -24,7 +24,6 @@ class TestFolderMustMirrorLibFolder extends CommonLintRule<_TestFolderMustMirror
     CustomLintContext context,
     String rootPath,
   ) async {
-    final rootPath = await resolver.rootPath;
     final relatedPath = relativePath(resolver.path, rootPath);
 
     final testFolderPath =
