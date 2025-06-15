@@ -1,38 +1,24 @@
 import '../index.dart';
 
-class AvoidUsingUnsafeCast extends OptionsLintRule<_AvoidUsingUnsafeCastOption> {
+class AvoidUsingUnsafeCast extends CommonLintRule<_AvoidUsingUnsafeCastOption> {
   AvoidUsingUnsafeCast(
     CustomLintConfigs configs,
   ) : super(
           RuleConfig(
-            name: lintName,
+            name: 'avoid_using_unsafe_cast',
             configs: configs,
             paramsParser: _AvoidUsingUnsafeCastOption.fromMap,
             problemMessage: (_) => 'Avoid using unsafe cast. Use \'safeCast\' function instead.',
           ),
         );
 
-  static const String lintName = 'avoid_using_unsafe_cast';
-
   @override
-  Future<void> run(
+  Future<void> check(
     CustomLintResolver resolver,
     ErrorReporter reporter,
     CustomLintContext context,
+    String rootPath,
   ) async {
-    final rootPath = await resolver.rootPath;
-    final parameters = config.parameters;
-    if (parameters.shouldSkipAnalysis(
-      path: resolver.path,
-      rootPath: rootPath,
-    )) {
-      return;
-    }
-
-    final code = this.code.copyWith(
-          errorSeverity: parameters.severity ?? this.code.errorSeverity,
-        );
-
     context.registry.addAsExpression((node) {
       reporter.atToken(
         node.asOperator,
@@ -49,7 +35,7 @@ class AvoidUsingUnsafeCast extends OptionsLintRule<_AvoidUsingUnsafeCastOption> 
   }
 }
 
-class ReplaceWithSafeCast extends OptionsFix<_AvoidUsingUnsafeCastOption> {
+class ReplaceWithSafeCast extends CommonQuickFix<_AvoidUsingUnsafeCastOption> {
   ReplaceWithSafeCast(super.config);
 
   @override
@@ -105,18 +91,12 @@ class ReplaceWithSafeCast extends OptionsFix<_AvoidUsingUnsafeCastOption> {
   }
 }
 
-class _AvoidUsingUnsafeCastOption extends Excludable {
+class _AvoidUsingUnsafeCastOption extends CommonLintParameter {
   const _AvoidUsingUnsafeCastOption({
-    this.excludes = const [],
-    this.includes = const [],
-    this.severity,
+    super.excludes,
+    super.includes,
+    super.severity,
   });
-
-  final ErrorSeverity? severity;
-  @override
-  final List<String> excludes;
-  @override
-  final List<String> includes;
 
   static _AvoidUsingUnsafeCastOption fromMap(Map<String, dynamic> map) {
     return _AvoidUsingUnsafeCastOption(

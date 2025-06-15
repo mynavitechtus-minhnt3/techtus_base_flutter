@@ -1,38 +1,24 @@
 import '../index.dart';
 
-class PreferAsyncAwait extends OptionsLintRule<_PreferAsyncAwaitOption> {
+class PreferAsyncAwait extends CommonLintRule<_PreferAsyncAwaitOption> {
   PreferAsyncAwait(
     CustomLintConfigs configs,
   ) : super(
           RuleConfig(
-            name: lintName,
+            name: 'prefer_async_await',
             configs: configs,
             paramsParser: _PreferAsyncAwaitOption.fromMap,
             problemMessage: (_) => 'Prefer using async/await syntax instead of .then invocations',
           ),
         );
 
-  static const String lintName = 'prefer_async_await';
-
   @override
-  Future<void> run(
+  Future<void> check(
     CustomLintResolver resolver,
     ErrorReporter reporter,
     CustomLintContext context,
+    String rootPath,
   ) async {
-    final rootPath = await resolver.rootPath;
-    final parameters = config.parameters;
-    if (parameters.shouldSkipAnalysis(
-      path: resolver.path,
-      rootPath: rootPath,
-    )) {
-      return;
-    }
-
-    final code = this.code.copyWith(
-          errorSeverity: parameters.severity ?? this.code.errorSeverity,
-        );
-
     context.registry.addMethodInvocation((node) {
       final target = node.realTarget;
       if (target == null) return;
@@ -48,18 +34,12 @@ class PreferAsyncAwait extends OptionsLintRule<_PreferAsyncAwaitOption> {
   }
 }
 
-class _PreferAsyncAwaitOption extends Excludable {
+class _PreferAsyncAwaitOption extends CommonLintParameter {
   const _PreferAsyncAwaitOption({
-    this.excludes = const [],
-    this.includes = const [],
-    this.severity,
+    super.excludes,
+    super.includes,
+    super.severity,
   });
-
-  final ErrorSeverity? severity;
-  @override
-  final List<String> excludes;
-  @override
-  final List<String> includes;
 
   static _PreferAsyncAwaitOption fromMap(Map<String, dynamic> map) {
     return _PreferAsyncAwaitOption(

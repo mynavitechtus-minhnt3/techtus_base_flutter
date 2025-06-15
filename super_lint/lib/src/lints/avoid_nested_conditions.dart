@@ -1,41 +1,27 @@
 import '../index.dart';
 
-class AvoidNestedConditions extends OptionsLintRule<_AvoidNestedConditionsOption> {
+class AvoidNestedConditions extends CommonLintRule<_AvoidNestedConditionsOption> {
   AvoidNestedConditions(
     CustomLintConfigs configs,
   ) : super(
           RuleConfig(
-            name: lintName,
+            name: 'avoid_nested_conditions',
             configs: configs,
             paramsParser: _AvoidNestedConditionsOption.fromMap,
             problemMessage: (_) => 'Avoid nested conditions; use early return instead.',
           ),
         );
 
-  static const String lintName = 'avoid_nested_conditions';
-
   final _nestingConditionalExpressionLevels = <ConditionalExpression, int>{};
   final _nestingIfStatementLevels = <IfStatement, int>{};
 
   @override
-  Future<void> run(
+  Future<void> check(
     CustomLintResolver resolver,
     ErrorReporter reporter,
     CustomLintContext context,
+    String rootPath,
   ) async {
-    final rootPath = await resolver.rootPath;
-    final parameters = config.parameters;
-    if (parameters.shouldSkipAnalysis(
-      path: resolver.path,
-      rootPath: rootPath,
-    )) {
-      return;
-    }
-
-    final code = this.code.copyWith(
-          errorSeverity: parameters.severity ?? this.code.errorSeverity,
-        );
-
     context.registry.addConditionalExpression((node) {
       final parent = node.parent?.thisOrAncestorOfType<ConditionalExpression>();
       final level = (_nestingConditionalExpressionLevels[parent] ?? 0) + 1;
@@ -64,19 +50,13 @@ class AvoidNestedConditions extends OptionsLintRule<_AvoidNestedConditionsOption
   }
 }
 
-class _AvoidNestedConditionsOption extends Excludable {
+class _AvoidNestedConditionsOption extends CommonLintParameter {
   const _AvoidNestedConditionsOption({
-    this.excludes = const [],
-    this.includes = const [],
-    this.severity,
+    super.excludes,
+    super.includes,
+    super.severity,
     this.acceptableLevel = _defaultAcceptableLevel,
   });
-
-  final ErrorSeverity? severity;
-  @override
-  final List<String> excludes;
-  @override
-  final List<String> includes;
   final int acceptableLevel;
 
   static _AvoidNestedConditionsOption fromMap(Map<String, dynamic> map) {

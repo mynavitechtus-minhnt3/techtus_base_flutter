@@ -5,12 +5,12 @@ import '../index.dart';
 const _runCatchingFunction = 'runCatching';
 const _viewModelClassNameRegex = r'^.+ViewModel$';
 
-class MissingRunCatching extends OptionsLintRule<_MissingRunCatchingOption> {
+class MissingRunCatching extends CommonLintRule<_MissingRunCatchingOption> {
   MissingRunCatching(
     CustomLintConfigs configs,
   ) : super(
           RuleConfig(
-            name: lintName,
+            name: 'missing_run_catching',
             configs: configs,
             paramsParser: _MissingRunCatchingOption.fromMap,
             problemMessage: (_) =>
@@ -18,27 +18,13 @@ class MissingRunCatching extends OptionsLintRule<_MissingRunCatchingOption> {
           ),
         );
 
-  static const String lintName = 'missing_run_catching';
-
   @override
-  Future<void> run(
+  Future<void> check(
     CustomLintResolver resolver,
     ErrorReporter reporter,
     CustomLintContext context,
+    String rootPath,
   ) async {
-    final rootPath = await resolver.rootPath;
-    final parameters = config.parameters;
-    if (parameters.shouldSkipAnalysis(
-      path: resolver.path,
-      rootPath: rootPath,
-    )) {
-      return;
-    }
-
-    final code = this.code.copyWith(
-          errorSeverity: parameters.severity ?? this.code.errorSeverity,
-        );
-
     context.registry.addMethodInvocation((node) {
       if (_addPrivateCase(parameters.startsWithPatterns).any(
             (element) => node.toString().startsWith(element),
@@ -98,20 +84,14 @@ class MissingRunCatching extends OptionsLintRule<_MissingRunCatchingOption> {
   }
 }
 
-class _MissingRunCatchingOption extends Excludable {
+class _MissingRunCatchingOption extends CommonLintParameter {
   const _MissingRunCatchingOption({
-    this.excludes = const [],
-    this.includes = const [],
-    this.severity,
+    super.excludes,
+    super.includes,
+    super.severity,
     this.startsWithPatterns = _defaultStartsWithPatterns,
     this.startsWithPatternsExcludes = _defaultStartsWithPatternsExcludes,
   });
-
-  final ErrorSeverity? severity;
-  @override
-  final List<String> excludes;
-  @override
-  final List<String> includes;
   final List<String> startsWithPatterns;
   final List<String> startsWithPatternsExcludes;
 

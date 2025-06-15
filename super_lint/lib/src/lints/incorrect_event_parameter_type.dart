@@ -2,39 +2,24 @@ import 'package:collection/collection.dart';
 
 import '../index.dart';
 
-class IncorrectEventParameterType extends OptionsLintRule<_IncorrectEventParameterTypeOption> {
+class IncorrectEventParameterType extends CommonLintRule<_IncorrectEventParameterTypeOption> {
   IncorrectEventParameterType(CustomLintConfigs configs)
       : super(
           RuleConfig(
-            name: lintName,
+            name: 'incorrect_event_parameter_type',
             configs: configs,
             paramsParser: _IncorrectEventParameterTypeOption.fromMap,
             problemMessage: (params) => 'Parameters must only allow String, int or double values.',
           ),
         );
 
-  static const String lintName = 'incorrect_event_parameter_type';
-
   @override
-  Future<void> run(
+  Future<void> check(
     CustomLintResolver resolver,
     ErrorReporter reporter,
     CustomLintContext context,
+    String rootPath,
   ) async {
-    final rootPath = await resolver.rootPath;
-    final parameters = config.parameters;
-
-    if (parameters.shouldSkipAnalysis(
-      path: resolver.path,
-      rootPath: rootPath,
-    )) {
-      return;
-    }
-
-    final code = this.code.copyWith(
-          errorSeverity: parameters.severity ?? this.code.errorSeverity,
-        );
-
     context.registry.addClassDeclaration((classNode) {
       final isAnalyticParameterSubclass =
           classNode.extendsClause?.superclass.type.toString() == 'AnalyticParameter';
@@ -68,18 +53,12 @@ class IncorrectEventParameterType extends OptionsLintRule<_IncorrectEventParamet
   }
 }
 
-class _IncorrectEventParameterTypeOption extends Excludable {
+class _IncorrectEventParameterTypeOption extends CommonLintParameter {
   const _IncorrectEventParameterTypeOption({
-    this.excludes = const [],
-    this.includes = const [],
-    this.severity,
+    super.excludes,
+    super.includes,
+    super.severity,
   });
-
-  final ErrorSeverity? severity;
-  @override
-  final List<String> excludes;
-  @override
-  final List<String> includes;
 
   static _IncorrectEventParameterTypeOption fromMap(Map<String, dynamic> map) {
     return _IncorrectEventParameterTypeOption(

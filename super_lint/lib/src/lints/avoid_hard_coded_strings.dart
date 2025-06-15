@@ -1,11 +1,11 @@
 import '../index.dart';
 
-class AvoidHardCodedStrings extends OptionsLintRule<_AvoidHardCodedStringsOption> {
+class AvoidHardCodedStrings extends CommonLintRule<_AvoidHardCodedStringsOption> {
   AvoidHardCodedStrings(
     CustomLintConfigs configs,
   ) : super(
           RuleConfig(
-            name: lintName,
+            name: 'avoid_hard_coded_strings',
             configs: configs,
             paramsParser: _AvoidHardCodedStringsOption.fromMap,
             problemMessage: (_) =>
@@ -13,29 +13,15 @@ class AvoidHardCodedStrings extends OptionsLintRule<_AvoidHardCodedStringsOption
           ),
         );
 
-  static const String lintName = 'avoid_hard_coded_strings';
-
   @override
-  Future<void> run(
+  Future<void> check(
     CustomLintResolver resolver,
     ErrorReporter reporter,
     CustomLintContext context,
+    String rootPath,
   ) async {
-    final rootPath = await resolver.rootPath;
-    final parameters = config.parameters;
-    if (parameters.shouldSkipAnalysis(
-      path: resolver.path,
-      rootPath: rootPath,
-    )) {
-      return;
-    }
-
-    final code = this.code.copyWith(
-          errorSeverity: parameters.severity ?? this.code.errorSeverity,
-        );
-
     context.registry.addSimpleStringLiteral((node) {
-      if (node.value.length < config.parameters.minimumLength) {
+      if (node.value.length < parameters.minimumLength) {
         return;
       }
 
@@ -63,7 +49,7 @@ class AvoidHardCodedStrings extends OptionsLintRule<_AvoidHardCodedStringsOption
     });
 
     context.registry.addInterpolationString((node) {
-      if (node.value.length < config.parameters.minimumLength) {
+      if (node.value.length < parameters.minimumLength) {
         return;
       }
 
@@ -81,7 +67,7 @@ class AvoidHardCodedStrings extends OptionsLintRule<_AvoidHardCodedStringsOption
       ];
 }
 
-class _AvoidHardCodedStringsFix extends OptionsFix<_AvoidHardCodedStringsOption> {
+class _AvoidHardCodedStringsFix extends CommonQuickFix<_AvoidHardCodedStringsOption> {
   _AvoidHardCodedStringsFix(super.config);
 
   @override
@@ -120,19 +106,13 @@ class _AvoidHardCodedStringsFix extends OptionsFix<_AvoidHardCodedStringsOption>
   }
 }
 
-class _AvoidHardCodedStringsOption extends Excludable {
+class _AvoidHardCodedStringsOption extends CommonLintParameter {
   const _AvoidHardCodedStringsOption({
-    this.excludes = const [],
-    this.includes = const [],
-    this.severity,
+    super.excludes,
+    super.includes,
+    super.severity,
     this.minimumLength = _defaultMinimumLength,
   });
-
-  final ErrorSeverity? severity;
-  @override
-  final List<String> excludes;
-  @override
-  final List<String> includes;
 
   final int minimumLength;
 

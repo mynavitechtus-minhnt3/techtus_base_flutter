@@ -2,12 +2,12 @@ import 'package:collection/collection.dart';
 
 import '../index.dart';
 
-class PreferCommonWidgets extends OptionsLintRule<_PreferCommonWidgetsOption> {
+class PreferCommonWidgets extends CommonLintRule<_PreferCommonWidgetsOption> {
   PreferCommonWidgets(
     CustomLintConfigs configs,
   ) : super(
           RuleConfig(
-            name: lintName,
+            name: 'prefer_common_widgets',
             configs: configs,
             paramsParser: _PreferCommonWidgetsOption.fromMap,
             problemMessage: (_) =>
@@ -15,27 +15,13 @@ class PreferCommonWidgets extends OptionsLintRule<_PreferCommonWidgetsOption> {
           ),
         );
 
-  static const String lintName = 'prefer_common_widgets';
-
   @override
-  Future<void> run(
+  Future<void> check(
     CustomLintResolver resolver,
     ErrorReporter reporter,
     CustomLintContext context,
+    String rootPath,
   ) async {
-    final rootPath = await resolver.rootPath;
-    final parameters = config.parameters;
-    if (parameters.shouldSkipAnalysis(
-      path: resolver.path,
-      rootPath: rootPath,
-    )) {
-      return;
-    }
-
-    final code = this.code.copyWith(
-          errorSeverity: parameters.severity ?? this.code.errorSeverity,
-        );
-
     context.registry.addInstanceCreationExpression((node) {
       final bannedWidget = parameters.bannedWidgets.firstWhereOrNull((element) {
         final methodName = element[_PreferCommonWidgetsOption.keyBannedWidget];
@@ -54,7 +40,7 @@ class PreferCommonWidgets extends OptionsLintRule<_PreferCommonWidgetsOption> {
       ];
 }
 
-class _ReplaceWithCommonWidget extends OptionsFix<_PreferCommonWidgetsOption> {
+class _ReplaceWithCommonWidget extends CommonQuickFix<_PreferCommonWidgetsOption> {
   _ReplaceWithCommonWidget(super.config);
 
   @override
@@ -70,7 +56,7 @@ class _ReplaceWithCommonWidget extends OptionsFix<_PreferCommonWidgetsOption> {
         return;
       }
 
-      final bannedWidget = config.parameters.bannedWidgets.firstWhereOrNull((element) {
+      final bannedWidget = parameters.bannedWidgets.firstWhereOrNull((element) {
         final methodName = element[_PreferCommonWidgetsOption.keyBannedWidget];
         return node.constructorName.toString() == methodName;
       });
@@ -96,19 +82,13 @@ class _ReplaceWithCommonWidget extends OptionsFix<_PreferCommonWidgetsOption> {
   }
 }
 
-class _PreferCommonWidgetsOption extends Excludable {
+class _PreferCommonWidgetsOption extends CommonLintParameter {
   const _PreferCommonWidgetsOption({
-    this.excludes = const [],
-    this.includes = const [],
-    this.severity,
+    super.excludes,
+    super.includes,
+    super.severity,
     this.bannedWidgets = _defaultBannedWidgets,
   });
-
-  final ErrorSeverity? severity;
-  @override
-  final List<String> excludes;
-  @override
-  final List<String> includes;
 
   final List<Map<String, String>> bannedWidgets;
 

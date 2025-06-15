@@ -1,39 +1,24 @@
 import '../index.dart';
 
 class IncorrectScreenNameParameterValue
-    extends OptionsLintRule<_IncorrectScreenNameParameterValueOption> {
+    extends CommonLintRule<_IncorrectScreenNameParameterValueOption> {
   IncorrectScreenNameParameterValue(CustomLintConfigs configs)
       : super(
           RuleConfig(
-            name: lintName,
+            name: 'incorrect_screen_name_parameter_value',
             configs: configs,
             paramsParser: _IncorrectScreenNameParameterValueOption.fromMap,
             problemMessage: (params) => 'The screenName does not match the file name.',
           ),
         );
 
-  static const String lintName = 'incorrect_screen_name_parameter_value';
-
   @override
-  Future<void> run(
+  Future<void> check(
     CustomLintResolver resolver,
     ErrorReporter reporter,
     CustomLintContext context,
+    String rootPath,
   ) async {
-    final rootPath = await resolver.rootPath;
-    final parameters = config.parameters;
-
-    if (parameters.shouldSkipAnalysis(
-      path: resolver.path,
-      rootPath: rootPath,
-    )) {
-      return;
-    }
-
-    final code = this.code.copyWith(
-          errorSeverity: parameters.severity ?? this.code.errorSeverity,
-        );
-
     final fileName = resolver.path.split('/').last.split('.').first;
     final expectedScreenName = fileName.toCamelCase();
 
@@ -66,7 +51,7 @@ class IncorrectScreenNameParameterValue
   }
 }
 
-class _FixIncorrectScreenName extends OptionsFix<_IncorrectScreenNameParameterValueOption> {
+class _FixIncorrectScreenName extends CommonQuickFix<_IncorrectScreenNameParameterValueOption> {
   _FixIncorrectScreenName(super.config);
 
   @override
@@ -94,18 +79,12 @@ class _FixIncorrectScreenName extends OptionsFix<_IncorrectScreenNameParameterVa
   }
 }
 
-class _IncorrectScreenNameParameterValueOption extends Excludable {
+class _IncorrectScreenNameParameterValueOption extends CommonLintParameter {
   const _IncorrectScreenNameParameterValueOption({
-    this.excludes = const [],
-    this.includes = const [],
-    this.severity,
+    super.excludes,
+    super.includes,
+    super.severity,
   });
-
-  final ErrorSeverity? severity;
-  @override
-  final List<String> excludes;
-  @override
-  final List<String> includes;
 
   static _IncorrectScreenNameParameterValueOption fromMap(Map<String, dynamic> map) {
     return _IncorrectScreenNameParameterValueOption(

@@ -2,35 +2,25 @@ import 'package:path/path.dart' as p;
 
 import '../index.dart';
 
-class PreferSingleWidgetPerFile extends OptionsLintRule<_PreferSingleWidgetPerFileOption> {
+class PreferSingleWidgetPerFile extends CommonLintRule<_PreferSingleWidgetPerFileOption> {
   PreferSingleWidgetPerFile(
     CustomLintConfigs configs,
   ) : super(
           RuleConfig(
-            name: lintName,
+            name: 'prefer_single_widget_per_file',
             configs: configs,
             paramsParser: _PreferSingleWidgetPerFileOption.fromMap,
             problemMessage: (_) => 'Prefer single public widget per file',
           ),
         );
 
-  static const String lintName = 'prefer_single_widget_per_file';
-
   @override
-  void run(CustomLintResolver resolver, ErrorReporter reporter, CustomLintContext context) async {
-    final rootPath = await resolver.rootPath;
-    final parameters = config.parameters;
-    if (parameters.shouldSkipAnalysis(
-      path: resolver.path,
-      rootPath: rootPath,
-    )) {
-      return;
-    }
-
-    final code = this.code.copyWith(
-          errorSeverity: parameters.severity ?? this.code.errorSeverity,
-        );
-
+  Future<void> check(
+    CustomLintResolver resolver,
+    ErrorReporter reporter,
+    CustomLintContext context,
+    String rootPath,
+  ) async {
     final unit = (await resolver.getResolvedUnitResult()).unit;
     final fileName = p.basenameWithoutExtension(resolver.path);
     final expectedClassName = fileName.snakeToPascal();
@@ -60,19 +50,12 @@ class PreferSingleWidgetPerFile extends OptionsLintRule<_PreferSingleWidgetPerFi
   }
 }
 
-class _PreferSingleWidgetPerFileOption extends Excludable {
+class _PreferSingleWidgetPerFileOption extends CommonLintParameter {
   const _PreferSingleWidgetPerFileOption({
-    this.excludes = const [],
-    this.includes = const [],
-    this.severity,
+    super.excludes,
+    super.includes,
+    super.severity,
   });
-
-  final ErrorSeverity? severity;
-
-  @override
-  final List<String> excludes;
-  @override
-  final List<String> includes;
 
   static _PreferSingleWidgetPerFileOption fromMap(Map<String, dynamic> map) {
     return _PreferSingleWidgetPerFileOption(

@@ -2,40 +2,25 @@ import '../index.dart';
 
 const _className = 'EventConstants';
 
-class IncorrectEventName extends OptionsLintRule<_IncorrectEventNameOption> {
+class IncorrectEventName extends CommonLintRule<_IncorrectEventNameOption> {
   IncorrectEventName(
     CustomLintConfigs configs,
   ) : super(
           RuleConfig(
-            name: lintName,
+            name: 'incorrect_event_name',
             configs: configs,
             paramsParser: _IncorrectEventNameOption.fromMap,
             problemMessage: (options) => 'Events in `$_className` must use snake_case naming.',
           ),
         );
 
-  static const String lintName = 'incorrect_event_name';
-
   @override
-  Future<void> run(
+  Future<void> check(
     CustomLintResolver resolver,
     ErrorReporter reporter,
     CustomLintContext context,
+    String rootPath,
   ) async {
-    final rootPath = await resolver.rootPath;
-    final parameters = config.parameters;
-
-    if (parameters.shouldSkipAnalysis(
-      path: resolver.path,
-      rootPath: rootPath,
-    )) {
-      return;
-    }
-
-    final code = this.code.copyWith(
-          errorSeverity: parameters.severity ?? this.code.errorSeverity,
-        );
-
     context.registry.addClassDeclaration((node) {
       final className = node.name.lexeme;
       if (className != _className) return;
@@ -59,18 +44,12 @@ class IncorrectEventName extends OptionsLintRule<_IncorrectEventNameOption> {
   }
 }
 
-class _IncorrectEventNameOption extends Excludable {
+class _IncorrectEventNameOption extends CommonLintParameter {
   const _IncorrectEventNameOption({
-    this.excludes = const [],
-    this.includes = const [],
-    this.severity,
+    super.excludes,
+    super.includes,
+    super.severity,
   });
-
-  final ErrorSeverity? severity;
-  @override
-  final List<String> excludes;
-  @override
-  final List<String> includes;
 
   static _IncorrectEventNameOption fromMap(Map<String, dynamic> map) {
     return _IncorrectEventNameOption(

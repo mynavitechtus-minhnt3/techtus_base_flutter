@@ -6,7 +6,7 @@ class ParameterConstants {
   static const String snakeCase = 'value_snake_case';
   static const number = 1;
   static const number2 = '1';
-  
+
   // expect_lint: incorrect_event_parameter_name
   static const String camelCase = 'valueCamel';
   // expect_lint: incorrect_event_parameter_name

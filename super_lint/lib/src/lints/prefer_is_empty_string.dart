@@ -1,11 +1,11 @@
 import '../index.dart';
 
-class PreferIsEmptyString extends OptionsLintRule<_PreferIsEmptyStringOption> {
+class PreferIsEmptyString extends CommonLintRule<_PreferIsEmptyStringOption> {
   PreferIsEmptyString(
     CustomLintConfigs configs,
   ) : super(
           RuleConfig(
-            name: lintName,
+            name: 'prefer_is_empty_string',
             configs: configs,
             paramsParser: _PreferIsEmptyStringOption.fromMap,
             problemMessage: (_) =>
@@ -13,27 +13,13 @@ class PreferIsEmptyString extends OptionsLintRule<_PreferIsEmptyStringOption> {
           ),
         );
 
-  static const String lintName = 'prefer_is_empty_string';
-
   @override
-  Future<void> run(
+  Future<void> check(
     CustomLintResolver resolver,
     ErrorReporter reporter,
     CustomLintContext context,
+    String rootPath,
   ) async {
-    final rootPath = await resolver.rootPath;
-    final parameters = config.parameters;
-    if (parameters.shouldSkipAnalysis(
-      path: resolver.path,
-      rootPath: rootPath,
-    )) {
-      return;
-    }
-
-    final code = this.code.copyWith(
-          errorSeverity: parameters.severity ?? this.code.errorSeverity,
-        );
-
     context.registry.addBinaryExpression((node) {
       if (node.operator.type == TokenType.EQ_EQ &&
           (node.leftOperand.toString() == '\'\'' || node.rightOperand.toString() == '\'\'')) {
@@ -48,7 +34,7 @@ class PreferIsEmptyString extends OptionsLintRule<_PreferIsEmptyStringOption> {
       ];
 }
 
-class _ReplaceWithIsEmpty extends OptionsFix<_PreferIsEmptyStringOption> {
+class _ReplaceWithIsEmpty extends CommonQuickFix<_PreferIsEmptyStringOption> {
   _ReplaceWithIsEmpty(super.config);
 
   @override
@@ -84,18 +70,12 @@ class _ReplaceWithIsEmpty extends OptionsFix<_PreferIsEmptyStringOption> {
   }
 }
 
-class _PreferIsEmptyStringOption extends Excludable {
+class _PreferIsEmptyStringOption extends CommonLintParameter {
   const _PreferIsEmptyStringOption({
-    this.excludes = const [],
-    this.includes = const [],
-    this.severity,
+    super.excludes,
+    super.includes,
+    super.severity,
   });
-
-  final ErrorSeverity? severity;
-  @override
-  final List<String> excludes;
-  @override
-  final List<String> includes;
 
   static _PreferIsEmptyStringOption fromMap(Map<String, dynamic> map) {
     return _PreferIsEmptyStringOption(

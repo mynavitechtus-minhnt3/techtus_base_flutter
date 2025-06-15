@@ -2,12 +2,12 @@ import 'package:collection/collection.dart';
 
 import '../index.dart';
 
-class MissingExpandedOrFlexible extends OptionsLintRule<_MissingExpandedOrFlexibleOption> {
+class MissingExpandedOrFlexible extends CommonLintRule<_MissingExpandedOrFlexibleOption> {
   MissingExpandedOrFlexible(
     CustomLintConfigs configs,
   ) : super(
           RuleConfig(
-            name: lintName,
+            name: 'missing_expanded_or_flexible',
             configs: configs,
             paramsParser: _MissingExpandedOrFlexibleOption.fromMap,
             problemMessage: (options) =>
@@ -15,27 +15,13 @@ class MissingExpandedOrFlexible extends OptionsLintRule<_MissingExpandedOrFlexib
           ),
         );
 
-  static const String lintName = 'missing_expanded_or_flexible';
-
   @override
-  Future<void> run(
+  Future<void> check(
     CustomLintResolver resolver,
     ErrorReporter reporter,
     CustomLintContext context,
+    String rootPath,
   ) async {
-    final rootPath = await resolver.rootPath;
-    final parameters = config.parameters;
-    if (parameters.shouldSkipAnalysis(
-      path: resolver.path,
-      rootPath: rootPath,
-    )) {
-      return;
-    }
-
-    final code = this.code.copyWith(
-          errorSeverity: parameters.severity ?? this.code.errorSeverity,
-        );
-
     context.registry.addInstanceCreationExpression((node) {
       final widget = node.constructorName.type.toString();
       if (widget == 'Row' || widget == 'Column') {
@@ -65,18 +51,12 @@ class MissingExpandedOrFlexible extends OptionsLintRule<_MissingExpandedOrFlexib
   }
 }
 
-class _MissingExpandedOrFlexibleOption extends Excludable {
+class _MissingExpandedOrFlexibleOption extends CommonLintParameter {
   const _MissingExpandedOrFlexibleOption({
-    this.excludes = const [],
-    this.includes = const [],
-    this.severity,
+    super.excludes,
+    super.includes,
+    super.severity,
   });
-
-  final ErrorSeverity? severity;
-  @override
-  final List<String> excludes;
-  @override
-  final List<String> includes;
 
   static _MissingExpandedOrFlexibleOption fromMap(Map<String, dynamic> map) {
     return _MissingExpandedOrFlexibleOption(

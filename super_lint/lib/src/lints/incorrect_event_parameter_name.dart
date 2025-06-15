@@ -2,40 +2,25 @@ import '../index.dart';
 
 const _className = 'ParameterConstants';
 
-class IncorrectEventParameterName extends OptionsLintRule<_IncorrectEventParameterNameOption> {
+class IncorrectEventParameterName extends CommonLintRule<_IncorrectEventParameterNameOption> {
   IncorrectEventParameterName(
     CustomLintConfigs configs,
   ) : super(
           RuleConfig(
-            name: lintName,
+            name: 'incorrect_event_parameter_name',
             configs: configs,
             paramsParser: _IncorrectEventParameterNameOption.fromMap,
             problemMessage: (options) => 'Parameters in `$_className` must use snake_case naming.',
           ),
         );
 
-  static const String lintName = 'incorrect_event_parameter_name';
-
   @override
-  Future<void> run(
+  Future<void> check(
     CustomLintResolver resolver,
     ErrorReporter reporter,
     CustomLintContext context,
+    String rootPath,
   ) async {
-    final rootPath = await resolver.rootPath;
-    final parameters = config.parameters;
-
-    if (parameters.shouldSkipAnalysis(
-      path: resolver.path,
-      rootPath: rootPath,
-    )) {
-      return;
-    }
-
-    final code = this.code.copyWith(
-          errorSeverity: parameters.severity ?? this.code.errorSeverity,
-        );
-
     context.registry.addClassDeclaration((node) {
       final className = node.name.lexeme;
       if (className != _className) return;
@@ -59,18 +44,12 @@ class IncorrectEventParameterName extends OptionsLintRule<_IncorrectEventParamet
   }
 }
 
-class _IncorrectEventParameterNameOption extends Excludable {
+class _IncorrectEventParameterNameOption extends CommonLintParameter {
   const _IncorrectEventParameterNameOption({
-    this.excludes = const [],
-    this.includes = const [],
-    this.severity,
+    super.excludes,
+    super.includes,
+    super.severity,
   });
-
-  final ErrorSeverity? severity;
-  @override
-  final List<String> excludes;
-  @override
-  final List<String> includes;
 
   static _IncorrectEventParameterNameOption fromMap(Map<String, dynamic> map) {
     return _IncorrectEventParameterNameOption(

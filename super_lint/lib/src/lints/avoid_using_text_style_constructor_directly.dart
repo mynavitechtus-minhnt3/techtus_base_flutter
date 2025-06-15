@@ -1,12 +1,12 @@
 import '../index.dart';
 
 class AvoidUsingTextStyleConstructorDirectly
-    extends OptionsLintRule<_AvoidUsingTextStyleConstructorOption> {
+    extends CommonLintRule<_AvoidUsingTextStyleConstructorOption> {
   AvoidUsingTextStyleConstructorDirectly(
     CustomLintConfigs configs,
   ) : super(
           RuleConfig(
-            name: lintName,
+            name: 'avoid_using_text_style_constructor_directly',
             configs: configs,
             paramsParser: _AvoidUsingTextStyleConstructorOption.fromMap,
             problemMessage: (_) =>
@@ -14,27 +14,13 @@ class AvoidUsingTextStyleConstructorDirectly
           ),
         );
 
-  static const String lintName = 'avoid_using_text_style_constructor_directly';
-
   @override
-  Future<void> run(
+  Future<void> check(
     CustomLintResolver resolver,
     ErrorReporter reporter,
     CustomLintContext context,
+    String rootPath,
   ) async {
-    final rootPath = await resolver.rootPath;
-    final parameters = config.parameters;
-    if (parameters.shouldSkipAnalysis(
-      path: resolver.path,
-      rootPath: rootPath,
-    )) {
-      return;
-    }
-
-    final code = this.code.copyWith(
-          errorSeverity: parameters.severity ?? this.code.errorSeverity,
-        );
-
     context.registry.addInstanceCreationExpression((node) {
       if (node.constructorName.type.type.toString() == 'TextStyle') {
         reporter.atNode(node, code);
@@ -48,7 +34,8 @@ class AvoidUsingTextStyleConstructorDirectly
       ];
 }
 
-class _ReplaceTextStyleWithStyleFunction extends OptionsFix<_AvoidUsingTextStyleConstructorOption> {
+class _ReplaceTextStyleWithStyleFunction
+    extends CommonQuickFix<_AvoidUsingTextStyleConstructorOption> {
   _ReplaceTextStyleWithStyleFunction(super.config);
 
   @override
@@ -81,18 +68,12 @@ class _ReplaceTextStyleWithStyleFunction extends OptionsFix<_AvoidUsingTextStyle
   }
 }
 
-class _AvoidUsingTextStyleConstructorOption extends Excludable {
+class _AvoidUsingTextStyleConstructorOption extends CommonLintParameter {
   const _AvoidUsingTextStyleConstructorOption({
-    this.excludes = const [],
-    this.includes = const [],
-    this.severity,
+    super.excludes,
+    super.includes,
+    super.severity,
   });
-
-  final ErrorSeverity? severity;
-  @override
-  final List<String> excludes;
-  @override
-  final List<String> includes;
 
   static _AvoidUsingTextStyleConstructorOption fromMap(Map<String, dynamic> map) {
     return _AvoidUsingTextStyleConstructorOption(

@@ -1,38 +1,24 @@
 import '../index.dart';
 
-class AvoidUnnecessaryAsyncFunction extends OptionsLintRule<_AvoidUnnecessaryAsyncFunctionOption> {
+class AvoidUnnecessaryAsyncFunction extends CommonLintRule<_AvoidUnnecessaryAsyncFunctionOption> {
   AvoidUnnecessaryAsyncFunction(
     CustomLintConfigs configs,
   ) : super(
           RuleConfig(
-              name: lintName,
+              name: 'avoid_unnecessary_async_function',
               configs: configs,
               paramsParser: _AvoidUnnecessaryAsyncFunctionOption.fromMap,
               problemMessage: (_) =>
                   'This async function is unnecessary. Please remove \'async\' keyword'),
         );
 
-  static const String lintName = 'avoid_unnecessary_async_function';
-
   @override
-  Future<void> run(
+  Future<void> check(
     CustomLintResolver resolver,
     ErrorReporter reporter,
     CustomLintContext context,
+    String rootPath,
   ) async {
-    final rootPath = await resolver.rootPath;
-    final parameters = config.parameters;
-    if (parameters.shouldSkipAnalysis(
-      path: resolver.path,
-      rootPath: rootPath,
-    )) {
-      return;
-    }
-
-    final code = this.code.copyWith(
-          errorSeverity: parameters.severity ?? this.code.errorSeverity,
-        );
-
     unawaited(resolver.getResolvedUnitResult().then(
           (value) => value.unit.visitChildren(
             FunctionAndMethodDeclarationVisitor(
@@ -72,7 +58,7 @@ class AvoidUnnecessaryAsyncFunction extends OptionsLintRule<_AvoidUnnecessaryAsy
       ];
 }
 
-class _RemoveUnnecessaryAsyncKeyWord extends OptionsFix<_AvoidUnnecessaryAsyncFunctionOption> {
+class _RemoveUnnecessaryAsyncKeyWord extends CommonQuickFix<_AvoidUnnecessaryAsyncFunctionOption> {
   _RemoveUnnecessaryAsyncKeyWord(super.config);
 
   @override
@@ -155,18 +141,12 @@ class _RemoveUnnecessaryAsyncKeyWord extends OptionsFix<_AvoidUnnecessaryAsyncFu
   }
 }
 
-class _AvoidUnnecessaryAsyncFunctionOption extends Excludable {
+class _AvoidUnnecessaryAsyncFunctionOption extends CommonLintParameter {
   const _AvoidUnnecessaryAsyncFunctionOption({
-    this.excludes = const [],
-    this.includes = const [],
-    this.severity,
+    super.excludes,
+    super.includes,
+    super.severity,
   });
-
-  final ErrorSeverity? severity;
-  @override
-  final List<String> excludes;
-  @override
-  final List<String> includes;
 
   static _AvoidUnnecessaryAsyncFunctionOption fromMap(Map<String, dynamic> map) {
     return _AvoidUnnecessaryAsyncFunctionOption(

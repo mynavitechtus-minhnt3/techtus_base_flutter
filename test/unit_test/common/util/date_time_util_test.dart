@@ -6,7 +6,7 @@ void main() {
   group('today', () {
     test('hour, minute, and second should be 0', () async {
       withClock(Clock.fixed(DateTime(2024, 1, 2, 3, 4, 5, 6, 7)), () {
-        final t = today;
+        final t = DateTimeUtil.today;
         expect(t, DateTime(2024, 1, 2, 0, 0, 0, 0, 0));
       });
     });

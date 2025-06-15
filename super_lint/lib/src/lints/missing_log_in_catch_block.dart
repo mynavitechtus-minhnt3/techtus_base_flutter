@@ -1,11 +1,11 @@
 import '../index.dart';
 
-class MissingLogInCatchBlock extends OptionsLintRule<_MissingLogInCatchBlockOption> {
+class MissingLogInCatchBlock extends CommonLintRule<_MissingLogInCatchBlockOption> {
   MissingLogInCatchBlock(
     CustomLintConfigs configs,
   ) : super(
           RuleConfig(
-            name: lintName,
+            name: 'missing_log_in_catch_block',
             configs: configs,
             paramsParser: _MissingLogInCatchBlockOption.fromMap,
             problemMessage: (_) =>
@@ -13,33 +13,19 @@ class MissingLogInCatchBlock extends OptionsLintRule<_MissingLogInCatchBlockOpti
           ),
         );
 
-  static const String lintName = 'missing_log_in_catch_block';
-
   @override
-  Future<void> run(
+  Future<void> check(
     CustomLintResolver resolver,
     ErrorReporter reporter,
     CustomLintContext context,
+    String rootPath,
   ) async {
-    final rootPath = await resolver.rootPath;
-    final parameters = config.parameters;
-    if (parameters.shouldSkipAnalysis(
-      path: resolver.path,
-      rootPath: rootPath,
-    )) {
-      return;
-    }
-
-    final code = this.code.copyWith(
-          errorSeverity: parameters.severity ?? this.code.errorSeverity,
-        );
-
     context.registry.addCatchClause((node) {
       final methodInvocations = node.body.childMethodInvocations;
       final hasLog = methodInvocations.any((element) {
-        return (element.realTarget?.staticType.toString() == config.parameters.className ||
-                element.classNameOfStaticMethod == config.parameters.className) &&
-            config.parameters.methods.contains(element.methodName.name);
+        return (element.realTarget?.staticType.toString() == parameters.className ||
+                element.classNameOfStaticMethod == parameters.className) &&
+            parameters.methods.contains(element.methodName.name);
       });
 
       if (!hasLog) {
@@ -49,20 +35,14 @@ class MissingLogInCatchBlock extends OptionsLintRule<_MissingLogInCatchBlockOpti
   }
 }
 
-class _MissingLogInCatchBlockOption extends Excludable {
+class _MissingLogInCatchBlockOption extends CommonLintParameter {
   _MissingLogInCatchBlockOption({
-    this.excludes = const [],
-    this.includes = const [],
+    super.excludes,
+    super.includes,
     this.methods = _defaultMethods,
     this.className = _defaultClassName,
-    this.severity,
+    super.severity,
   });
-
-  final ErrorSeverity? severity;
-  @override
-  final List<String> excludes;
-  @override
-  final List<String> includes;
   final List<String> methods;
   final String className;
 

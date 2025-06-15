@@ -1,11 +1,11 @@
 import '../index.dart';
 
-class IncorrectTodoComment extends OptionsLintRule<_IncorrectTodoCommentOption> {
+class IncorrectTodoComment extends CommonLintRule<_IncorrectTodoCommentOption> {
   IncorrectTodoComment(
     CustomLintConfigs configs,
   ) : super(
           RuleConfig(
-              name: lintName,
+              name: 'incorrect_todo_comment',
               configs: configs,
               paramsParser: _IncorrectTodoCommentOption.fromMap,
               problemMessage: (_) =>
@@ -13,27 +13,13 @@ class IncorrectTodoComment extends OptionsLintRule<_IncorrectTodoCommentOption> 
                   'Example: // TODO(username): some description text #123.'),
         );
 
-  static const String lintName = 'incorrect_todo_comment';
-
   @override
-  Future<void> run(
+  Future<void> check(
     CustomLintResolver resolver,
     ErrorReporter reporter,
     CustomLintContext context,
+    String rootPath,
   ) async {
-    final rootPath = await resolver.rootPath;
-    final parameters = config.parameters;
-    if (parameters.shouldSkipAnalysis(
-      path: resolver.path,
-      rootPath: rootPath,
-    )) {
-      return;
-    }
-
-    final code = this.code.copyWith(
-          errorSeverity: parameters.severity ?? this.code.errorSeverity,
-        );
-
     resolver.getLineContents((codeLine) {
       if (codeLine.isEndOfLineComment) {
         if (codeLine.content.contains(RegExp(r'//\s*TODO')) &&
@@ -49,18 +35,12 @@ class IncorrectTodoComment extends OptionsLintRule<_IncorrectTodoCommentOption> 
   }
 }
 
-class _IncorrectTodoCommentOption extends Excludable {
+class _IncorrectTodoCommentOption extends CommonLintParameter {
   const _IncorrectTodoCommentOption({
-    this.excludes = const [],
-    this.includes = const [],
-    this.severity,
+    super.excludes,
+    super.includes,
+    super.severity,
   });
-
-  final ErrorSeverity? severity;
-  @override
-  final List<String> excludes;
-  @override
-  final List<String> includes;
 
   static _IncorrectTodoCommentOption fromMap(Map<String, dynamic> map) {
     return _IncorrectTodoCommentOption(

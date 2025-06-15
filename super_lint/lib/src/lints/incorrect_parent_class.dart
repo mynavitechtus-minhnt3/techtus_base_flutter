@@ -1,11 +1,11 @@
 import '../index.dart';
 
-class IncorrectParentClass extends OptionsLintRule<_IncorrectParentClassOption> {
+class IncorrectParentClass extends CommonLintRule<_IncorrectParentClassOption> {
   IncorrectParentClass(
     CustomLintConfigs configs,
   ) : super(
           RuleConfig(
-            name: lintName,
+            name: 'incorrect_parent_class',
             configs: configs,
             paramsParser: _IncorrectParentClassOption.fromMap,
             problemMessage: (options) =>
@@ -13,27 +13,13 @@ class IncorrectParentClass extends OptionsLintRule<_IncorrectParentClassOption> 
           ),
         );
 
-  static const String lintName = 'incorrect_parent_class';
-
   @override
-  Future<void> run(
+  Future<void> check(
     CustomLintResolver resolver,
     ErrorReporter reporter,
     CustomLintContext context,
+    String rootPath,
   ) async {
-    final rootPath = await resolver.rootPath;
-    final parameters = config.parameters;
-    if (parameters.shouldSkipAnalysis(
-      path: resolver.path,
-      rootPath: rootPath,
-    )) {
-      return;
-    }
-
-    final code = this.code.copyWith(
-          errorSeverity: parameters.severity ?? this.code.errorSeverity,
-        );
-
     context.registry.addClassDeclaration((node) {
       final parent = node.extendsClause?.superclass;
       final currentClass = node.name.toString();
@@ -51,20 +37,14 @@ class IncorrectParentClass extends OptionsLintRule<_IncorrectParentClassOption> 
   }
 }
 
-class _IncorrectParentClassOption extends Excludable {
+class _IncorrectParentClassOption extends CommonLintParameter {
   const _IncorrectParentClassOption({
-    this.excludes = const [],
-    this.includes = const [],
-    this.severity,
+    super.excludes,
+    super.includes,
+    super.severity,
     this.classPostFixes = _defaultClassPostFixes,
     this.parentClassPreFixes = _defaultParentClassPreFixes,
   });
-
-  final ErrorSeverity? severity;
-  @override
-  final List<String> excludes;
-  @override
-  final List<String> includes;
 
   final List<String> classPostFixes;
   final List<String> parentClassPreFixes;

@@ -2,12 +2,12 @@ import 'package:collection/collection.dart';
 
 import '../index.dart';
 
-class TestFolderMustMirrorLibFolder extends OptionsLintRule<_TestFolderMustMirrorLibFolderOption> {
+class TestFolderMustMirrorLibFolder extends CommonLintRule<_TestFolderMustMirrorLibFolderOption> {
   TestFolderMustMirrorLibFolder(
     CustomLintConfigs configs,
   ) : super(
           RuleConfig(
-            name: lintName,
+            name: 'test_folder_must_mirror_lib_folder',
             configs: configs,
             paramsParser: _TestFolderMustMirrorLibFolderOption.fromMap,
             problemMessage: (_) =>
@@ -15,28 +15,15 @@ class TestFolderMustMirrorLibFolder extends OptionsLintRule<_TestFolderMustMirro
           ),
         );
 
-  static const String lintName = 'test_folder_must_mirror_lib_folder';
   static const _testFileSuffix = '_test';
 
   @override
-  Future<void> run(
+  Future<void> check(
     CustomLintResolver resolver,
     ErrorReporter reporter,
     CustomLintContext context,
+    String rootPath,
   ) async {
-    final rootPath = await resolver.rootPath;
-    final parameters = config.parameters;
-    if (parameters.shouldSkipAnalysis(
-      path: resolver.path,
-      rootPath: rootPath,
-    )) {
-      return;
-    }
-
-    final code = this.code.copyWith(
-          errorSeverity: parameters.severity ?? this.code.errorSeverity,
-        );
-
     final relatedPath = relativePath(resolver.path, rootPath);
 
     final testFolderPath =
@@ -71,20 +58,14 @@ class TestFolderMustMirrorLibFolder extends OptionsLintRule<_TestFolderMustMirro
   }
 }
 
-class _TestFolderMustMirrorLibFolderOption extends Excludable {
+class _TestFolderMustMirrorLibFolderOption extends CommonLintParameter {
   const _TestFolderMustMirrorLibFolderOption({
-    this.excludes = const [],
-    this.includes = const [],
-    this.severity,
+    super.excludes,
+    super.includes,
+    super.severity,
     this.libFolderPath = _defaultLibFolderPath,
     this.testFolderPaths = _defaultTestFolderPaths,
   });
-
-  final ErrorSeverity? severity;
-  @override
-  final List<String> excludes;
-  @override
-  final List<String> includes;
   final String libFolderPath;
   final List<String> testFolderPaths;
 

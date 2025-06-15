@@ -5,40 +5,25 @@ import '../index.dart';
 const _testFunctionArgCount = 2;
 const _regex = r'[A-Z]';
 
-class PreferLowerCaseTestDescription
-    extends OptionsLintRule<_PreferLowerCaseTestDescriptionOption> {
+class PreferLowerCaseTestDescription extends CommonLintRule<_PreferLowerCaseTestDescriptionOption> {
   PreferLowerCaseTestDescription(
     CustomLintConfigs configs,
   ) : super(
           RuleConfig(
-              name: lintName,
+              name: 'prefer_lower_case_test_description',
               configs: configs,
               paramsParser: _PreferLowerCaseTestDescriptionOption.fromMap,
               problemMessage: (_) =>
                   'Lower case the first character when writing tests descriptions.'),
         );
 
-  static const String lintName = 'prefer_lower_case_test_description';
-
   @override
-  Future<void> run(
+  Future<void> check(
     CustomLintResolver resolver,
     ErrorReporter reporter,
     CustomLintContext context,
+    String rootPath,
   ) async {
-    final rootPath = await resolver.rootPath;
-    final parameters = config.parameters;
-    if (parameters.shouldSkipAnalysis(
-      path: resolver.path,
-      rootPath: rootPath,
-    )) {
-      return;
-    }
-
-    final code = this.code.copyWith(
-          errorSeverity: parameters.severity ?? this.code.errorSeverity,
-        );
-
     context.registry.addMethodInvocation((node) {
       final testMethod = parameters.testMethods.firstWhereOrNull((element) {
         final methodName = element[_PreferLowerCaseTestDescriptionOption.keyMethodName];
@@ -71,7 +56,7 @@ class PreferLowerCaseTestDescription
       ];
 }
 
-class _ChangeToLowerCase extends OptionsFix<_PreferLowerCaseTestDescriptionOption> {
+class _ChangeToLowerCase extends CommonQuickFix<_PreferLowerCaseTestDescriptionOption> {
   _ChangeToLowerCase(super.config);
 
   @override
@@ -88,7 +73,7 @@ class _ChangeToLowerCase extends OptionsFix<_PreferLowerCaseTestDescriptionOptio
         return;
       }
 
-      final testMethod = config.parameters.testMethods.firstWhereOrNull((element) {
+      final testMethod = parameters.testMethods.firstWhereOrNull((element) {
         final methodName = element[_PreferLowerCaseTestDescriptionOption.keyMethodName];
         return node.methodName.name == methodName;
       });
@@ -122,19 +107,13 @@ class _ChangeToLowerCase extends OptionsFix<_PreferLowerCaseTestDescriptionOptio
   }
 }
 
-class _PreferLowerCaseTestDescriptionOption extends Excludable {
+class _PreferLowerCaseTestDescriptionOption extends CommonLintParameter {
   const _PreferLowerCaseTestDescriptionOption({
-    this.excludes = const [],
-    this.includes = const [],
-    this.severity,
+    super.excludes,
+    super.includes,
+    super.severity,
     this.testMethods = _defaultTestMethods,
   });
-
-  final ErrorSeverity? severity;
-  @override
-  final List<String> excludes;
-  @override
-  final List<String> includes;
 
   final List<Map<String, String>> testMethods;
 

@@ -1,38 +1,24 @@
 import '../index.dart';
 
-class PreferNamedParameters extends OptionsLintRule<_PreferNamedParametersOption> {
+class PreferNamedParameters extends CommonLintRule<_PreferNamedParametersOption> {
   PreferNamedParameters(
     CustomLintConfigs configs,
   ) : super(
           RuleConfig(
-              name: lintName,
+              name: 'prefer_named_parameters',
               configs: configs,
               paramsParser: _PreferNamedParametersOption.fromMap,
               problemMessage: (_) =>
                   'If a function or constructor takes more parameters than the threshold, use named parameters'),
         );
 
-  static const String lintName = 'prefer_named_parameters';
-
   @override
-  Future<void> run(
+  Future<void> check(
     CustomLintResolver resolver,
     ErrorReporter reporter,
     CustomLintContext context,
+    String rootPath,
   ) async {
-    final rootPath = await resolver.rootPath;
-    final parameters = config.parameters;
-    if (parameters.shouldSkipAnalysis(
-      path: resolver.path,
-      rootPath: rootPath,
-    )) {
-      return;
-    }
-
-    final code = this.code.copyWith(
-          errorSeverity: parameters.severity ?? this.code.errorSeverity,
-        );
-
     unawaited(resolver.getResolvedUnitResult().then((value) =>
         value.unit.visitChildren(ConstructorAndFunctionAndMethodDeclarationVisitor(
           onVisitFunctionDeclaration: (FunctionDeclaration node) {
@@ -75,7 +61,7 @@ class PreferNamedParameters extends OptionsLintRule<_PreferNamedParametersOption
       ];
 }
 
-class _ConvertToNamedParameters extends OptionsFix<_PreferNamedParametersOption> {
+class _ConvertToNamedParameters extends CommonQuickFix<_PreferNamedParametersOption> {
   _ConvertToNamedParameters(super.config);
 
   @override
@@ -139,21 +125,15 @@ class _ConvertToNamedParameters extends OptionsFix<_PreferNamedParametersOption>
   }
 }
 
-class _PreferNamedParametersOption extends Excludable {
+class _PreferNamedParametersOption extends CommonLintParameter {
   const _PreferNamedParametersOption({
     this.threshold = _defaultThreshold,
-    this.excludes = const [],
-    this.includes = const [],
-    this.severity,
+    super.excludes,
+    super.includes,
+    super.severity,
   });
 
   final int threshold;
-
-  final ErrorSeverity? severity;
-  @override
-  final List<String> excludes;
-  @override
-  final List<String> includes;
 
   static _PreferNamedParametersOption fromMap(Map<String, dynamic> map) {
     return _PreferNamedParametersOption(

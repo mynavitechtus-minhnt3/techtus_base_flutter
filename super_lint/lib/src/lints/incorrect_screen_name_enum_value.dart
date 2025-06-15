@@ -1,10 +1,10 @@
 import '../index.dart';
 
-class IncorrectScreenNameEnumValue extends OptionsLintRule<_IncorrectScreenNameEnumValueOption> {
+class IncorrectScreenNameEnumValue extends CommonLintRule<_IncorrectScreenNameEnumValueOption> {
   IncorrectScreenNameEnumValue(CustomLintConfigs configs)
       : super(
           RuleConfig(
-            name: lintName,
+            name: 'incorrect_screen_name_enum_value',
             configs: configs,
             paramsParser: _IncorrectScreenNameEnumValueOption.fromMap,
             problemMessage: (params) =>
@@ -12,16 +12,13 @@ class IncorrectScreenNameEnumValue extends OptionsLintRule<_IncorrectScreenNameE
           ),
         );
 
-  static const String lintName = 'incorrect_screen_name_enum_value';
-
   @override
-  Future<void> run(
+  Future<void> check(
     CustomLintResolver resolver,
     ErrorReporter reporter,
     CustomLintContext context,
+    String rootPath,
   ) async {
-    final parameters = config.parameters;
-
     final code = this.code.copyWith(
           errorSeverity: parameters.severity ?? this.code.errorSeverity,
         );
@@ -70,18 +67,12 @@ class IncorrectScreenNameEnumValue extends OptionsLintRule<_IncorrectScreenNameE
   }
 }
 
-class _IncorrectScreenNameEnumValueOption extends Excludable {
+class _IncorrectScreenNameEnumValueOption extends CommonLintParameter {
   const _IncorrectScreenNameEnumValueOption({
-    this.excludes = const [],
-    this.includes = const [],
-    this.severity,
+    super.excludes,
+    super.includes,
+    super.severity,
   });
-
-  final ErrorSeverity? severity;
-  @override
-  final List<String> excludes;
-  @override
-  final List<String> includes;
 
   static _IncorrectScreenNameEnumValueOption fromMap(Map<String, dynamic> map) {
     return _IncorrectScreenNameEnumValueOption(

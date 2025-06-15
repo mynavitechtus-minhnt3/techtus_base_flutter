@@ -1,38 +1,24 @@
 import '../index.dart';
 
-class AvoidUsingIfElseWithEnums extends OptionsLintRule<_AvoidUsingIfElseWithEnumsOption> {
+class AvoidUsingIfElseWithEnums extends CommonLintRule<_AvoidUsingIfElseWithEnumsOption> {
   AvoidUsingIfElseWithEnums(
     CustomLintConfigs configs,
   ) : super(
           RuleConfig(
-            name: lintName,
+            name: 'avoid_using_if_else_with_enums',
             configs: configs,
             paramsParser: _AvoidUsingIfElseWithEnumsOption.fromMap,
             problemMessage: (_) => 'Avoid using if-else with enums. Use switch-case instead.',
           ),
         );
 
-  static const String lintName = 'avoid_using_if_else_with_enums';
-
   @override
-  Future<void> run(
+  Future<void> check(
     CustomLintResolver resolver,
     ErrorReporter reporter,
     CustomLintContext context,
+    String rootPath,
   ) async {
-    final rootPath = await resolver.rootPath;
-    final parameters = config.parameters;
-    if (parameters.shouldSkipAnalysis(
-      path: resolver.path,
-      rootPath: rootPath,
-    )) {
-      return;
-    }
-
-    final code = this.code.copyWith(
-          errorSeverity: parameters.severity ?? this.code.errorSeverity,
-        );
-
     context.registry.addIfStatement((node) {
       if (node.expression is! BinaryExpression) {
         return;
@@ -55,7 +41,7 @@ class AvoidUsingIfElseWithEnums extends OptionsLintRule<_AvoidUsingIfElseWithEnu
       }
     });
 
-    if (config.parameters.includeConditionalExpression) {
+    if (parameters.includeConditionalExpression) {
       context.registry.addConditionalExpression((node) {
         final condition = node.condition;
         if (condition is! BinaryExpression) {
@@ -82,19 +68,13 @@ class AvoidUsingIfElseWithEnums extends OptionsLintRule<_AvoidUsingIfElseWithEnu
   }
 }
 
-class _AvoidUsingIfElseWithEnumsOption extends Excludable {
+class _AvoidUsingIfElseWithEnumsOption extends CommonLintParameter {
   const _AvoidUsingIfElseWithEnumsOption({
-    this.excludes = const [],
-    this.includes = const [],
-    this.severity,
+    super.excludes,
+    super.includes,
+    super.severity,
     this.includeConditionalExpression = true,
   });
-
-  final ErrorSeverity? severity;
-  @override
-  final List<String> excludes;
-  @override
-  final List<String> includes;
   final bool includeConditionalExpression;
 
   static _AvoidUsingIfElseWithEnumsOption fromMap(Map<String, dynamic> map) {
