@@ -14,6 +14,7 @@
   - [prefer_async_await](#prefer_async_await)
   - [prefer_lower_case_test_description](#prefer_lower_case_test_description)
   - [test_folder_must_mirror_lib_folder](#test_folder_must_mirror_lib_folder)
+  - [incorrect_freezed_default_value_type](#incorrect_freezed_default_value_type)
 
 ## All lint rules
 
@@ -362,4 +363,24 @@ stateNotifierTest('Uppercase text', () {});
 test('uppercase text', () {});
 
 blocTest('Uppercase text', () {});
+```
+
+### incorrect_freezed_default_value_type
+
+The value passed to `@Default()` in a freezed class must have a compatible type with the annotated field.
+
+```yaml
+- incorrect_freezed_default_value_type:
+```
+
+**Good**:
+
+```dart
+@Default(<ApiUserData>[]) List<ApiUserData> allContacts,
+```
+
+**Bad**:
+
+```dart
+@Default(0) List<ApiUserData> allContacts,
 ```

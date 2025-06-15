@@ -35,6 +35,7 @@ class _SuperLintPlugin extends PluginBase {
       UtilFunctionsMustBeStatic(configs),
       MissingExtensionMethodForEvents(configs),
       MissingCommonScrollbar(configs),
+      IncorrectFreezedDefaultValueType(configs),
       PreferSingleWidgetPerFile(configs),
     ];
   }
