@@ -1,6 +1,6 @@
 import '../index.dart';
 
-class UtilFunctionsMustBeStatic extends OptionsLintRule<_UtilFunctionsMustBeStaticOption> {
+class UtilFunctionsMustBeStatic extends CommonLintRule<_UtilFunctionsMustBeStaticOption> {
   UtilFunctionsMustBeStatic(
     CustomLintConfigs configs,
   ) : super(
@@ -12,18 +12,13 @@ class UtilFunctionsMustBeStatic extends OptionsLintRule<_UtilFunctionsMustBeStat
           ),
         );
 
-
   @override
-  Future<void> run(
+  Future<void> check(
     CustomLintResolver resolver,
     ErrorReporter reporter,
     CustomLintContext context,
+    String rootPath,
   ) async {
-    final runCtx = await prepareRun(resolver);
-    if (runCtx == null) return;
-    final code = runCtx.code;
-    final parameters = runCtx.parameters;
-
     context.registry.addFunctionDeclaration((node) {
       if (node.parent is CompilationUnit && !node.isPrivate && !node.isAnnotation) {
         reporter.atNode(
@@ -40,7 +35,7 @@ class UtilFunctionsMustBeStatic extends OptionsLintRule<_UtilFunctionsMustBeStat
   }
 }
 
-class ConvertToStaticFunction extends OptionsFix<_UtilFunctionsMustBeStaticOption> {
+class ConvertToStaticFunction extends CommonQuickFix<_UtilFunctionsMustBeStaticOption> {
   ConvertToStaticFunction(super.config);
 
   @override
@@ -75,7 +70,7 @@ class ConvertToStaticFunction extends OptionsFix<_UtilFunctionsMustBeStaticOptio
   }
 }
 
-class _UtilFunctionsMustBeStaticOption extends CommonLintOption {
+class _UtilFunctionsMustBeStaticOption extends CommonLintParameter {
   const _UtilFunctionsMustBeStaticOption({
     super.excludes,
     super.includes,
@@ -97,5 +92,5 @@ class _UtilFunctionsMustBeStaticOption extends CommonLintOption {
     );
   }
 
-  static const _defaultUtilsFolderPath = 'lib/common/utils';
+  static const _defaultUtilsFolderPath = 'lib/common/util';
 }

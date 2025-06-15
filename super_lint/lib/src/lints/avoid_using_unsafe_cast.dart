@@ -1,6 +1,6 @@
 import '../index.dart';
 
-class AvoidUsingUnsafeCast extends OptionsLintRule<_AvoidUsingUnsafeCastOption> {
+class AvoidUsingUnsafeCast extends CommonLintRule<_AvoidUsingUnsafeCastOption> {
   AvoidUsingUnsafeCast(
     CustomLintConfigs configs,
   ) : super(
@@ -12,18 +12,13 @@ class AvoidUsingUnsafeCast extends OptionsLintRule<_AvoidUsingUnsafeCastOption> 
           ),
         );
 
-
   @override
-  Future<void> run(
+  Future<void> check(
     CustomLintResolver resolver,
     ErrorReporter reporter,
     CustomLintContext context,
+    String rootPath,
   ) async {
-    final runCtx = await prepareRun(resolver);
-    if (runCtx == null) return;
-    final code = runCtx.code;
-    final parameters = runCtx.parameters;
-
     context.registry.addAsExpression((node) {
       reporter.atToken(
         node.asOperator,
@@ -40,7 +35,7 @@ class AvoidUsingUnsafeCast extends OptionsLintRule<_AvoidUsingUnsafeCastOption> 
   }
 }
 
-class ReplaceWithSafeCast extends OptionsFix<_AvoidUsingUnsafeCastOption> {
+class ReplaceWithSafeCast extends CommonQuickFix<_AvoidUsingUnsafeCastOption> {
   ReplaceWithSafeCast(super.config);
 
   @override
@@ -96,7 +91,7 @@ class ReplaceWithSafeCast extends OptionsFix<_AvoidUsingUnsafeCastOption> {
   }
 }
 
-class _AvoidUsingUnsafeCastOption extends CommonLintOption {
+class _AvoidUsingUnsafeCastOption extends CommonLintParameter {
   const _AvoidUsingUnsafeCastOption({
     super.excludes,
     super.includes,

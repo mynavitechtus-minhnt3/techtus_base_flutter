@@ -1,6 +1,6 @@
 import '../index.dart';
 
-class AvoidNestedConditions extends OptionsLintRule<_AvoidNestedConditionsOption> {
+class AvoidNestedConditions extends CommonLintRule<_AvoidNestedConditionsOption> {
   AvoidNestedConditions(
     CustomLintConfigs configs,
   ) : super(
@@ -12,21 +12,16 @@ class AvoidNestedConditions extends OptionsLintRule<_AvoidNestedConditionsOption
           ),
         );
 
-
   final _nestingConditionalExpressionLevels = <ConditionalExpression, int>{};
   final _nestingIfStatementLevels = <IfStatement, int>{};
 
   @override
-  Future<void> run(
+  Future<void> check(
     CustomLintResolver resolver,
     ErrorReporter reporter,
     CustomLintContext context,
+    String rootPath,
   ) async {
-    final runCtx = await prepareRun(resolver);
-    if (runCtx == null) return;
-    final code = runCtx.code;
-    final parameters = runCtx.parameters;
-
     context.registry.addConditionalExpression((node) {
       final parent = node.parent?.thisOrAncestorOfType<ConditionalExpression>();
       final level = (_nestingConditionalExpressionLevels[parent] ?? 0) + 1;
@@ -55,7 +50,7 @@ class AvoidNestedConditions extends OptionsLintRule<_AvoidNestedConditionsOption
   }
 }
 
-class _AvoidNestedConditionsOption extends CommonLintOption {
+class _AvoidNestedConditionsOption extends CommonLintParameter {
   const _AvoidNestedConditionsOption({
     super.excludes,
     super.includes,

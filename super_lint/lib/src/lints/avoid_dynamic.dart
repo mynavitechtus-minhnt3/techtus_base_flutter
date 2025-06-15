@@ -1,6 +1,6 @@
 import '../index.dart';
 
-class AvoidDynamic extends OptionsLintRule<_AvoidDynamicOption> {
+class AvoidDynamic extends CommonLintRule<_AvoidDynamicOption> {
   AvoidDynamic(
     CustomLintConfigs configs,
   ) : super(
@@ -13,16 +13,12 @@ class AvoidDynamic extends OptionsLintRule<_AvoidDynamicOption> {
         );
 
   @override
-  Future<void> run(
+  Future<void> check(
     CustomLintResolver resolver,
     ErrorReporter reporter,
     CustomLintContext context,
+    String rootPath,
   ) async {
-    final runCtx = await prepareRun(resolver);
-    if (runCtx == null) return;
-    final code = runCtx.code;
-    final parameters = runCtx.parameters;
-
     context.registry.addNamedType((node) {
       if (node.type is! DynamicType) return;
 
@@ -47,7 +43,7 @@ class AvoidDynamic extends OptionsLintRule<_AvoidDynamicOption> {
   }
 }
 
-class _AvoidDynamicOption extends CommonLintOption {
+class _AvoidDynamicOption extends CommonLintParameter {
   const _AvoidDynamicOption({
     super.excludes,
     super.includes,

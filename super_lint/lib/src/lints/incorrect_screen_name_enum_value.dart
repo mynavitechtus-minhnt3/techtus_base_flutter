@@ -1,6 +1,6 @@
 import '../index.dart';
 
-class IncorrectScreenNameEnumValue extends OptionsLintRule<_IncorrectScreenNameEnumValueOption> {
+class IncorrectScreenNameEnumValue extends CommonLintRule<_IncorrectScreenNameEnumValueOption> {
   IncorrectScreenNameEnumValue(CustomLintConfigs configs)
       : super(
           RuleConfig(
@@ -12,15 +12,13 @@ class IncorrectScreenNameEnumValue extends OptionsLintRule<_IncorrectScreenNameE
           ),
         );
 
-
   @override
-  Future<void> run(
+  Future<void> check(
     CustomLintResolver resolver,
     ErrorReporter reporter,
     CustomLintContext context,
+    String rootPath,
   ) async {
-    final parameters = config.parameters;
-
     final code = this.code.copyWith(
           errorSeverity: parameters.severity ?? this.code.errorSeverity,
         );
@@ -69,7 +67,7 @@ class IncorrectScreenNameEnumValue extends OptionsLintRule<_IncorrectScreenNameE
   }
 }
 
-class _IncorrectScreenNameEnumValueOption extends CommonLintOption {
+class _IncorrectScreenNameEnumValueOption extends CommonLintParameter {
   const _IncorrectScreenNameEnumValueOption({
     super.excludes,
     super.includes,

@@ -2,7 +2,7 @@ import 'package:collection/collection.dart';
 
 import '../index.dart';
 
-class TestFolderMustMirrorLibFolder extends OptionsLintRule<_TestFolderMustMirrorLibFolderOption> {
+class TestFolderMustMirrorLibFolder extends CommonLintRule<_TestFolderMustMirrorLibFolderOption> {
   TestFolderMustMirrorLibFolder(
     CustomLintConfigs configs,
   ) : super(
@@ -18,16 +18,13 @@ class TestFolderMustMirrorLibFolder extends OptionsLintRule<_TestFolderMustMirro
   static const _testFileSuffix = '_test';
 
   @override
-  Future<void> run(
+  Future<void> check(
     CustomLintResolver resolver,
     ErrorReporter reporter,
     CustomLintContext context,
+    String rootPath,
   ) async {
-    final runCtx = await prepareRun(resolver);
-    if (runCtx == null) return;
-    final code = runCtx.code;
-    final parameters = runCtx.parameters;
-
+    final rootPath = await resolver.rootPath;
     final relatedPath = relativePath(resolver.path, rootPath);
 
     final testFolderPath =
@@ -62,7 +59,7 @@ class TestFolderMustMirrorLibFolder extends OptionsLintRule<_TestFolderMustMirro
   }
 }
 
-class _TestFolderMustMirrorLibFolderOption extends CommonLintOption {
+class _TestFolderMustMirrorLibFolderOption extends CommonLintParameter {
   const _TestFolderMustMirrorLibFolderOption({
     super.excludes,
     super.includes,

@@ -2,7 +2,7 @@ import 'package:collection/collection.dart';
 
 import '../index.dart';
 
-class IncorrectEventParameterType extends OptionsLintRule<_IncorrectEventParameterTypeOption> {
+class IncorrectEventParameterType extends CommonLintRule<_IncorrectEventParameterTypeOption> {
   IncorrectEventParameterType(CustomLintConfigs configs)
       : super(
           RuleConfig(
@@ -13,18 +13,13 @@ class IncorrectEventParameterType extends OptionsLintRule<_IncorrectEventParamet
           ),
         );
 
-
   @override
-  Future<void> run(
+  Future<void> check(
     CustomLintResolver resolver,
     ErrorReporter reporter,
     CustomLintContext context,
+    String rootPath,
   ) async {
-    final runCtx = await prepareRun(resolver);
-    if (runCtx == null) return;
-    final code = runCtx.code;
-    final parameters = runCtx.parameters;
-
     context.registry.addClassDeclaration((classNode) {
       final isAnalyticParameterSubclass =
           classNode.extendsClause?.superclass.type.toString() == 'AnalyticParameter';
@@ -58,7 +53,7 @@ class IncorrectEventParameterType extends OptionsLintRule<_IncorrectEventParamet
   }
 }
 
-class _IncorrectEventParameterTypeOption extends CommonLintOption {
+class _IncorrectEventParameterTypeOption extends CommonLintParameter {
   const _IncorrectEventParameterTypeOption({
     super.excludes,
     super.includes,

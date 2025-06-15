@@ -3,12 +3,11 @@ import 'package:intl/intl.dart';
 
 import '../../../index.dart';
 
-DateTime get now => clock.now();
-
-DateTime get today => now.withTimeAtStartOfDay();
-
 class DateTimeUtil {
   DateTimeUtil._();
+
+  static DateTime get now => clock.now();
+  static DateTime get today => now.withTimeAtStartOfDay();
 
   static int daysBetween({
     required DateTime from,

@@ -1,6 +1,6 @@
 import '../index.dart';
 
-class AvoidHardCodedColors extends OptionsLintRule<_AvoidHardCodedColorsOption> {
+class AvoidHardCodedColors extends CommonLintRule<_AvoidHardCodedColorsOption> {
   AvoidHardCodedColors(
     CustomLintConfigs configs,
   ) : super(
@@ -13,16 +13,12 @@ class AvoidHardCodedColors extends OptionsLintRule<_AvoidHardCodedColorsOption> 
         );
 
   @override
-  Future<void> run(
+  Future<void> check(
     CustomLintResolver resolver,
     ErrorReporter reporter,
     CustomLintContext context,
+    String rootPath,
   ) async {
-    final runCtx = await prepareRun(resolver);
-    if (runCtx == null) return;
-    final code = runCtx.code;
-    final parameters = runCtx.parameters;
-
     unawaited(resolver
         .getResolvedUnitResult()
         .then((value) => value.unit.visitChildren(VariableAndArgumentVisitor(
@@ -106,7 +102,7 @@ class AvoidHardCodedColors extends OptionsLintRule<_AvoidHardCodedColorsOption> 
   }
 }
 
-class _AvoidHardCodedColorsOption extends CommonLintOption {
+class _AvoidHardCodedColorsOption extends CommonLintParameter {
   const _AvoidHardCodedColorsOption({
     super.excludes,
     super.includes,

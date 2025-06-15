@@ -1,6 +1,6 @@
 import '../index.dart';
 
-class AvoidUnnecessaryAsyncFunction extends OptionsLintRule<_AvoidUnnecessaryAsyncFunctionOption> {
+class AvoidUnnecessaryAsyncFunction extends CommonLintRule<_AvoidUnnecessaryAsyncFunctionOption> {
   AvoidUnnecessaryAsyncFunction(
     CustomLintConfigs configs,
   ) : super(
@@ -13,16 +13,12 @@ class AvoidUnnecessaryAsyncFunction extends OptionsLintRule<_AvoidUnnecessaryAsy
         );
 
   @override
-  Future<void> run(
+  Future<void> check(
     CustomLintResolver resolver,
     ErrorReporter reporter,
     CustomLintContext context,
+    String rootPath,
   ) async {
-    final runCtx = await prepareRun(resolver);
-    if (runCtx == null) return;
-    final code = runCtx.code;
-    final parameters = runCtx.parameters;
-
     unawaited(resolver.getResolvedUnitResult().then(
           (value) => value.unit.visitChildren(
             FunctionAndMethodDeclarationVisitor(
@@ -62,7 +58,7 @@ class AvoidUnnecessaryAsyncFunction extends OptionsLintRule<_AvoidUnnecessaryAsy
       ];
 }
 
-class _RemoveUnnecessaryAsyncKeyWord extends OptionsFix<_AvoidUnnecessaryAsyncFunctionOption> {
+class _RemoveUnnecessaryAsyncKeyWord extends CommonQuickFix<_AvoidUnnecessaryAsyncFunctionOption> {
   _RemoveUnnecessaryAsyncKeyWord(super.config);
 
   @override
@@ -145,7 +141,7 @@ class _RemoveUnnecessaryAsyncKeyWord extends OptionsFix<_AvoidUnnecessaryAsyncFu
   }
 }
 
-class _AvoidUnnecessaryAsyncFunctionOption extends CommonLintOption {
+class _AvoidUnnecessaryAsyncFunctionOption extends CommonLintParameter {
   const _AvoidUnnecessaryAsyncFunctionOption({
     super.excludes,
     super.includes,

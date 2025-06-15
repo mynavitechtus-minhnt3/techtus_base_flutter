@@ -1,6 +1,6 @@
 import '../index.dart';
 
-class PreferImportingIndexFile extends OptionsLintRule<_PreferImportingIndexFileOption> {
+class PreferImportingIndexFile extends CommonLintRule<_PreferImportingIndexFileOption> {
   PreferImportingIndexFile(
     CustomLintConfigs configs,
   ) : super(
@@ -13,18 +13,13 @@ class PreferImportingIndexFile extends OptionsLintRule<_PreferImportingIndexFile
           ),
         );
 
-
   @override
-  Future<void> run(
+  Future<void> check(
     CustomLintResolver resolver,
     ErrorReporter reporter,
     CustomLintContext context,
+    String rootPath,
   ) async {
-    final runCtx = await prepareRun(resolver);
-    if (runCtx == null) return;
-    final code = runCtx.code;
-    final parameters = runCtx.parameters;
-
     context.registry.addImportDirective((node) {
       final importUri = node.uri.stringValue;
       if (importUri != null &&
@@ -37,7 +32,7 @@ class PreferImportingIndexFile extends OptionsLintRule<_PreferImportingIndexFile
   }
 }
 
-class _PreferImportingIndexFileOption extends CommonLintOption {
+class _PreferImportingIndexFileOption extends CommonLintParameter {
   const _PreferImportingIndexFileOption({
     super.excludes,
     super.includes,

@@ -2,7 +2,8 @@ import 'package:collection/collection.dart';
 
 import '../index.dart';
 
-class IncorrectFreezedDefaultValueType extends OptionsLintRule<_IncorrectFreezedDefaultValueTypeOption> {
+class IncorrectFreezedDefaultValueType
+    extends CommonLintRule<_IncorrectFreezedDefaultValueTypeOption> {
   IncorrectFreezedDefaultValueType(
     CustomLintConfigs configs,
   ) : super(
@@ -14,18 +15,13 @@ class IncorrectFreezedDefaultValueType extends OptionsLintRule<_IncorrectFreezed
           ),
         );
 
-
   @override
-  Future<void> run(
+  Future<void> check(
     CustomLintResolver resolver,
     ErrorReporter reporter,
     CustomLintContext context,
+    String rootPath,
   ) async {
-    final runCtx = await prepareRun(resolver);
-    if (runCtx == null) return;
-    final code = runCtx.code;
-    final parameters = runCtx.parameters;
-
     final resolvedUnit = await resolver.getResolvedUnitResult();
     final typeSystem = resolvedUnit.typeSystem;
 
@@ -53,7 +49,7 @@ class IncorrectFreezedDefaultValueType extends OptionsLintRule<_IncorrectFreezed
   }
 }
 
-class _IncorrectFreezedDefaultValueTypeOption extends CommonLintOption {
+class _IncorrectFreezedDefaultValueTypeOption extends CommonLintParameter {
   const _IncorrectFreezedDefaultValueTypeOption({
     super.excludes,
     super.includes,

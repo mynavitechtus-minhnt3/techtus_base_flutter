@@ -1,6 +1,6 @@
 import '../index.dart';
 
-class PreferNamedParameters extends OptionsLintRule<_PreferNamedParametersOption> {
+class PreferNamedParameters extends CommonLintRule<_PreferNamedParametersOption> {
   PreferNamedParameters(
     CustomLintConfigs configs,
   ) : super(
@@ -12,18 +12,13 @@ class PreferNamedParameters extends OptionsLintRule<_PreferNamedParametersOption
                   'If a function or constructor takes more parameters than the threshold, use named parameters'),
         );
 
-
   @override
-  Future<void> run(
+  Future<void> check(
     CustomLintResolver resolver,
     ErrorReporter reporter,
     CustomLintContext context,
+    String rootPath,
   ) async {
-    final runCtx = await prepareRun(resolver);
-    if (runCtx == null) return;
-    final code = runCtx.code;
-    final parameters = runCtx.parameters;
-
     unawaited(resolver.getResolvedUnitResult().then((value) =>
         value.unit.visitChildren(ConstructorAndFunctionAndMethodDeclarationVisitor(
           onVisitFunctionDeclaration: (FunctionDeclaration node) {
@@ -66,7 +61,7 @@ class PreferNamedParameters extends OptionsLintRule<_PreferNamedParametersOption
       ];
 }
 
-class _ConvertToNamedParameters extends OptionsFix<_PreferNamedParametersOption> {
+class _ConvertToNamedParameters extends CommonQuickFix<_PreferNamedParametersOption> {
   _ConvertToNamedParameters(super.config);
 
   @override
@@ -130,7 +125,7 @@ class _ConvertToNamedParameters extends OptionsFix<_PreferNamedParametersOption>
   }
 }
 
-class _PreferNamedParametersOption extends CommonLintOption {
+class _PreferNamedParametersOption extends CommonLintParameter {
   const _PreferNamedParametersOption({
     this.threshold = _defaultThreshold,
     super.excludes,

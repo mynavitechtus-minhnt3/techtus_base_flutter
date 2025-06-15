@@ -1,6 +1,6 @@
 import '../index.dart';
 
-class MissingLogInCatchBlock extends OptionsLintRule<_MissingLogInCatchBlockOption> {
+class MissingLogInCatchBlock extends CommonLintRule<_MissingLogInCatchBlockOption> {
   MissingLogInCatchBlock(
     CustomLintConfigs configs,
   ) : super(
@@ -13,24 +13,19 @@ class MissingLogInCatchBlock extends OptionsLintRule<_MissingLogInCatchBlockOpti
           ),
         );
 
-
   @override
-  Future<void> run(
+  Future<void> check(
     CustomLintResolver resolver,
     ErrorReporter reporter,
     CustomLintContext context,
+    String rootPath,
   ) async {
-    final runCtx = await prepareRun(resolver);
-    if (runCtx == null) return;
-    final code = runCtx.code;
-    final parameters = runCtx.parameters;
-
     context.registry.addCatchClause((node) {
       final methodInvocations = node.body.childMethodInvocations;
       final hasLog = methodInvocations.any((element) {
-        return (element.realTarget?.staticType.toString() == config.parameters.className ||
-                element.classNameOfStaticMethod == config.parameters.className) &&
-            config.parameters.methods.contains(element.methodName.name);
+        return (element.realTarget?.staticType.toString() == parameters.className ||
+                element.classNameOfStaticMethod == parameters.className) &&
+            parameters.methods.contains(element.methodName.name);
       });
 
       if (!hasLog) {
@@ -40,7 +35,7 @@ class MissingLogInCatchBlock extends OptionsLintRule<_MissingLogInCatchBlockOpti
   }
 }
 
-class _MissingLogInCatchBlockOption extends CommonLintOption {
+class _MissingLogInCatchBlockOption extends CommonLintParameter {
   _MissingLogInCatchBlockOption({
     super.excludes,
     super.includes,

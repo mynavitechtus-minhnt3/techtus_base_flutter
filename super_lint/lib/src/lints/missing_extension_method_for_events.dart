@@ -3,7 +3,7 @@ import '../index.dart';
 const _extendedType = 'AnalyticsHelper';
 
 class MissingExtensionMethodForEvents
-    extends OptionsLintRule<_MissingExtensionMethodForEventsOption> {
+    extends CommonLintRule<_MissingExtensionMethodForEventsOption> {
   MissingExtensionMethodForEvents(
     CustomLintConfigs configs,
   ) : super(
@@ -15,18 +15,13 @@ class MissingExtensionMethodForEvents
           ),
         );
 
-
   @override
-  Future<void> run(
+  Future<void> check(
     CustomLintResolver resolver,
     ErrorReporter reporter,
     CustomLintContext context,
+    String rootPath,
   ) async {
-    final runCtx = await prepareRun(resolver);
-    if (runCtx == null) return;
-    final code = runCtx.code;
-    final parameters = runCtx.parameters;
-
     context.registry.addCompilationUnit((unit) {
       final extensions = <ExtensionDeclaration>[];
 
@@ -86,7 +81,7 @@ class MissingExtensionMethodForEvents
   }
 }
 
-class _AddPrivateExtensionMethods extends OptionsFix<_MissingExtensionMethodForEventsOption> {
+class _AddPrivateExtensionMethods extends CommonQuickFix<_MissingExtensionMethodForEventsOption> {
   _AddPrivateExtensionMethods(super.config);
 
   @override
@@ -164,7 +159,7 @@ extension $expectedExtensionName on $_extendedType {}
   }
 }
 
-class _MissingExtensionMethodForEventsOption extends CommonLintOption {
+class _MissingExtensionMethodForEventsOption extends CommonLintParameter {
   const _MissingExtensionMethodForEventsOption({
     super.excludes,
     super.includes,

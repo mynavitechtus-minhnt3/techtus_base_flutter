@@ -1,6 +1,6 @@
 import '../index.dart';
 
-class AvoidUsingIfElseWithEnums extends OptionsLintRule<_AvoidUsingIfElseWithEnumsOption> {
+class AvoidUsingIfElseWithEnums extends CommonLintRule<_AvoidUsingIfElseWithEnumsOption> {
   AvoidUsingIfElseWithEnums(
     CustomLintConfigs configs,
   ) : super(
@@ -12,18 +12,13 @@ class AvoidUsingIfElseWithEnums extends OptionsLintRule<_AvoidUsingIfElseWithEnu
           ),
         );
 
-
   @override
-  Future<void> run(
+  Future<void> check(
     CustomLintResolver resolver,
     ErrorReporter reporter,
     CustomLintContext context,
+    String rootPath,
   ) async {
-    final runCtx = await prepareRun(resolver);
-    if (runCtx == null) return;
-    final code = runCtx.code;
-    final parameters = runCtx.parameters;
-
     context.registry.addIfStatement((node) {
       if (node.expression is! BinaryExpression) {
         return;
@@ -46,7 +41,7 @@ class AvoidUsingIfElseWithEnums extends OptionsLintRule<_AvoidUsingIfElseWithEnu
       }
     });
 
-    if (config.parameters.includeConditionalExpression) {
+    if (parameters.includeConditionalExpression) {
       context.registry.addConditionalExpression((node) {
         final condition = node.condition;
         if (condition is! BinaryExpression) {
@@ -73,7 +68,7 @@ class AvoidUsingIfElseWithEnums extends OptionsLintRule<_AvoidUsingIfElseWithEnu
   }
 }
 
-class _AvoidUsingIfElseWithEnumsOption extends CommonLintOption {
+class _AvoidUsingIfElseWithEnumsOption extends CommonLintParameter {
   const _AvoidUsingIfElseWithEnumsOption({
     super.excludes,
     super.includes,

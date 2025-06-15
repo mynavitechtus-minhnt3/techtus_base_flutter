@@ -2,7 +2,7 @@ import '../index.dart';
 
 const _className = 'ParameterConstants';
 
-class IncorrectEventParameterName extends OptionsLintRule<_IncorrectEventParameterNameOption> {
+class IncorrectEventParameterName extends CommonLintRule<_IncorrectEventParameterNameOption> {
   IncorrectEventParameterName(
     CustomLintConfigs configs,
   ) : super(
@@ -14,18 +14,13 @@ class IncorrectEventParameterName extends OptionsLintRule<_IncorrectEventParamet
           ),
         );
 
-
   @override
-  Future<void> run(
+  Future<void> check(
     CustomLintResolver resolver,
     ErrorReporter reporter,
     CustomLintContext context,
+    String rootPath,
   ) async {
-    final runCtx = await prepareRun(resolver);
-    if (runCtx == null) return;
-    final code = runCtx.code;
-    final parameters = runCtx.parameters;
-
     context.registry.addClassDeclaration((node) {
       final className = node.name.lexeme;
       if (className != _className) return;
@@ -49,7 +44,7 @@ class IncorrectEventParameterName extends OptionsLintRule<_IncorrectEventParamet
   }
 }
 
-class _IncorrectEventParameterNameOption extends CommonLintOption {
+class _IncorrectEventParameterNameOption extends CommonLintParameter {
   const _IncorrectEventParameterNameOption({
     super.excludes,
     super.includes,

@@ -1,6 +1,6 @@
 import '../index.dart';
 
-class IncorrectTodoComment extends OptionsLintRule<_IncorrectTodoCommentOption> {
+class IncorrectTodoComment extends CommonLintRule<_IncorrectTodoCommentOption> {
   IncorrectTodoComment(
     CustomLintConfigs configs,
   ) : super(
@@ -13,18 +13,13 @@ class IncorrectTodoComment extends OptionsLintRule<_IncorrectTodoCommentOption> 
                   'Example: // TODO(username): some description text #123.'),
         );
 
-
   @override
-  Future<void> run(
+  Future<void> check(
     CustomLintResolver resolver,
     ErrorReporter reporter,
     CustomLintContext context,
+    String rootPath,
   ) async {
-    final runCtx = await prepareRun(resolver);
-    if (runCtx == null) return;
-    final code = runCtx.code;
-    final parameters = runCtx.parameters;
-
     resolver.getLineContents((codeLine) {
       if (codeLine.isEndOfLineComment) {
         if (codeLine.content.contains(RegExp(r'//\s*TODO')) &&
@@ -40,7 +35,7 @@ class IncorrectTodoComment extends OptionsLintRule<_IncorrectTodoCommentOption> 
   }
 }
 
-class _IncorrectTodoCommentOption extends CommonLintOption {
+class _IncorrectTodoCommentOption extends CommonLintParameter {
   const _IncorrectTodoCommentOption({
     super.excludes,
     super.includes,

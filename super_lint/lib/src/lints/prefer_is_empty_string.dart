@@ -1,6 +1,6 @@
 import '../index.dart';
 
-class PreferIsEmptyString extends OptionsLintRule<_PreferIsEmptyStringOption> {
+class PreferIsEmptyString extends CommonLintRule<_PreferIsEmptyStringOption> {
   PreferIsEmptyString(
     CustomLintConfigs configs,
   ) : super(
@@ -13,18 +13,13 @@ class PreferIsEmptyString extends OptionsLintRule<_PreferIsEmptyStringOption> {
           ),
         );
 
-
   @override
-  Future<void> run(
+  Future<void> check(
     CustomLintResolver resolver,
     ErrorReporter reporter,
     CustomLintContext context,
+    String rootPath,
   ) async {
-    final runCtx = await prepareRun(resolver);
-    if (runCtx == null) return;
-    final code = runCtx.code;
-    final parameters = runCtx.parameters;
-
     context.registry.addBinaryExpression((node) {
       if (node.operator.type == TokenType.EQ_EQ &&
           (node.leftOperand.toString() == '\'\'' || node.rightOperand.toString() == '\'\'')) {
@@ -39,7 +34,7 @@ class PreferIsEmptyString extends OptionsLintRule<_PreferIsEmptyStringOption> {
       ];
 }
 
-class _ReplaceWithIsEmpty extends OptionsFix<_PreferIsEmptyStringOption> {
+class _ReplaceWithIsEmpty extends CommonQuickFix<_PreferIsEmptyStringOption> {
   _ReplaceWithIsEmpty(super.config);
 
   @override
@@ -75,7 +70,7 @@ class _ReplaceWithIsEmpty extends OptionsFix<_PreferIsEmptyStringOption> {
   }
 }
 
-class _PreferIsEmptyStringOption extends CommonLintOption {
+class _PreferIsEmptyStringOption extends CommonLintParameter {
   const _PreferIsEmptyStringOption({
     super.excludes,
     super.includes,

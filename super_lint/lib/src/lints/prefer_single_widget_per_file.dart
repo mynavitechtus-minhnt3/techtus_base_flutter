@@ -2,7 +2,7 @@ import 'package:path/path.dart' as p;
 
 import '../index.dart';
 
-class PreferSingleWidgetPerFile extends OptionsLintRule<_PreferSingleWidgetPerFileOption> {
+class PreferSingleWidgetPerFile extends CommonLintRule<_PreferSingleWidgetPerFileOption> {
   PreferSingleWidgetPerFile(
     CustomLintConfigs configs,
   ) : super(
@@ -14,14 +14,13 @@ class PreferSingleWidgetPerFile extends OptionsLintRule<_PreferSingleWidgetPerFi
           ),
         );
 
-
   @override
-  void run(CustomLintResolver resolver, ErrorReporter reporter, CustomLintContext context) async {
-    final runCtx = await prepareRun(resolver);
-    if (runCtx == null) return;
-    final code = runCtx.code;
-    final parameters = runCtx.parameters;
-
+  Future<void> check(
+    CustomLintResolver resolver,
+    ErrorReporter reporter,
+    CustomLintContext context,
+    String rootPath,
+  ) async {
     final unit = (await resolver.getResolvedUnitResult()).unit;
     final fileName = p.basenameWithoutExtension(resolver.path);
     final expectedClassName = fileName.snakeToPascal();
@@ -51,7 +50,7 @@ class PreferSingleWidgetPerFile extends OptionsLintRule<_PreferSingleWidgetPerFi
   }
 }
 
-class _PreferSingleWidgetPerFileOption extends CommonLintOption {
+class _PreferSingleWidgetPerFileOption extends CommonLintParameter {
   const _PreferSingleWidgetPerFileOption({
     super.excludes,
     super.includes,

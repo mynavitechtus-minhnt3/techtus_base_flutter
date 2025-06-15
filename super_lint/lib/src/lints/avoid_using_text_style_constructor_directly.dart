@@ -1,7 +1,7 @@
 import '../index.dart';
 
 class AvoidUsingTextStyleConstructorDirectly
-    extends OptionsLintRule<_AvoidUsingTextStyleConstructorOption> {
+    extends CommonLintRule<_AvoidUsingTextStyleConstructorOption> {
   AvoidUsingTextStyleConstructorDirectly(
     CustomLintConfigs configs,
   ) : super(
@@ -14,18 +14,13 @@ class AvoidUsingTextStyleConstructorDirectly
           ),
         );
 
-
   @override
-  Future<void> run(
+  Future<void> check(
     CustomLintResolver resolver,
     ErrorReporter reporter,
     CustomLintContext context,
+    String rootPath,
   ) async {
-    final runCtx = await prepareRun(resolver);
-    if (runCtx == null) return;
-    final code = runCtx.code;
-    final parameters = runCtx.parameters;
-
     context.registry.addInstanceCreationExpression((node) {
       if (node.constructorName.type.type.toString() == 'TextStyle') {
         reporter.atNode(node, code);
@@ -39,7 +34,8 @@ class AvoidUsingTextStyleConstructorDirectly
       ];
 }
 
-class _ReplaceTextStyleWithStyleFunction extends OptionsFix<_AvoidUsingTextStyleConstructorOption> {
+class _ReplaceTextStyleWithStyleFunction
+    extends CommonQuickFix<_AvoidUsingTextStyleConstructorOption> {
   _ReplaceTextStyleWithStyleFunction(super.config);
 
   @override
@@ -72,7 +68,7 @@ class _ReplaceTextStyleWithStyleFunction extends OptionsFix<_AvoidUsingTextStyle
   }
 }
 
-class _AvoidUsingTextStyleConstructorOption extends CommonLintOption {
+class _AvoidUsingTextStyleConstructorOption extends CommonLintParameter {
   const _AvoidUsingTextStyleConstructorOption({
     super.excludes,
     super.includes,

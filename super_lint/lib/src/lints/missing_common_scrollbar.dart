@@ -1,6 +1,6 @@
 import '../index.dart';
 
-class MissingCommonScrollbar extends OptionsLintRule<_MissingCommonScrollbarOption> {
+class MissingCommonScrollbar extends CommonLintRule<_MissingCommonScrollbarOption> {
   MissingCommonScrollbar(
     CustomLintConfigs configs,
   ) : super(RuleConfig(
@@ -10,17 +10,16 @@ class MissingCommonScrollbar extends OptionsLintRule<_MissingCommonScrollbarOpti
             problemMessage: (_) =>
                 'Scrollable widgets in a Page class must be wrapped with CommonScrollbar.'));
 
-
   @override
-  void run(CustomLintResolver resolver, ErrorReporter reporter, CustomLintContext context) async {
-    final runCtx = await prepareRun(resolver);
-    if (runCtx == null) return;
-    final code = runCtx.code;
-    final parameters = runCtx.parameters;
-
+  Future<void> check(
+    CustomLintResolver resolver,
+    ErrorReporter reporter,
+    CustomLintContext context,
+    String rootPath,
+  ) async {
     context.registry.addInstanceCreationExpression((node) {
       final widgetName = node.staticType?.getDisplayString();
-      if (!config.parameters.scrollableWidgetNames.contains(widgetName)) {
+      if (!parameters.scrollableWidgetNames.contains(widgetName)) {
         return;
       }
 
@@ -33,13 +32,13 @@ class MissingCommonScrollbar extends OptionsLintRule<_MissingCommonScrollbarOpti
       final isWrappedByCommonScrollbar = node.thisOrAncestorMatching((ancestor) {
             if (ancestor is InstanceCreationExpression) {
               final ancestorName = ancestor.constructorName.type.toString();
-              return ancestorName == config.parameters.commonScrollbarWidgetName;
+              return ancestorName == parameters.commonScrollbarWidgetName;
             }
             return false;
           }) !=
           null;
       final hasCommonScrollbarInClass =
-          parentClassDeclaration.toSource().contains(config.parameters.commonScrollbarWidgetName);
+          parentClassDeclaration.toSource().contains(parameters.commonScrollbarWidgetName);
 
       final hasController = node.argumentList.arguments
           .whereType<NamedExpression>()
@@ -55,7 +54,7 @@ class MissingCommonScrollbar extends OptionsLintRule<_MissingCommonScrollbarOpti
             node.constructorName,
             code.copyWith(
               problemMessage:
-                  'If ${node.constructorName} is wrapped by ${config.parameters.commonScrollbarWidgetName}, '
+                  'If ${node.constructorName} is wrapped by ${parameters.commonScrollbarWidgetName}, '
                   'it must have a \'ScrollController\' passed to it.',
             ));
       }
@@ -68,7 +67,7 @@ class MissingCommonScrollbar extends OptionsLintRule<_MissingCommonScrollbarOpti
   }
 }
 
-class _MissingCommonScrollbarOption extends CommonLintOption {
+class _MissingCommonScrollbarOption extends CommonLintParameter {
   const _MissingCommonScrollbarOption({
     super.excludes,
     super.includes,
@@ -105,7 +104,7 @@ class _MissingCommonScrollbarOption extends CommonLintOption {
   ];
 }
 
-class _MissingCommonScrollbarFix extends OptionsFix<_MissingCommonScrollbarOption> {
+class _MissingCommonScrollbarFix extends CommonQuickFix<_MissingCommonScrollbarOption> {
   _MissingCommonScrollbarFix(super.config);
 
   @override
@@ -121,22 +120,20 @@ class _MissingCommonScrollbarFix extends OptionsFix<_MissingCommonScrollbarOptio
         return;
       }
 
-      if (config.parameters.scrollableWidgetNames.contains(node.staticType?.getDisplayString())) {
+      if (parameters.scrollableWidgetNames.contains(node.staticType?.getDisplayString())) {
         final parentClassDeclaration = node.parentClassDeclaration;
         if (parentClassDeclaration != null &&
             parentClassDeclaration.name.toString().endsWith('Page') &&
-            !parentClassDeclaration
-                .toSource()
-                .contains(config.parameters.commonScrollbarWidgetName)) {
+            !parentClassDeclaration.toSource().contains(parameters.commonScrollbarWidgetName)) {
           final changeBuilder = reporter.createChangeBuilder(
-            message: 'Wrap with ${config.parameters.commonScrollbarWidgetName}',
+            message: 'Wrap with ${parameters.commonScrollbarWidgetName}',
             priority: 7110,
           );
 
           changeBuilder.addDartFileEdit((builder) {
             builder.addSimpleReplacement(
               node.sourceRange,
-              '${config.parameters.commonScrollbarWidgetName}(\n'
+              '${parameters.commonScrollbarWidgetName}(\n'
               '  routeName: ${_toRouteName(parentClassDeclaration.name.toString())},\n'
               '  controller: scrollController,\n'
               '  child: ${node.toSource()},\n'

@@ -1,6 +1,6 @@
 import '../index.dart';
 
-class PreferAsyncAwait extends OptionsLintRule<_PreferAsyncAwaitOption> {
+class PreferAsyncAwait extends CommonLintRule<_PreferAsyncAwaitOption> {
   PreferAsyncAwait(
     CustomLintConfigs configs,
   ) : super(
@@ -12,18 +12,13 @@ class PreferAsyncAwait extends OptionsLintRule<_PreferAsyncAwaitOption> {
           ),
         );
 
-
   @override
-  Future<void> run(
+  Future<void> check(
     CustomLintResolver resolver,
     ErrorReporter reporter,
     CustomLintContext context,
+    String rootPath,
   ) async {
-    final runCtx = await prepareRun(resolver);
-    if (runCtx == null) return;
-    final code = runCtx.code;
-    final parameters = runCtx.parameters;
-
     context.registry.addMethodInvocation((node) {
       final target = node.realTarget;
       if (target == null) return;
@@ -39,7 +34,7 @@ class PreferAsyncAwait extends OptionsLintRule<_PreferAsyncAwaitOption> {
   }
 }
 
-class _PreferAsyncAwaitOption extends CommonLintOption {
+class _PreferAsyncAwaitOption extends CommonLintParameter {
   const _PreferAsyncAwaitOption({
     super.excludes,
     super.includes,

@@ -2,7 +2,7 @@ import 'package:collection/collection.dart';
 
 import '../index.dart';
 
-class MissingExpandedOrFlexible extends OptionsLintRule<_MissingExpandedOrFlexibleOption> {
+class MissingExpandedOrFlexible extends CommonLintRule<_MissingExpandedOrFlexibleOption> {
   MissingExpandedOrFlexible(
     CustomLintConfigs configs,
   ) : super(
@@ -15,18 +15,13 @@ class MissingExpandedOrFlexible extends OptionsLintRule<_MissingExpandedOrFlexib
           ),
         );
 
-
   @override
-  Future<void> run(
+  Future<void> check(
     CustomLintResolver resolver,
     ErrorReporter reporter,
     CustomLintContext context,
+    String rootPath,
   ) async {
-    final runCtx = await prepareRun(resolver);
-    if (runCtx == null) return;
-    final code = runCtx.code;
-    final parameters = runCtx.parameters;
-
     context.registry.addInstanceCreationExpression((node) {
       final widget = node.constructorName.type.toString();
       if (widget == 'Row' || widget == 'Column') {
@@ -56,7 +51,7 @@ class MissingExpandedOrFlexible extends OptionsLintRule<_MissingExpandedOrFlexib
   }
 }
 
-class _MissingExpandedOrFlexibleOption extends CommonLintOption {
+class _MissingExpandedOrFlexibleOption extends CommonLintParameter {
   const _MissingExpandedOrFlexibleOption({
     super.excludes,
     super.includes,

@@ -1,8 +1,15 @@
 import '../index.dart';
 
-mixin ExcludableMixin {
-  List<String> get includes;
-  List<String> get excludes;
+abstract class CommonLintParameter {
+  const CommonLintParameter({
+    this.excludes = const [],
+    this.includes = const [],
+    this.severity,
+  });
+
+  final List<String> excludes;
+  final List<String> includes;
+  final ErrorSeverity? severity;
 
   bool shouldSkipAnalysis({
     required String path,
@@ -15,8 +22,4 @@ mixin ExcludableMixin {
       rootPath: rootPath,
     );
   }
-}
-
-abstract class Excludable with ExcludableMixin {
-  const Excludable();
 }

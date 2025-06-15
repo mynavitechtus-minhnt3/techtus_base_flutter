@@ -5,7 +5,7 @@ import '../index.dart';
 const _runCatchingFunction = 'runCatching';
 const _viewModelClassNameRegex = r'^.+ViewModel$';
 
-class MissingRunCatching extends OptionsLintRule<_MissingRunCatchingOption> {
+class MissingRunCatching extends CommonLintRule<_MissingRunCatchingOption> {
   MissingRunCatching(
     CustomLintConfigs configs,
   ) : super(
@@ -18,18 +18,13 @@ class MissingRunCatching extends OptionsLintRule<_MissingRunCatchingOption> {
           ),
         );
 
-
   @override
-  Future<void> run(
+  Future<void> check(
     CustomLintResolver resolver,
     ErrorReporter reporter,
     CustomLintContext context,
+    String rootPath,
   ) async {
-    final runCtx = await prepareRun(resolver);
-    if (runCtx == null) return;
-    final code = runCtx.code;
-    final parameters = runCtx.parameters;
-
     context.registry.addMethodInvocation((node) {
       if (_addPrivateCase(parameters.startsWithPatterns).any(
             (element) => node.toString().startsWith(element),
@@ -89,7 +84,7 @@ class MissingRunCatching extends OptionsLintRule<_MissingRunCatchingOption> {
   }
 }
 
-class _MissingRunCatchingOption extends CommonLintOption {
+class _MissingRunCatchingOption extends CommonLintParameter {
   const _MissingRunCatchingOption({
     super.excludes,
     super.includes,

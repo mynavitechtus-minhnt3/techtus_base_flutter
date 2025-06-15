@@ -5,8 +5,7 @@ import '../index.dart';
 const _testFunctionArgCount = 2;
 const _regex = r'[A-Z]';
 
-class PreferLowerCaseTestDescription
-    extends OptionsLintRule<_PreferLowerCaseTestDescriptionOption> {
+class PreferLowerCaseTestDescription extends CommonLintRule<_PreferLowerCaseTestDescriptionOption> {
   PreferLowerCaseTestDescription(
     CustomLintConfigs configs,
   ) : super(
@@ -18,18 +17,13 @@ class PreferLowerCaseTestDescription
                   'Lower case the first character when writing tests descriptions.'),
         );
 
-
   @override
-  Future<void> run(
+  Future<void> check(
     CustomLintResolver resolver,
     ErrorReporter reporter,
     CustomLintContext context,
+    String rootPath,
   ) async {
-    final runCtx = await prepareRun(resolver);
-    if (runCtx == null) return;
-    final code = runCtx.code;
-    final parameters = runCtx.parameters;
-
     context.registry.addMethodInvocation((node) {
       final testMethod = parameters.testMethods.firstWhereOrNull((element) {
         final methodName = element[_PreferLowerCaseTestDescriptionOption.keyMethodName];
@@ -62,7 +56,7 @@ class PreferLowerCaseTestDescription
       ];
 }
 
-class _ChangeToLowerCase extends OptionsFix<_PreferLowerCaseTestDescriptionOption> {
+class _ChangeToLowerCase extends CommonQuickFix<_PreferLowerCaseTestDescriptionOption> {
   _ChangeToLowerCase(super.config);
 
   @override
@@ -79,7 +73,7 @@ class _ChangeToLowerCase extends OptionsFix<_PreferLowerCaseTestDescriptionOptio
         return;
       }
 
-      final testMethod = config.parameters.testMethods.firstWhereOrNull((element) {
+      final testMethod = parameters.testMethods.firstWhereOrNull((element) {
         final methodName = element[_PreferLowerCaseTestDescriptionOption.keyMethodName];
         return node.methodName.name == methodName;
       });
@@ -113,7 +107,7 @@ class _ChangeToLowerCase extends OptionsFix<_PreferLowerCaseTestDescriptionOptio
   }
 }
 
-class _PreferLowerCaseTestDescriptionOption extends CommonLintOption {
+class _PreferLowerCaseTestDescriptionOption extends CommonLintParameter {
   const _PreferLowerCaseTestDescriptionOption({
     super.excludes,
     super.includes,

@@ -1,7 +1,7 @@
 import '../index.dart';
 
 class IncorrectScreenNameParameterValue
-    extends OptionsLintRule<_IncorrectScreenNameParameterValueOption> {
+    extends CommonLintRule<_IncorrectScreenNameParameterValueOption> {
   IncorrectScreenNameParameterValue(CustomLintConfigs configs)
       : super(
           RuleConfig(
@@ -12,18 +12,13 @@ class IncorrectScreenNameParameterValue
           ),
         );
 
-
   @override
-  Future<void> run(
+  Future<void> check(
     CustomLintResolver resolver,
     ErrorReporter reporter,
     CustomLintContext context,
+    String rootPath,
   ) async {
-    final runCtx = await prepareRun(resolver);
-    if (runCtx == null) return;
-    final code = runCtx.code;
-    final parameters = runCtx.parameters;
-
     final fileName = resolver.path.split('/').last.split('.').first;
     final expectedScreenName = fileName.toCamelCase();
 
@@ -56,7 +51,7 @@ class IncorrectScreenNameParameterValue
   }
 }
 
-class _FixIncorrectScreenName extends OptionsFix<_IncorrectScreenNameParameterValueOption> {
+class _FixIncorrectScreenName extends CommonQuickFix<_IncorrectScreenNameParameterValueOption> {
   _FixIncorrectScreenName(super.config);
 
   @override
@@ -84,7 +79,7 @@ class _FixIncorrectScreenName extends OptionsFix<_IncorrectScreenNameParameterVa
   }
 }
 
-class _IncorrectScreenNameParameterValueOption extends CommonLintOption {
+class _IncorrectScreenNameParameterValueOption extends CommonLintParameter {
   const _IncorrectScreenNameParameterValueOption({
     super.excludes,
     super.includes,

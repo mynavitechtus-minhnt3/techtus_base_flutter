@@ -2,7 +2,7 @@ import 'package:collection/collection.dart';
 
 import '../index.dart';
 
-class PreferCommonWidgets extends OptionsLintRule<_PreferCommonWidgetsOption> {
+class PreferCommonWidgets extends CommonLintRule<_PreferCommonWidgetsOption> {
   PreferCommonWidgets(
     CustomLintConfigs configs,
   ) : super(
@@ -15,18 +15,13 @@ class PreferCommonWidgets extends OptionsLintRule<_PreferCommonWidgetsOption> {
           ),
         );
 
-
   @override
-  Future<void> run(
+  Future<void> check(
     CustomLintResolver resolver,
     ErrorReporter reporter,
     CustomLintContext context,
+    String rootPath,
   ) async {
-    final runCtx = await prepareRun(resolver);
-    if (runCtx == null) return;
-    final code = runCtx.code;
-    final parameters = runCtx.parameters;
-
     context.registry.addInstanceCreationExpression((node) {
       final bannedWidget = parameters.bannedWidgets.firstWhereOrNull((element) {
         final methodName = element[_PreferCommonWidgetsOption.keyBannedWidget];
@@ -45,7 +40,7 @@ class PreferCommonWidgets extends OptionsLintRule<_PreferCommonWidgetsOption> {
       ];
 }
 
-class _ReplaceWithCommonWidget extends OptionsFix<_PreferCommonWidgetsOption> {
+class _ReplaceWithCommonWidget extends CommonQuickFix<_PreferCommonWidgetsOption> {
   _ReplaceWithCommonWidget(super.config);
 
   @override
@@ -61,7 +56,7 @@ class _ReplaceWithCommonWidget extends OptionsFix<_PreferCommonWidgetsOption> {
         return;
       }
 
-      final bannedWidget = config.parameters.bannedWidgets.firstWhereOrNull((element) {
+      final bannedWidget = parameters.bannedWidgets.firstWhereOrNull((element) {
         final methodName = element[_PreferCommonWidgetsOption.keyBannedWidget];
         return node.constructorName.toString() == methodName;
       });
@@ -87,7 +82,7 @@ class _ReplaceWithCommonWidget extends OptionsFix<_PreferCommonWidgetsOption> {
   }
 }
 
-class _PreferCommonWidgetsOption extends CommonLintOption {
+class _PreferCommonWidgetsOption extends CommonLintParameter {
   const _PreferCommonWidgetsOption({
     super.excludes,
     super.includes,

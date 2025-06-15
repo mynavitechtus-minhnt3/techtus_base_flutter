@@ -1,6 +1,6 @@
 import '../index.dart';
 
-class AvoidHardCodedStrings extends OptionsLintRule<_AvoidHardCodedStringsOption> {
+class AvoidHardCodedStrings extends CommonLintRule<_AvoidHardCodedStringsOption> {
   AvoidHardCodedStrings(
     CustomLintConfigs configs,
   ) : super(
@@ -13,20 +13,15 @@ class AvoidHardCodedStrings extends OptionsLintRule<_AvoidHardCodedStringsOption
           ),
         );
 
-
   @override
-  Future<void> run(
+  Future<void> check(
     CustomLintResolver resolver,
     ErrorReporter reporter,
     CustomLintContext context,
+    String rootPath,
   ) async {
-    final runCtx = await prepareRun(resolver);
-    if (runCtx == null) return;
-    final code = runCtx.code;
-    final parameters = runCtx.parameters;
-
     context.registry.addSimpleStringLiteral((node) {
-      if (node.value.length < config.parameters.minimumLength) {
+      if (node.value.length < parameters.minimumLength) {
         return;
       }
 
@@ -54,7 +49,7 @@ class AvoidHardCodedStrings extends OptionsLintRule<_AvoidHardCodedStringsOption
     });
 
     context.registry.addInterpolationString((node) {
-      if (node.value.length < config.parameters.minimumLength) {
+      if (node.value.length < parameters.minimumLength) {
         return;
       }
 
@@ -72,7 +67,7 @@ class AvoidHardCodedStrings extends OptionsLintRule<_AvoidHardCodedStringsOption
       ];
 }
 
-class _AvoidHardCodedStringsFix extends OptionsFix<_AvoidHardCodedStringsOption> {
+class _AvoidHardCodedStringsFix extends CommonQuickFix<_AvoidHardCodedStringsOption> {
   _AvoidHardCodedStringsFix(super.config);
 
   @override
@@ -111,7 +106,7 @@ class _AvoidHardCodedStringsFix extends OptionsFix<_AvoidHardCodedStringsOption>
   }
 }
 
-class _AvoidHardCodedStringsOption extends CommonLintOption {
+class _AvoidHardCodedStringsOption extends CommonLintParameter {
   const _AvoidHardCodedStringsOption({
     super.excludes,
     super.includes,
