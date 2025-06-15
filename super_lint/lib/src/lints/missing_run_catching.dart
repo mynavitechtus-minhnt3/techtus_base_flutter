@@ -5,14 +5,14 @@ import '../index.dart';
 const _runCatchingFunction = 'runCatching';
 const _viewModelClassNameRegex = r'^.+ViewModel$';
 
-class MissingRunCatching extends CommonLintRule<_MissingRunCatchingOption> {
+class MissingRunCatching extends CommonLintRule<_MissingRunCatchingParameter> {
   MissingRunCatching(
     CustomLintConfigs configs,
   ) : super(
           RuleConfig(
             name: 'missing_run_catching',
             configs: configs,
-            paramsParser: _MissingRunCatchingOption.fromMap,
+            paramsParser: _MissingRunCatchingParameter.fromMap,
             problemMessage: (_) =>
                 'All function called inside ViewModel classes must be wrapped with \'$_runCatchingFunction\' function.',
           ),
@@ -84,8 +84,8 @@ class MissingRunCatching extends CommonLintRule<_MissingRunCatchingOption> {
   }
 }
 
-class _MissingRunCatchingOption extends CommonLintParameter {
-  const _MissingRunCatchingOption({
+class _MissingRunCatchingParameter extends CommonLintParameter {
+  const _MissingRunCatchingParameter({
     super.excludes,
     super.includes,
     super.severity,
@@ -95,8 +95,8 @@ class _MissingRunCatchingOption extends CommonLintParameter {
   final List<String> startsWithPatterns;
   final List<String> startsWithPatternsExcludes;
 
-  static _MissingRunCatchingOption fromMap(Map<String, dynamic> map) {
-    return _MissingRunCatchingOption(
+  static _MissingRunCatchingParameter fromMap(Map<String, dynamic> map) {
+    return _MissingRunCatchingParameter(
       excludes: safeCastToListString(map['excludes']),
       includes: safeCastToListString(map['includes']),
       severity: convertStringToErrorSeverity(map['severity']),

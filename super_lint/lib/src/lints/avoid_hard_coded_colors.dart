@@ -1,13 +1,13 @@
 import '../index.dart';
 
-class AvoidHardCodedColors extends CommonLintRule<_AvoidHardCodedColorsOption> {
+class AvoidHardCodedColors extends CommonLintRule<_AvoidHardCodedColorsParameter> {
   AvoidHardCodedColors(
     CustomLintConfigs configs,
   ) : super(
           RuleConfig(
               name: 'avoid_hard_coded_colors',
               configs: configs,
-              paramsParser: _AvoidHardCodedColorsOption.fromMap,
+              paramsParser: _AvoidHardCodedColorsParameter.fromMap,
               problemMessage: (_) =>
                   'Avoid hard-coding colors, except for Colors.transparent, such as Color(0xFFFFFF) and Colors.white.\nPlease use \'cl.xxx\' instead'),
         );
@@ -102,15 +102,15 @@ class AvoidHardCodedColors extends CommonLintRule<_AvoidHardCodedColorsOption> {
   }
 }
 
-class _AvoidHardCodedColorsOption extends CommonLintParameter {
-  const _AvoidHardCodedColorsOption({
+class _AvoidHardCodedColorsParameter extends CommonLintParameter {
+  const _AvoidHardCodedColorsParameter({
     super.excludes,
     super.includes,
     super.severity,
   });
 
-  static _AvoidHardCodedColorsOption fromMap(Map<String, dynamic> map) {
-    return _AvoidHardCodedColorsOption(
+  static _AvoidHardCodedColorsParameter fromMap(Map<String, dynamic> map) {
+    return _AvoidHardCodedColorsParameter(
       excludes: safeCastToListString(map['excludes']),
       includes: safeCastToListString(map['includes']),
       severity: convertStringToErrorSeverity(map['severity']),

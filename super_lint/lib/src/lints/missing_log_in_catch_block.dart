@@ -1,13 +1,13 @@
 import '../index.dart';
 
-class MissingLogInCatchBlock extends CommonLintRule<_MissingLogInCatchBlockOption> {
+class MissingLogInCatchBlock extends CommonLintRule<_MissingLogInCatchBlockParameter> {
   MissingLogInCatchBlock(
     CustomLintConfigs configs,
   ) : super(
           RuleConfig(
             name: 'missing_log_in_catch_block',
             configs: configs,
-            paramsParser: _MissingLogInCatchBlockOption.fromMap,
+            paramsParser: _MissingLogInCatchBlockParameter.fromMap,
             problemMessage: (_) =>
                 'When using try/catch, the exception must be logged in the catch block',
           ),
@@ -35,8 +35,8 @@ class MissingLogInCatchBlock extends CommonLintRule<_MissingLogInCatchBlockOptio
   }
 }
 
-class _MissingLogInCatchBlockOption extends CommonLintParameter {
-  _MissingLogInCatchBlockOption({
+class _MissingLogInCatchBlockParameter extends CommonLintParameter {
+  _MissingLogInCatchBlockParameter({
     super.excludes,
     super.includes,
     this.methods = _defaultMethods,
@@ -46,8 +46,8 @@ class _MissingLogInCatchBlockOption extends CommonLintParameter {
   final List<String> methods;
   final String className;
 
-  static _MissingLogInCatchBlockOption fromMap(Map<String, dynamic> map) {
-    return _MissingLogInCatchBlockOption(
+  static _MissingLogInCatchBlockParameter fromMap(Map<String, dynamic> map) {
+    return _MissingLogInCatchBlockParameter(
       excludes: safeCastToListString(map['excludes']),
       includes: safeCastToListString(map['includes']),
       severity: convertStringToErrorSeverity(map['severity']),

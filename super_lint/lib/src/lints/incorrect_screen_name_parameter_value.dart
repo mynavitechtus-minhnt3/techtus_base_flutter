@@ -1,13 +1,13 @@
 import '../index.dart';
 
 class IncorrectScreenNameParameterValue
-    extends CommonLintRule<_IncorrectScreenNameParameterValueOption> {
+    extends CommonLintRule<_IncorrectScreenNameParameterValueParameter> {
   IncorrectScreenNameParameterValue(CustomLintConfigs configs)
       : super(
           RuleConfig(
             name: 'incorrect_screen_name_parameter_value',
             configs: configs,
-            paramsParser: _IncorrectScreenNameParameterValueOption.fromMap,
+            paramsParser: _IncorrectScreenNameParameterValueParameter.fromMap,
             problemMessage: (params) => 'The screenName does not match the file name.',
           ),
         );
@@ -46,13 +46,14 @@ class IncorrectScreenNameParameterValue
   @override
   List<Fix> getFixes() {
     return [
-      _FixIncorrectScreenName(config),
+      _IncorrectScreenNameParameterValueFix(config),
     ];
   }
 }
 
-class _FixIncorrectScreenName extends CommonQuickFix<_IncorrectScreenNameParameterValueOption> {
-  _FixIncorrectScreenName(super.config);
+class _IncorrectScreenNameParameterValueFix
+    extends CommonQuickFix<_IncorrectScreenNameParameterValueParameter> {
+  _IncorrectScreenNameParameterValueFix(super.config);
 
   @override
   Future<void> run(
@@ -79,15 +80,15 @@ class _FixIncorrectScreenName extends CommonQuickFix<_IncorrectScreenNameParamet
   }
 }
 
-class _IncorrectScreenNameParameterValueOption extends CommonLintParameter {
-  const _IncorrectScreenNameParameterValueOption({
+class _IncorrectScreenNameParameterValueParameter extends CommonLintParameter {
+  const _IncorrectScreenNameParameterValueParameter({
     super.excludes,
     super.includes,
     super.severity,
   });
 
-  static _IncorrectScreenNameParameterValueOption fromMap(Map<String, dynamic> map) {
-    return _IncorrectScreenNameParameterValueOption(
+  static _IncorrectScreenNameParameterValueParameter fromMap(Map<String, dynamic> map) {
+    return _IncorrectScreenNameParameterValueParameter(
       excludes: safeCastToListString(map['excludes']),
       includes: safeCastToListString(map['includes']),
       severity: convertStringToErrorSeverity(map['severity']),

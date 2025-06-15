@@ -1,13 +1,13 @@
 import '../index.dart';
 
-class PreferNamedParameters extends CommonLintRule<_PreferNamedParametersOption> {
+class PreferNamedParameters extends CommonLintRule<_PreferNamedParametersParameter> {
   PreferNamedParameters(
     CustomLintConfigs configs,
   ) : super(
           RuleConfig(
               name: 'prefer_named_parameters',
               configs: configs,
-              paramsParser: _PreferNamedParametersOption.fromMap,
+              paramsParser: _PreferNamedParametersParameter.fromMap,
               problemMessage: (_) =>
                   'If a function or constructor takes more parameters than the threshold, use named parameters'),
         );
@@ -57,12 +57,12 @@ class PreferNamedParameters extends CommonLintRule<_PreferNamedParametersOption>
 
   @override
   List<Fix> getFixes() => [
-        _ConvertToNamedParameters(config),
+        _PreferNamedParametersFix(config),
       ];
 }
 
-class _ConvertToNamedParameters extends CommonQuickFix<_PreferNamedParametersOption> {
-  _ConvertToNamedParameters(super.config);
+class _PreferNamedParametersFix extends CommonQuickFix<_PreferNamedParametersParameter> {
+  _PreferNamedParametersFix(super.config);
 
   @override
   Future<void> run(
@@ -125,8 +125,8 @@ class _ConvertToNamedParameters extends CommonQuickFix<_PreferNamedParametersOpt
   }
 }
 
-class _PreferNamedParametersOption extends CommonLintParameter {
-  const _PreferNamedParametersOption({
+class _PreferNamedParametersParameter extends CommonLintParameter {
+  const _PreferNamedParametersParameter({
     this.threshold = _defaultThreshold,
     super.excludes,
     super.includes,
@@ -135,8 +135,8 @@ class _PreferNamedParametersOption extends CommonLintParameter {
 
   final int threshold;
 
-  static _PreferNamedParametersOption fromMap(Map<String, dynamic> map) {
-    return _PreferNamedParametersOption(
+  static _PreferNamedParametersParameter fromMap(Map<String, dynamic> map) {
+    return _PreferNamedParametersParameter(
       threshold: safeCast(map['threshold']) ?? _defaultThreshold,
       excludes: safeCastToListString(map['excludes']),
       includes: safeCastToListString(map['includes']),

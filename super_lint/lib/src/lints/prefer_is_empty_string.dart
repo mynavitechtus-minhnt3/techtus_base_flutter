@@ -1,13 +1,13 @@
 import '../index.dart';
 
-class PreferIsEmptyString extends CommonLintRule<_PreferIsEmptyStringOption> {
+class PreferIsEmptyString extends CommonLintRule<_PreferIsEmptyStringParameter> {
   PreferIsEmptyString(
     CustomLintConfigs configs,
   ) : super(
           RuleConfig(
             name: 'prefer_is_empty_string',
             configs: configs,
-            paramsParser: _PreferIsEmptyStringOption.fromMap,
+            paramsParser: _PreferIsEmptyStringParameter.fromMap,
             problemMessage: (_) =>
                 'Use \'isEmpty\' instead of \'==\' to test whether the string is empty.\nTry rewriting the expression to use \'isEmpty\'.',
           ),
@@ -30,12 +30,12 @@ class PreferIsEmptyString extends CommonLintRule<_PreferIsEmptyStringOption> {
 
   @override
   List<Fix> getFixes() => [
-        _ReplaceWithIsEmpty(config),
+        _PreferIsEmptyStringFix(config),
       ];
 }
 
-class _ReplaceWithIsEmpty extends CommonQuickFix<_PreferIsEmptyStringOption> {
-  _ReplaceWithIsEmpty(super.config);
+class _PreferIsEmptyStringFix extends CommonQuickFix<_PreferIsEmptyStringParameter> {
+  _PreferIsEmptyStringFix(super.config);
 
   @override
   Future<void> run(
@@ -70,15 +70,15 @@ class _ReplaceWithIsEmpty extends CommonQuickFix<_PreferIsEmptyStringOption> {
   }
 }
 
-class _PreferIsEmptyStringOption extends CommonLintParameter {
-  const _PreferIsEmptyStringOption({
+class _PreferIsEmptyStringParameter extends CommonLintParameter {
+  const _PreferIsEmptyStringParameter({
     super.excludes,
     super.includes,
     super.severity,
   });
 
-  static _PreferIsEmptyStringOption fromMap(Map<String, dynamic> map) {
-    return _PreferIsEmptyStringOption(
+  static _PreferIsEmptyStringParameter fromMap(Map<String, dynamic> map) {
+    return _PreferIsEmptyStringParameter(
       excludes: safeCastToListString(map['excludes']),
       includes: safeCastToListString(map['includes']),
       severity: convertStringToErrorSeverity(map['severity']),

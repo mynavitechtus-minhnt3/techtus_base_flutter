@@ -1,12 +1,12 @@
 import '../index.dart';
 
-class MissingCommonScrollbar extends CommonLintRule<_MissingCommonScrollbarOption> {
+class MissingCommonScrollbar extends CommonLintRule<_MissingCommonScrollbarParameter> {
   MissingCommonScrollbar(
     CustomLintConfigs configs,
   ) : super(RuleConfig(
             name: 'missing_common_scrollbar',
             configs: configs,
-            paramsParser: _MissingCommonScrollbarOption.fromMap,
+            paramsParser: _MissingCommonScrollbarParameter.fromMap,
             problemMessage: (_) =>
                 'Scrollable widgets in a Page class must be wrapped with CommonScrollbar.'));
 
@@ -67,8 +67,8 @@ class MissingCommonScrollbar extends CommonLintRule<_MissingCommonScrollbarOptio
   }
 }
 
-class _MissingCommonScrollbarOption extends CommonLintParameter {
-  const _MissingCommonScrollbarOption({
+class _MissingCommonScrollbarParameter extends CommonLintParameter {
+  const _MissingCommonScrollbarParameter({
     super.excludes,
     super.includes,
     super.severity,
@@ -78,8 +78,8 @@ class _MissingCommonScrollbarOption extends CommonLintParameter {
   final String commonScrollbarWidgetName;
   final List<String> scrollableWidgetNames;
 
-  static _MissingCommonScrollbarOption fromMap(Map<String, dynamic> map) {
-    return _MissingCommonScrollbarOption(
+  static _MissingCommonScrollbarParameter fromMap(Map<String, dynamic> map) {
+    return _MissingCommonScrollbarParameter(
       excludes: safeCastToListString(map['excludes']),
       includes: safeCastToListString(map['includes']),
       severity: convertStringToErrorSeverity(map['severity']),
@@ -104,7 +104,7 @@ class _MissingCommonScrollbarOption extends CommonLintParameter {
   ];
 }
 
-class _MissingCommonScrollbarFix extends CommonQuickFix<_MissingCommonScrollbarOption> {
+class _MissingCommonScrollbarFix extends CommonQuickFix<_MissingCommonScrollbarParameter> {
   _MissingCommonScrollbarFix(super.config);
 
   @override

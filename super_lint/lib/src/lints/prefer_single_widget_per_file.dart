@@ -2,14 +2,14 @@ import 'package:path/path.dart' as p;
 
 import '../index.dart';
 
-class PreferSingleWidgetPerFile extends CommonLintRule<_PreferSingleWidgetPerFileOption> {
+class PreferSingleWidgetPerFile extends CommonLintRule<_PreferSingleWidgetPerFileParameter> {
   PreferSingleWidgetPerFile(
     CustomLintConfigs configs,
   ) : super(
           RuleConfig(
             name: 'prefer_single_widget_per_file',
             configs: configs,
-            paramsParser: _PreferSingleWidgetPerFileOption.fromMap,
+            paramsParser: _PreferSingleWidgetPerFileParameter.fromMap,
             problemMessage: (_) => 'Prefer single public widget per file',
           ),
         );
@@ -50,15 +50,15 @@ class PreferSingleWidgetPerFile extends CommonLintRule<_PreferSingleWidgetPerFil
   }
 }
 
-class _PreferSingleWidgetPerFileOption extends CommonLintParameter {
-  const _PreferSingleWidgetPerFileOption({
+class _PreferSingleWidgetPerFileParameter extends CommonLintParameter {
+  const _PreferSingleWidgetPerFileParameter({
     super.excludes,
     super.includes,
     super.severity,
   });
 
-  static _PreferSingleWidgetPerFileOption fromMap(Map<String, dynamic> map) {
-    return _PreferSingleWidgetPerFileOption(
+  static _PreferSingleWidgetPerFileParameter fromMap(Map<String, dynamic> map) {
+    return _PreferSingleWidgetPerFileParameter(
       severity: safeCast(map['severity']),
       excludes: safeCastToListString(map['excludes']),
       includes: safeCastToListString(map['includes']),

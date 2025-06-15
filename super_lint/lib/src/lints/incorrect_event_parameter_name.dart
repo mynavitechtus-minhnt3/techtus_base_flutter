@@ -2,15 +2,15 @@ import '../index.dart';
 
 const _className = 'ParameterConstants';
 
-class IncorrectEventParameterName extends CommonLintRule<_IncorrectEventParameterNameOption> {
+class IncorrectEventParameterName extends CommonLintRule<_IncorrectEventParameterNameParameter> {
   IncorrectEventParameterName(
     CustomLintConfigs configs,
   ) : super(
           RuleConfig(
             name: 'incorrect_event_parameter_name',
             configs: configs,
-            paramsParser: _IncorrectEventParameterNameOption.fromMap,
-            problemMessage: (options) => 'Parameters in `$_className` must use snake_case naming.',
+            paramsParser: _IncorrectEventParameterNameParameter.fromMap,
+            problemMessage: (_) => 'Parameters in `$_className` must use snake_case naming.',
           ),
         );
 
@@ -44,15 +44,15 @@ class IncorrectEventParameterName extends CommonLintRule<_IncorrectEventParamete
   }
 }
 
-class _IncorrectEventParameterNameOption extends CommonLintParameter {
-  const _IncorrectEventParameterNameOption({
+class _IncorrectEventParameterNameParameter extends CommonLintParameter {
+  const _IncorrectEventParameterNameParameter({
     super.excludes,
     super.includes,
     super.severity,
   });
 
-  static _IncorrectEventParameterNameOption fromMap(Map<String, dynamic> map) {
-    return _IncorrectEventParameterNameOption(
+  static _IncorrectEventParameterNameParameter fromMap(Map<String, dynamic> map) {
+    return _IncorrectEventParameterNameParameter(
       excludes: safeCastToListString(map['excludes']),
       includes: safeCastToListString(map['includes']),
       severity: convertStringToErrorSeverity(map['severity']),

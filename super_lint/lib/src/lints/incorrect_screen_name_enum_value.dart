@@ -1,12 +1,12 @@
 import '../index.dart';
 
-class IncorrectScreenNameEnumValue extends CommonLintRule<_IncorrectScreenNameEnumValueOption> {
+class IncorrectScreenNameEnumValue extends CommonLintRule<_IncorrectScreenNameEnumValueParameter> {
   IncorrectScreenNameEnumValue(CustomLintConfigs configs)
       : super(
           RuleConfig(
             name: 'incorrect_screen_name_enum_value',
             configs: configs,
-            paramsParser: _IncorrectScreenNameEnumValueOption.fromMap,
+            paramsParser: _IncorrectScreenNameEnumValueParameter.fromMap,
             problemMessage: (params) =>
                 'The screenName, screenEventPrefix, or screenClass value does not follow the expected format.',
           ),
@@ -67,15 +67,15 @@ class IncorrectScreenNameEnumValue extends CommonLintRule<_IncorrectScreenNameEn
   }
 }
 
-class _IncorrectScreenNameEnumValueOption extends CommonLintParameter {
-  const _IncorrectScreenNameEnumValueOption({
+class _IncorrectScreenNameEnumValueParameter extends CommonLintParameter {
+  const _IncorrectScreenNameEnumValueParameter({
     super.excludes,
     super.includes,
     super.severity,
   });
 
-  static _IncorrectScreenNameEnumValueOption fromMap(Map<String, dynamic> map) {
-    return _IncorrectScreenNameEnumValueOption(
+  static _IncorrectScreenNameEnumValueParameter fromMap(Map<String, dynamic> map) {
+    return _IncorrectScreenNameEnumValueParameter(
       excludes: safeCastToListString(map['excludes']),
       includes: safeCastToListString(map['includes']),
       severity: convertStringToErrorSeverity(map['severity']),

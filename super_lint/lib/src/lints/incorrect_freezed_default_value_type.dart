@@ -3,14 +3,14 @@ import 'package:collection/collection.dart';
 import '../index.dart';
 
 class IncorrectFreezedDefaultValueType
-    extends CommonLintRule<_IncorrectFreezedDefaultValueTypeOption> {
+    extends CommonLintRule<_IncorrectFreezedDefaultValueTypeParameter> {
   IncorrectFreezedDefaultValueType(
     CustomLintConfigs configs,
   ) : super(
           RuleConfig(
             name: 'incorrect_freezed_default_value_type',
             configs: configs,
-            paramsParser: _IncorrectFreezedDefaultValueTypeOption.fromMap,
+            paramsParser: _IncorrectFreezedDefaultValueTypeParameter.fromMap,
             problemMessage: (_) => 'The value used in @Default must match the field type.',
           ),
         );
@@ -49,15 +49,15 @@ class IncorrectFreezedDefaultValueType
   }
 }
 
-class _IncorrectFreezedDefaultValueTypeOption extends CommonLintParameter {
-  const _IncorrectFreezedDefaultValueTypeOption({
+class _IncorrectFreezedDefaultValueTypeParameter extends CommonLintParameter {
+  const _IncorrectFreezedDefaultValueTypeParameter({
     super.excludes,
     super.includes,
     super.severity,
   });
 
-  static _IncorrectFreezedDefaultValueTypeOption fromMap(Map<String, dynamic> map) {
-    return _IncorrectFreezedDefaultValueTypeOption(
+  static _IncorrectFreezedDefaultValueTypeParameter fromMap(Map<String, dynamic> map) {
+    return _IncorrectFreezedDefaultValueTypeParameter(
       excludes: safeCastToListString(map['excludes']),
       includes: safeCastToListString(map['includes']),
       severity: convertStringToErrorSeverity(map['severity']),

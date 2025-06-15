@@ -2,14 +2,15 @@ import 'package:collection/collection.dart';
 
 import '../index.dart';
 
-class TestFolderMustMirrorLibFolder extends CommonLintRule<_TestFolderMustMirrorLibFolderOption> {
+class TestFolderMustMirrorLibFolder
+    extends CommonLintRule<_TestFolderMustMirrorLibFolderParameter> {
   TestFolderMustMirrorLibFolder(
     CustomLintConfigs configs,
   ) : super(
           RuleConfig(
             name: 'test_folder_must_mirror_lib_folder',
             configs: configs,
-            paramsParser: _TestFolderMustMirrorLibFolderOption.fromMap,
+            paramsParser: _TestFolderMustMirrorLibFolderParameter.fromMap,
             problemMessage: (_) =>
                 'Test files must have names ending with \'$_testFileSuffix\', and their paths must mirror the structure of the \'lib\' folder.',
           ),
@@ -58,8 +59,8 @@ class TestFolderMustMirrorLibFolder extends CommonLintRule<_TestFolderMustMirror
   }
 }
 
-class _TestFolderMustMirrorLibFolderOption extends CommonLintParameter {
-  const _TestFolderMustMirrorLibFolderOption({
+class _TestFolderMustMirrorLibFolderParameter extends CommonLintParameter {
+  const _TestFolderMustMirrorLibFolderParameter({
     super.excludes,
     super.includes,
     super.severity,
@@ -69,8 +70,8 @@ class _TestFolderMustMirrorLibFolderOption extends CommonLintParameter {
   final String libFolderPath;
   final List<String> testFolderPaths;
 
-  static _TestFolderMustMirrorLibFolderOption fromMap(Map<String, dynamic> map) {
-    return _TestFolderMustMirrorLibFolderOption(
+  static _TestFolderMustMirrorLibFolderParameter fromMap(Map<String, dynamic> map) {
+    return _TestFolderMustMirrorLibFolderParameter(
       excludes: safeCastToListString(map['excludes']),
       includes: safeCastToListString(map['includes']),
       severity: convertStringToErrorSeverity(map['severity']),

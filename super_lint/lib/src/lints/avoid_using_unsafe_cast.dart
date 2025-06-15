@@ -1,13 +1,13 @@
 import '../index.dart';
 
-class AvoidUsingUnsafeCast extends CommonLintRule<_AvoidUsingUnsafeCastOption> {
+class AvoidUsingUnsafeCast extends CommonLintRule<_AvoidUsingUnsafeCastParameter> {
   AvoidUsingUnsafeCast(
     CustomLintConfigs configs,
   ) : super(
           RuleConfig(
             name: 'avoid_using_unsafe_cast',
             configs: configs,
-            paramsParser: _AvoidUsingUnsafeCastOption.fromMap,
+            paramsParser: _AvoidUsingUnsafeCastParameter.fromMap,
             problemMessage: (_) => 'Avoid using unsafe cast. Use \'safeCast\' function instead.',
           ),
         );
@@ -30,13 +30,13 @@ class AvoidUsingUnsafeCast extends CommonLintRule<_AvoidUsingUnsafeCastOption> {
   @override
   List<Fix> getFixes() {
     return [
-      ReplaceWithSafeCast(config),
+      _AvoidUsingUnsafeCastFix(config),
     ];
   }
 }
 
-class ReplaceWithSafeCast extends CommonQuickFix<_AvoidUsingUnsafeCastOption> {
-  ReplaceWithSafeCast(super.config);
+class _AvoidUsingUnsafeCastFix extends CommonQuickFix<_AvoidUsingUnsafeCastParameter> {
+  _AvoidUsingUnsafeCastFix(super.config);
 
   @override
   Future<void> run(
@@ -91,15 +91,15 @@ class ReplaceWithSafeCast extends CommonQuickFix<_AvoidUsingUnsafeCastOption> {
   }
 }
 
-class _AvoidUsingUnsafeCastOption extends CommonLintParameter {
-  const _AvoidUsingUnsafeCastOption({
+class _AvoidUsingUnsafeCastParameter extends CommonLintParameter {
+  const _AvoidUsingUnsafeCastParameter({
     super.excludes,
     super.includes,
     super.severity,
   });
 
-  static _AvoidUsingUnsafeCastOption fromMap(Map<String, dynamic> map) {
-    return _AvoidUsingUnsafeCastOption(
+  static _AvoidUsingUnsafeCastParameter fromMap(Map<String, dynamic> map) {
+    return _AvoidUsingUnsafeCastParameter(
       excludes: safeCastToListString(map['excludes']),
       includes: safeCastToListString(map['includes']),
       severity: convertStringToErrorSeverity(map['severity']),

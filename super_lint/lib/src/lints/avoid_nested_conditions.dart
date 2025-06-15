@@ -1,13 +1,13 @@
 import '../index.dart';
 
-class AvoidNestedConditions extends CommonLintRule<_AvoidNestedConditionsOption> {
+class AvoidNestedConditions extends CommonLintRule<_AvoidNestedConditionsParameter> {
   AvoidNestedConditions(
     CustomLintConfigs configs,
   ) : super(
           RuleConfig(
             name: 'avoid_nested_conditions',
             configs: configs,
-            paramsParser: _AvoidNestedConditionsOption.fromMap,
+            paramsParser: _AvoidNestedConditionsParameter.fromMap,
             problemMessage: (_) => 'Avoid nested conditions; use early return instead.',
           ),
         );
@@ -50,8 +50,8 @@ class AvoidNestedConditions extends CommonLintRule<_AvoidNestedConditionsOption>
   }
 }
 
-class _AvoidNestedConditionsOption extends CommonLintParameter {
-  const _AvoidNestedConditionsOption({
+class _AvoidNestedConditionsParameter extends CommonLintParameter {
+  const _AvoidNestedConditionsParameter({
     super.excludes,
     super.includes,
     super.severity,
@@ -59,8 +59,8 @@ class _AvoidNestedConditionsOption extends CommonLintParameter {
   });
   final int acceptableLevel;
 
-  static _AvoidNestedConditionsOption fromMap(Map<String, dynamic> map) {
-    return _AvoidNestedConditionsOption(
+  static _AvoidNestedConditionsParameter fromMap(Map<String, dynamic> map) {
+    return _AvoidNestedConditionsParameter(
       excludes: safeCastToListString(map['excludes']),
       includes: safeCastToListString(map['includes']),
       severity: convertStringToErrorSeverity(map['severity']),

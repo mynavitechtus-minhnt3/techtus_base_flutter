@@ -1,14 +1,14 @@
 import '../index.dart';
 
 class AvoidUsingTextStyleConstructorDirectly
-    extends CommonLintRule<_AvoidUsingTextStyleConstructorOption> {
+    extends CommonLintRule<_AvoidUsingTextStyleConstructorDirectlyParameter> {
   AvoidUsingTextStyleConstructorDirectly(
     CustomLintConfigs configs,
   ) : super(
           RuleConfig(
             name: 'avoid_using_text_style_constructor_directly',
             configs: configs,
-            paramsParser: _AvoidUsingTextStyleConstructorOption.fromMap,
+            paramsParser: _AvoidUsingTextStyleConstructorDirectlyParameter.fromMap,
             problemMessage: (_) =>
                 'Avoid using TextStyle constructor directly, use the style function instead.',
           ),
@@ -30,13 +30,13 @@ class AvoidUsingTextStyleConstructorDirectly
 
   @override
   List<Fix> getFixes() => [
-        _ReplaceTextStyleWithStyleFunction(config),
+        _AvoidUsingTextStyleConstructorDirectlyFix(config),
       ];
 }
 
-class _ReplaceTextStyleWithStyleFunction
-    extends CommonQuickFix<_AvoidUsingTextStyleConstructorOption> {
-  _ReplaceTextStyleWithStyleFunction(super.config);
+class _AvoidUsingTextStyleConstructorDirectlyFix
+    extends CommonQuickFix<_AvoidUsingTextStyleConstructorDirectlyParameter> {
+  _AvoidUsingTextStyleConstructorDirectlyFix(super.config);
 
   @override
   Future<void> run(
@@ -68,15 +68,15 @@ class _ReplaceTextStyleWithStyleFunction
   }
 }
 
-class _AvoidUsingTextStyleConstructorOption extends CommonLintParameter {
-  const _AvoidUsingTextStyleConstructorOption({
+class _AvoidUsingTextStyleConstructorDirectlyParameter extends CommonLintParameter {
+  const _AvoidUsingTextStyleConstructorDirectlyParameter({
     super.excludes,
     super.includes,
     super.severity,
   });
 
-  static _AvoidUsingTextStyleConstructorOption fromMap(Map<String, dynamic> map) {
-    return _AvoidUsingTextStyleConstructorOption(
+  static _AvoidUsingTextStyleConstructorDirectlyParameter fromMap(Map<String, dynamic> map) {
+    return _AvoidUsingTextStyleConstructorDirectlyParameter(
       excludes: safeCastToListString(map['excludes']),
       includes: safeCastToListString(map['includes']),
       severity: convertStringToErrorSeverity(map['severity']),

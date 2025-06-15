@@ -1,13 +1,13 @@
 import '../index.dart';
 
-class AvoidUsingIfElseWithEnums extends CommonLintRule<_AvoidUsingIfElseWithEnumsOption> {
+class AvoidUsingIfElseWithEnums extends CommonLintRule<_AvoidUsingIfElseWithEnumsParameter> {
   AvoidUsingIfElseWithEnums(
     CustomLintConfigs configs,
   ) : super(
           RuleConfig(
             name: 'avoid_using_if_else_with_enums',
             configs: configs,
-            paramsParser: _AvoidUsingIfElseWithEnumsOption.fromMap,
+            paramsParser: _AvoidUsingIfElseWithEnumsParameter.fromMap,
             problemMessage: (_) => 'Avoid using if-else with enums. Use switch-case instead.',
           ),
         );
@@ -68,8 +68,8 @@ class AvoidUsingIfElseWithEnums extends CommonLintRule<_AvoidUsingIfElseWithEnum
   }
 }
 
-class _AvoidUsingIfElseWithEnumsOption extends CommonLintParameter {
-  const _AvoidUsingIfElseWithEnumsOption({
+class _AvoidUsingIfElseWithEnumsParameter extends CommonLintParameter {
+  const _AvoidUsingIfElseWithEnumsParameter({
     super.excludes,
     super.includes,
     super.severity,
@@ -77,8 +77,8 @@ class _AvoidUsingIfElseWithEnumsOption extends CommonLintParameter {
   });
   final bool includeConditionalExpression;
 
-  static _AvoidUsingIfElseWithEnumsOption fromMap(Map<String, dynamic> map) {
-    return _AvoidUsingIfElseWithEnumsOption(
+  static _AvoidUsingIfElseWithEnumsParameter fromMap(Map<String, dynamic> map) {
+    return _AvoidUsingIfElseWithEnumsParameter(
       excludes: safeCastToListString(map['excludes']),
       includes: safeCastToListString(map['includes']),
       severity: convertStringToErrorSeverity(map['severity']),

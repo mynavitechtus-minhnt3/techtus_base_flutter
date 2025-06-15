@@ -1,15 +1,15 @@
 import '../index.dart';
 
-class IncorrectParentClass extends CommonLintRule<_IncorrectParentClassOption> {
+class IncorrectParentClass extends CommonLintRule<_IncorrectParentClassParameter> {
   IncorrectParentClass(
     CustomLintConfigs configs,
   ) : super(
           RuleConfig(
             name: 'incorrect_parent_class',
             configs: configs,
-            paramsParser: _IncorrectParentClassOption.fromMap,
-            problemMessage: (options) =>
-                'Page classes must extend ${options.parentClassPreFixes.join(' or ')}',
+            paramsParser: _IncorrectParentClassParameter.fromMap,
+            problemMessage: (parameters) =>
+                'Page classes must extend ${parameters.parentClassPreFixes.join(' or ')}',
           ),
         );
 
@@ -37,8 +37,8 @@ class IncorrectParentClass extends CommonLintRule<_IncorrectParentClassOption> {
   }
 }
 
-class _IncorrectParentClassOption extends CommonLintParameter {
-  const _IncorrectParentClassOption({
+class _IncorrectParentClassParameter extends CommonLintParameter {
+  const _IncorrectParentClassParameter({
     super.excludes,
     super.includes,
     super.severity,
@@ -49,8 +49,8 @@ class _IncorrectParentClassOption extends CommonLintParameter {
   final List<String> classPostFixes;
   final List<String> parentClassPreFixes;
 
-  static _IncorrectParentClassOption fromMap(Map<String, dynamic> map) {
-    return _IncorrectParentClassOption(
+  static _IncorrectParentClassParameter fromMap(Map<String, dynamic> map) {
+    return _IncorrectParentClassParameter(
       excludes: safeCastToListString(map['excludes']),
       includes: safeCastToListString(map['includes']),
       severity: convertStringToErrorSeverity(map['severity']),

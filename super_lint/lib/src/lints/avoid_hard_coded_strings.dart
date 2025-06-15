@@ -1,13 +1,13 @@
 import '../index.dart';
 
-class AvoidHardCodedStrings extends CommonLintRule<_AvoidHardCodedStringsOption> {
+class AvoidHardCodedStrings extends CommonLintRule<_AvoidHardCodedStringsParameter> {
   AvoidHardCodedStrings(
     CustomLintConfigs configs,
   ) : super(
           RuleConfig(
             name: 'avoid_hard_coded_strings',
             configs: configs,
-            paramsParser: _AvoidHardCodedStringsOption.fromMap,
+            paramsParser: _AvoidHardCodedStringsParameter.fromMap,
             problemMessage: (_) =>
                 'Avoid hardcoding strings. Use a localization package or append ".hardcoded" to the string to suppress this message.',
           ),
@@ -67,7 +67,7 @@ class AvoidHardCodedStrings extends CommonLintRule<_AvoidHardCodedStringsOption>
       ];
 }
 
-class _AvoidHardCodedStringsFix extends CommonQuickFix<_AvoidHardCodedStringsOption> {
+class _AvoidHardCodedStringsFix extends CommonQuickFix<_AvoidHardCodedStringsParameter> {
   _AvoidHardCodedStringsFix(super.config);
 
   @override
@@ -106,8 +106,8 @@ class _AvoidHardCodedStringsFix extends CommonQuickFix<_AvoidHardCodedStringsOpt
   }
 }
 
-class _AvoidHardCodedStringsOption extends CommonLintParameter {
-  const _AvoidHardCodedStringsOption({
+class _AvoidHardCodedStringsParameter extends CommonLintParameter {
+  const _AvoidHardCodedStringsParameter({
     super.excludes,
     super.includes,
     super.severity,
@@ -116,8 +116,8 @@ class _AvoidHardCodedStringsOption extends CommonLintParameter {
 
   final int minimumLength;
 
-  static _AvoidHardCodedStringsOption fromMap(Map<String, dynamic> map) {
-    return _AvoidHardCodedStringsOption(
+  static _AvoidHardCodedStringsParameter fromMap(Map<String, dynamic> map) {
+    return _AvoidHardCodedStringsParameter(
       excludes: safeCastToListString(map['excludes']),
       includes: safeCastToListString(map['includes']),
       severity: convertStringToErrorSeverity(map['severity']),

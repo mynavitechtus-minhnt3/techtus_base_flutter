@@ -1,13 +1,13 @@
 import '../index.dart';
 
-class IncorrectTodoComment extends CommonLintRule<_IncorrectTodoCommentOption> {
+class IncorrectTodoComment extends CommonLintRule<_IncorrectTodoCommentParameter> {
   IncorrectTodoComment(
     CustomLintConfigs configs,
   ) : super(
           RuleConfig(
               name: 'incorrect_todo_comment',
               configs: configs,
-              paramsParser: _IncorrectTodoCommentOption.fromMap,
+              paramsParser: _IncorrectTodoCommentParameter.fromMap,
               problemMessage: (_) =>
                   'TODO comments must have username, description and issue number (or #0 if no issue).\n'
                   'Example: // TODO(username): some description text #123.'),
@@ -35,15 +35,15 @@ class IncorrectTodoComment extends CommonLintRule<_IncorrectTodoCommentOption> {
   }
 }
 
-class _IncorrectTodoCommentOption extends CommonLintParameter {
-  const _IncorrectTodoCommentOption({
+class _IncorrectTodoCommentParameter extends CommonLintParameter {
+  const _IncorrectTodoCommentParameter({
     super.excludes,
     super.includes,
     super.severity,
   });
 
-  static _IncorrectTodoCommentOption fromMap(Map<String, dynamic> map) {
-    return _IncorrectTodoCommentOption(
+  static _IncorrectTodoCommentParameter fromMap(Map<String, dynamic> map) {
+    return _IncorrectTodoCommentParameter(
       excludes: safeCastToListString(map['excludes']),
       includes: safeCastToListString(map['includes']),
       severity: convertStringToErrorSeverity(map['severity']),
