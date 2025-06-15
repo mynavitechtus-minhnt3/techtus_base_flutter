@@ -28,15 +28,45 @@ class MissingCommonScrollbar extends OptionsLintRule<_MissingCommonScrollbarOpti
         );
 
     context.registry.addInstanceCreationExpression((node) {
-      if (config.parameters.scrollableWidgetNames.contains(node.staticType?.getDisplayString())) {
-        final parentClassDeclaration = node.parentClassDeclaration;
-        if (parentClassDeclaration != null &&
-            parentClassDeclaration.name.toString().endsWith('Page') &&
-            !parentClassDeclaration
-                .toSource()
-                .contains(config.parameters.commonScrollbarWidgetName)) {
-          reporter.atNode(node.constructorName, code);
-        }
+      final widgetName = node.staticType?.getDisplayString();
+      if (!config.parameters.scrollableWidgetNames.contains(widgetName)) {
+        return;
+      }
+
+      final parentClassDeclaration = node.parentClassDeclaration;
+      if (parentClassDeclaration == null ||
+          !parentClassDeclaration.name.toString().endsWith('Page')) {
+        return;
+      }
+
+      final isWrappedByCommonScrollbar = node.thisOrAncestorMatching((ancestor) {
+            if (ancestor is InstanceCreationExpression) {
+              final ancestorName = ancestor.constructorName.type.toString();
+              return ancestorName == config.parameters.commonScrollbarWidgetName;
+            }
+            return false;
+          }) !=
+          null;
+      final hasCommonScrollbarInClass =
+          parentClassDeclaration.toSource().contains(config.parameters.commonScrollbarWidgetName);
+
+      final hasController = node.argumentList.arguments
+          .whereType<NamedExpression>()
+          .any((arg) => arg.name.label.name == 'controller');
+
+      if (!hasCommonScrollbarInClass) {
+        reporter.atNode(node.constructorName, code);
+        return;
+      }
+
+      if (isWrappedByCommonScrollbar && !hasController) {
+        reporter.atNode(
+            node.constructorName,
+            code.copyWith(
+              problemMessage:
+                  'If ${node.constructorName} is wrapped by ${config.parameters.commonScrollbarWidgetName}, '
+                  'it must have a \'ScrollController\' passed to it.',
+            ));
       }
     });
   }

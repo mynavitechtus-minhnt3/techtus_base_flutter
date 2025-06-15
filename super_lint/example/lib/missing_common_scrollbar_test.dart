@@ -12,12 +12,26 @@ class HomePage extends StatelessWidget {
   }
 }
 
+class WrappedWithoutControllerPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: CommonScrollbar(
+        // expect_lint:missing_common_scrollbar
+        child: ListView(), // ❌ Missing controller
+      ),
+    );
+  }
+}
+
 class WrappedPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: CommonScrollbar(
-        child: ListView(), // ✅ OK
+        child: ListView(
+          controller: ScrollController(),
+        ), // ✅ OK
       ),
     );
   }
