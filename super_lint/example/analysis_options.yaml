@@ -77,12 +77,18 @@ custom_lint:
     - avoid_dynamic:
       severity: warning
     - avoid_hard_coded_colors:
+      severity: warning    
     - prefer_common_widgets:
+      severity: warning   
     - avoid_hard_coded_strings:
+      severity: warning    
     - incorrect_screen_name_parameter_value:
+      severity: warning    
     - incorrect_screen_name_enum_value:
     - incorrect_event_parameter_name:
     - incorrect_event_parameter_type:
     - incorrect_event_name:
     - avoid_using_unsafe_cast:
     - prefer_single_widget_per_file:
+    - incorrect_freezed_default_value_type:
+      severity: warning

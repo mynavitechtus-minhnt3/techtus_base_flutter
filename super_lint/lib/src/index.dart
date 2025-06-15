@@ -41,6 +41,7 @@ export 'lints/incorrect_event_name.dart';
 export 'lints/incorrect_event_parameter_name.dart';
 export 'lints/incorrect_event_parameter_type.dart';
 export 'lints/incorrect_parent_class.dart';
+export 'lints/incorrect_freezed_default_value_type.dart';
 export 'lints/incorrect_screen_name_enum_value.dart';
 export 'lints/incorrect_screen_name_parameter_value.dart';
 export 'lints/incorrect_todo_comment.dart';
