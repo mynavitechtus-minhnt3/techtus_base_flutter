@@ -548,7 +548,7 @@ try {
 
 ### incorrect_event_parameter_type
 
-Event parameters should have correct types.
+Event parameters should have correct types. Parameters must only allow String, int or double values.
 
 ```yaml
 - incorrect_event_parameter_type:

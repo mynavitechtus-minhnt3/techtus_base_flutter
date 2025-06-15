@@ -87,8 +87,11 @@ custom_lint:
         - "integration_test/*.dart"
         - "integration_test/**/*.dart"
     - avoid_using_text_style_constructor_directly:
-    - incorrect_screen_name:
-    - incorrect_event_parameter:
+    - incorrect_screen_name_parameter_value:
+    - incorrect_screen_name_enum_value:
+    - incorrect_event_parameter_name:
+    - incorrect_event_parameter_type:
+    - incorrect_event_name:
     - avoid_dynamic:
       excludes:
         - "test/*.dart"
