@@ -141,6 +141,7 @@ custom_lint:
       includes:
         - "apps/**/lib/ui/*.dart"
         - "apps/**/lib/ui/**/*.dart"
+    - incorrect_freezed_default_value_type:
 
 linter:
   rules:
