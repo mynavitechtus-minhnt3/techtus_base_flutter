@@ -74,3 +74,15 @@ custom_lint:
         - "integration_test/*.dart"
         - "integration_test/**/*.dart"
       common_scrollbar_widget_name: "CommonScrollbar"
+    - avoid_dynamic:
+      severity: warning
+    - avoid_hard_coded_colors:
+    - prefer_common_widgets:
+    - avoid_hard_coded_strings:
+    - incorrect_screen_name_parameter_value:
+    - incorrect_screen_name_enum_value:
+    - incorrect_event_parameter_name:
+    - incorrect_event_parameter_type:
+    - incorrect_event_name:
+    - avoid_using_unsafe_cast:
+    - prefer_single_widget_per_file:
