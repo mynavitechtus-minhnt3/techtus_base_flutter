@@ -1,13 +1,13 @@
 import '../index.dart';
 
-class AvoidDynamic extends CommonLintRule<_AvoidDynamicOption> {
+class AvoidDynamic extends CommonLintRule<_AvoidDynamicParameter> {
   AvoidDynamic(
     CustomLintConfigs configs,
   ) : super(
           RuleConfig(
             name: 'avoid_dynamic',
             configs: configs,
-            paramsParser: _AvoidDynamicOption.fromMap,
+            paramsParser: _AvoidDynamicParameter.fromMap,
             problemMessage: (_) => 'Avoid using dynamic type.',
           ),
         );
@@ -43,15 +43,15 @@ class AvoidDynamic extends CommonLintRule<_AvoidDynamicOption> {
   }
 }
 
-class _AvoidDynamicOption extends CommonLintParameter {
-  const _AvoidDynamicOption({
+class _AvoidDynamicParameter extends CommonLintParameter {
+  const _AvoidDynamicParameter({
     super.excludes,
     super.includes,
     super.severity,
   });
 
-  static _AvoidDynamicOption fromMap(Map<String, dynamic> map) {
-    return _AvoidDynamicOption(
+  static _AvoidDynamicParameter fromMap(Map<String, dynamic> map) {
+    return _AvoidDynamicParameter(
       excludes: safeCastToListString(map['excludes']),
       includes: safeCastToListString(map['includes']),
       severity: convertStringToErrorSeverity(map['severity']),

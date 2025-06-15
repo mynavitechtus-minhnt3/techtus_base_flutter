@@ -1,13 +1,13 @@
 import '../index.dart';
 
-class AvoidUnnecessaryAsyncFunction extends CommonLintRule<_AvoidUnnecessaryAsyncFunctionOption> {
+class AvoidUnnecessaryAsyncFunction extends CommonLintRule<_AvoidUnnecessaryAsyncFunctionParameter> {
   AvoidUnnecessaryAsyncFunction(
     CustomLintConfigs configs,
   ) : super(
           RuleConfig(
               name: 'avoid_unnecessary_async_function',
               configs: configs,
-              paramsParser: _AvoidUnnecessaryAsyncFunctionOption.fromMap,
+              paramsParser: _AvoidUnnecessaryAsyncFunctionParameter.fromMap,
               problemMessage: (_) =>
                   'This async function is unnecessary. Please remove \'async\' keyword'),
         );
@@ -54,12 +54,12 @@ class AvoidUnnecessaryAsyncFunction extends CommonLintRule<_AvoidUnnecessaryAsyn
 
   @override
   List<Fix> getFixes() => [
-        _RemoveUnnecessaryAsyncKeyWord(config),
+        _AvoidUnnecessaryAsyncFunctionFix(config),
       ];
 }
 
-class _RemoveUnnecessaryAsyncKeyWord extends CommonQuickFix<_AvoidUnnecessaryAsyncFunctionOption> {
-  _RemoveUnnecessaryAsyncKeyWord(super.config);
+class _AvoidUnnecessaryAsyncFunctionFix extends CommonQuickFix<_AvoidUnnecessaryAsyncFunctionParameter> {
+  _AvoidUnnecessaryAsyncFunctionFix(super.config);
 
   @override
   Future<void> run(
@@ -141,15 +141,15 @@ class _RemoveUnnecessaryAsyncKeyWord extends CommonQuickFix<_AvoidUnnecessaryAsy
   }
 }
 
-class _AvoidUnnecessaryAsyncFunctionOption extends CommonLintParameter {
-  const _AvoidUnnecessaryAsyncFunctionOption({
+class _AvoidUnnecessaryAsyncFunctionParameter extends CommonLintParameter {
+  const _AvoidUnnecessaryAsyncFunctionParameter({
     super.excludes,
     super.includes,
     super.severity,
   });
 
-  static _AvoidUnnecessaryAsyncFunctionOption fromMap(Map<String, dynamic> map) {
-    return _AvoidUnnecessaryAsyncFunctionOption(
+  static _AvoidUnnecessaryAsyncFunctionParameter fromMap(Map<String, dynamic> map) {
+    return _AvoidUnnecessaryAsyncFunctionParameter(
       excludes: safeCastToListString(map['excludes']),
       includes: safeCastToListString(map['includes']),
       severity: convertStringToErrorSeverity(map['severity']),

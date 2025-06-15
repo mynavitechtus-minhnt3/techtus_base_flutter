@@ -1,13 +1,13 @@
 import '../index.dart';
 
-class UtilFunctionsMustBeStatic extends CommonLintRule<_UtilFunctionsMustBeStaticOption> {
+class UtilFunctionsMustBeStatic extends CommonLintRule<_UtilFunctionsMustBeStaticParameter> {
   UtilFunctionsMustBeStatic(
     CustomLintConfigs configs,
   ) : super(
           RuleConfig(
             name: 'util_functions_must_be_static',
             configs: configs,
-            paramsParser: _UtilFunctionsMustBeStaticOption.fromMap,
+            paramsParser: _UtilFunctionsMustBeStaticParameter.fromMap,
             problemMessage: (_) => 'Util functions must be declared as static functions.',
           ),
         );
@@ -31,12 +31,12 @@ class UtilFunctionsMustBeStatic extends CommonLintRule<_UtilFunctionsMustBeStati
 
   @override
   List<Fix> getFixes() {
-    return [ConvertToStaticFunction(config)];
+    return [_UtilFunctionsMustBeStaticFix(config)];
   }
 }
 
-class ConvertToStaticFunction extends CommonQuickFix<_UtilFunctionsMustBeStaticOption> {
-  ConvertToStaticFunction(super.config);
+class _UtilFunctionsMustBeStaticFix extends CommonQuickFix<_UtilFunctionsMustBeStaticParameter> {
+  _UtilFunctionsMustBeStaticFix(super.config);
 
   @override
   Future<void> run(
@@ -70,8 +70,8 @@ class ConvertToStaticFunction extends CommonQuickFix<_UtilFunctionsMustBeStaticO
   }
 }
 
-class _UtilFunctionsMustBeStaticOption extends CommonLintParameter {
-  const _UtilFunctionsMustBeStaticOption({
+class _UtilFunctionsMustBeStaticParameter extends CommonLintParameter {
+  const _UtilFunctionsMustBeStaticParameter({
     super.excludes,
     super.includes,
     super.severity,
@@ -80,11 +80,11 @@ class _UtilFunctionsMustBeStaticOption extends CommonLintParameter {
 
   final String utilsFolderPath;
 
-  static _UtilFunctionsMustBeStaticOption fromMap(Map<String, dynamic> map) {
+  static _UtilFunctionsMustBeStaticParameter fromMap(Map<String, dynamic> map) {
     final utilsFolderPath = safeCast<String>(map['utils_folder_path']) ?? _defaultUtilsFolderPath;
     final glob = '$utilsFolderPath/**';
 
-    return _UtilFunctionsMustBeStaticOption(
+    return _UtilFunctionsMustBeStaticParameter(
       excludes: safeCastToListString(map['excludes']),
       includes: [...safeCastToListString(map['includes']), glob],
       severity: convertStringToErrorSeverity(map['severity']),

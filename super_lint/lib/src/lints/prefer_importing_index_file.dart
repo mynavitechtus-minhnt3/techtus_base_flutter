@@ -1,13 +1,13 @@
 import '../index.dart';
 
-class PreferImportingIndexFile extends CommonLintRule<_PreferImportingIndexFileOption> {
+class PreferImportingIndexFile extends CommonLintRule<_PreferImportingIndexFileParameter> {
   PreferImportingIndexFile(
     CustomLintConfigs configs,
   ) : super(
           RuleConfig(
             name: 'prefer_importing_index_file',
             configs: configs,
-            paramsParser: _PreferImportingIndexFileOption.fromMap,
+            paramsParser: _PreferImportingIndexFileParameter.fromMap,
             problemMessage: (options) =>
                 'Should export these files to index.dart file and import index.dart file instead of importing each file separately.',
           ),
@@ -32,8 +32,8 @@ class PreferImportingIndexFile extends CommonLintRule<_PreferImportingIndexFileO
   }
 }
 
-class _PreferImportingIndexFileOption extends CommonLintParameter {
-  const _PreferImportingIndexFileOption({
+class _PreferImportingIndexFileParameter extends CommonLintParameter {
+  const _PreferImportingIndexFileParameter({
     super.excludes,
     super.includes,
     super.severity,
@@ -44,8 +44,8 @@ class _PreferImportingIndexFileOption extends CommonLintParameter {
   final List<String> classPostFixes;
   final List<String> parentClassPreFixes;
 
-  static _PreferImportingIndexFileOption fromMap(Map<String, dynamic> map) {
-    return _PreferImportingIndexFileOption(
+  static _PreferImportingIndexFileParameter fromMap(Map<String, dynamic> map) {
+    return _PreferImportingIndexFileParameter(
       excludes: safeCastToListString(map['excludes']),
       includes: safeCastToListString(map['includes']),
       severity: convertStringToErrorSeverity(map['severity']),

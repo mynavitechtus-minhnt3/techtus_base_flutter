@@ -1,13 +1,13 @@
 import '../index.dart';
 
-class PreferAsyncAwait extends CommonLintRule<_PreferAsyncAwaitOption> {
+class PreferAsyncAwait extends CommonLintRule<_PreferAsyncAwaitParameter> {
   PreferAsyncAwait(
     CustomLintConfigs configs,
   ) : super(
           RuleConfig(
             name: 'prefer_async_await',
             configs: configs,
-            paramsParser: _PreferAsyncAwaitOption.fromMap,
+            paramsParser: _PreferAsyncAwaitParameter.fromMap,
             problemMessage: (_) => 'Prefer using async/await syntax instead of .then invocations',
           ),
         );
@@ -34,15 +34,15 @@ class PreferAsyncAwait extends CommonLintRule<_PreferAsyncAwaitOption> {
   }
 }
 
-class _PreferAsyncAwaitOption extends CommonLintParameter {
-  const _PreferAsyncAwaitOption({
+class _PreferAsyncAwaitParameter extends CommonLintParameter {
+  const _PreferAsyncAwaitParameter({
     super.excludes,
     super.includes,
     super.severity,
   });
 
-  static _PreferAsyncAwaitOption fromMap(Map<String, dynamic> map) {
-    return _PreferAsyncAwaitOption(
+  static _PreferAsyncAwaitParameter fromMap(Map<String, dynamic> map) {
+    return _PreferAsyncAwaitParameter(
       excludes: safeCastToListString(map['excludes']),
       includes: safeCastToListString(map['includes']),
       severity: convertStringToErrorSeverity(map['severity']),

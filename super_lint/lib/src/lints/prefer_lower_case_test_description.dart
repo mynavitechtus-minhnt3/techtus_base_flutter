@@ -5,14 +5,14 @@ import '../index.dart';
 const _testFunctionArgCount = 2;
 const _regex = r'[A-Z]';
 
-class PreferLowerCaseTestDescription extends CommonLintRule<_PreferLowerCaseTestDescriptionOption> {
+class PreferLowerCaseTestDescription extends CommonLintRule<_PreferLowerCaseTestDescriptionParameter> {
   PreferLowerCaseTestDescription(
     CustomLintConfigs configs,
   ) : super(
           RuleConfig(
               name: 'prefer_lower_case_test_description',
               configs: configs,
-              paramsParser: _PreferLowerCaseTestDescriptionOption.fromMap,
+              paramsParser: _PreferLowerCaseTestDescriptionParameter.fromMap,
               problemMessage: (_) =>
                   'Lower case the first character when writing tests descriptions.'),
         );
@@ -26,7 +26,7 @@ class PreferLowerCaseTestDescription extends CommonLintRule<_PreferLowerCaseTest
   ) async {
     context.registry.addMethodInvocation((node) {
       final testMethod = parameters.testMethods.firstWhereOrNull((element) {
-        final methodName = element[_PreferLowerCaseTestDescriptionOption.keyMethodName];
+        final methodName = element[_PreferLowerCaseTestDescriptionParameter.keyMethodName];
         return node.methodName.name == methodName;
       });
 
@@ -34,7 +34,7 @@ class PreferLowerCaseTestDescription extends CommonLintRule<_PreferLowerCaseTest
         return;
       }
 
-      final descriptionParamName = testMethod[_PreferLowerCaseTestDescriptionOption.keyParamName];
+      final descriptionParamName = testMethod[_PreferLowerCaseTestDescriptionParameter.keyParamName];
 
       if (node.argumentList.arguments.length >= _testFunctionArgCount) {
         final firstArgument = node.argumentList.arguments[0];
@@ -52,12 +52,12 @@ class PreferLowerCaseTestDescription extends CommonLintRule<_PreferLowerCaseTest
 
   @override
   List<Fix> getFixes() => [
-        _ChangeToLowerCase(config),
+        _PreferLowerCaseTestDescriptionFix(config),
       ];
 }
 
-class _ChangeToLowerCase extends CommonQuickFix<_PreferLowerCaseTestDescriptionOption> {
-  _ChangeToLowerCase(super.config);
+class _PreferLowerCaseTestDescriptionFix extends CommonQuickFix<_PreferLowerCaseTestDescriptionParameter> {
+  _PreferLowerCaseTestDescriptionFix(super.config);
 
   @override
   Future<void> run(
@@ -74,7 +74,7 @@ class _ChangeToLowerCase extends CommonQuickFix<_PreferLowerCaseTestDescriptionO
       }
 
       final testMethod = parameters.testMethods.firstWhereOrNull((element) {
-        final methodName = element[_PreferLowerCaseTestDescriptionOption.keyMethodName];
+        final methodName = element[_PreferLowerCaseTestDescriptionParameter.keyMethodName];
         return node.methodName.name == methodName;
       });
 
@@ -82,7 +82,7 @@ class _ChangeToLowerCase extends CommonQuickFix<_PreferLowerCaseTestDescriptionO
         return;
       }
 
-      final descriptionParamName = testMethod[_PreferLowerCaseTestDescriptionOption.keyParamName];
+      final descriptionParamName = testMethod[_PreferLowerCaseTestDescriptionParameter.keyParamName];
 
       final firstArgument = node.argumentList.arguments[0];
       if (firstArgument is StringLiteral &&
@@ -107,8 +107,8 @@ class _ChangeToLowerCase extends CommonQuickFix<_PreferLowerCaseTestDescriptionO
   }
 }
 
-class _PreferLowerCaseTestDescriptionOption extends CommonLintParameter {
-  const _PreferLowerCaseTestDescriptionOption({
+class _PreferLowerCaseTestDescriptionParameter extends CommonLintParameter {
+  const _PreferLowerCaseTestDescriptionParameter({
     super.excludes,
     super.includes,
     super.severity,
@@ -117,8 +117,8 @@ class _PreferLowerCaseTestDescriptionOption extends CommonLintParameter {
 
   final List<Map<String, String>> testMethods;
 
-  static _PreferLowerCaseTestDescriptionOption fromMap(Map<String, dynamic> map) {
-    return _PreferLowerCaseTestDescriptionOption(
+  static _PreferLowerCaseTestDescriptionParameter fromMap(Map<String, dynamic> map) {
+    return _PreferLowerCaseTestDescriptionParameter(
       excludes: safeCastToListString(map['excludes']),
       includes: safeCastToListString(map['includes']),
       severity: convertStringToErrorSeverity(map['severity']),

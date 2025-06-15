@@ -1,13 +1,13 @@
 import '../index.dart';
 
-class PreferIsNotEmptyString extends CommonLintRule<_PreferIsNotEmptyStringOption> {
+class PreferIsNotEmptyString extends CommonLintRule<_PreferIsNotEmptyStringParameter> {
   PreferIsNotEmptyString(
     CustomLintConfigs configs,
   ) : super(
           RuleConfig(
             name: 'prefer_is_not_empty_string',
             configs: configs,
-            paramsParser: _PreferIsNotEmptyStringOption.fromMap,
+            paramsParser: _PreferIsNotEmptyStringParameter.fromMap,
             problemMessage: (_) =>
                 'Use \'isNotEmpty\' instead of \'!=\' to test whether the string is empty.\nTry rewriting the expression to use \'isNotEmpty\'.',
           ),
@@ -30,12 +30,12 @@ class PreferIsNotEmptyString extends CommonLintRule<_PreferIsNotEmptyStringOptio
 
   @override
   List<Fix> getFixes() => [
-        _ReplaceWithIsNotEmpty(config),
+        _PreferIsNotEmptyStringFix(config),
       ];
 }
 
-class _ReplaceWithIsNotEmpty extends CommonQuickFix<_PreferIsNotEmptyStringOption> {
-  _ReplaceWithIsNotEmpty(super.config);
+class _PreferIsNotEmptyStringFix extends CommonQuickFix<_PreferIsNotEmptyStringParameter> {
+  _PreferIsNotEmptyStringFix(super.config);
 
   @override
   Future<void> run(
@@ -70,15 +70,15 @@ class _ReplaceWithIsNotEmpty extends CommonQuickFix<_PreferIsNotEmptyStringOptio
   }
 }
 
-class _PreferIsNotEmptyStringOption extends CommonLintParameter {
-  const _PreferIsNotEmptyStringOption({
+class _PreferIsNotEmptyStringParameter extends CommonLintParameter {
+  const _PreferIsNotEmptyStringParameter({
     super.excludes,
     super.includes,
     super.severity,
   });
 
-  static _PreferIsNotEmptyStringOption fromMap(Map<String, dynamic> map) {
-    return _PreferIsNotEmptyStringOption(
+  static _PreferIsNotEmptyStringParameter fromMap(Map<String, dynamic> map) {
+    return _PreferIsNotEmptyStringParameter(
       excludes: safeCastToListString(map['excludes']),
       includes: safeCastToListString(map['includes']),
       severity: convertStringToErrorSeverity(map['severity']),

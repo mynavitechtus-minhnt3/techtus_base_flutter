@@ -3,14 +3,14 @@ import '../index.dart';
 const _extendedType = 'AnalyticsHelper';
 
 class MissingExtensionMethodForEvents
-    extends CommonLintRule<_MissingExtensionMethodForEventsOption> {
+    extends CommonLintRule<_MissingExtensionMethodForEventsParameter> {
   MissingExtensionMethodForEvents(
     CustomLintConfigs configs,
   ) : super(
           RuleConfig(
             name: 'missing_extension_method_for_events',
             configs: configs,
-            paramsParser: _MissingExtensionMethodForEventsOption.fromMap,
+            paramsParser: _MissingExtensionMethodForEventsParameter.fromMap,
             problemMessage: (params) => 'Missing extension method for events for this class',
           ),
         );
@@ -76,13 +76,13 @@ class MissingExtensionMethodForEvents
   @override
   List<Fix> getFixes() {
     return [
-      _AddPrivateExtensionMethods(config),
+      _MissingExtensionMethodForEventsFix(config),
     ];
   }
 }
 
-class _AddPrivateExtensionMethods extends CommonQuickFix<_MissingExtensionMethodForEventsOption> {
-  _AddPrivateExtensionMethods(super.config);
+class _MissingExtensionMethodForEventsFix extends CommonQuickFix<_MissingExtensionMethodForEventsParameter> {
+  _MissingExtensionMethodForEventsFix(super.config);
 
   @override
   Future<void> run(
@@ -159,15 +159,15 @@ extension $expectedExtensionName on $_extendedType {}
   }
 }
 
-class _MissingExtensionMethodForEventsOption extends CommonLintParameter {
-  const _MissingExtensionMethodForEventsOption({
+class _MissingExtensionMethodForEventsParameter extends CommonLintParameter {
+  const _MissingExtensionMethodForEventsParameter({
     super.excludes,
     super.includes,
     super.severity,
   });
 
-  static _MissingExtensionMethodForEventsOption fromMap(Map<String, dynamic> map) {
-    return _MissingExtensionMethodForEventsOption(
+  static _MissingExtensionMethodForEventsParameter fromMap(Map<String, dynamic> map) {
+    return _MissingExtensionMethodForEventsParameter(
       excludes: safeCastToListString(map['excludes']),
       includes: safeCastToListString(map['includes']),
       severity: convertStringToErrorSeverity(map['severity']),

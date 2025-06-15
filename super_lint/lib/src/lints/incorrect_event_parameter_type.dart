@@ -2,13 +2,13 @@ import 'package:collection/collection.dart';
 
 import '../index.dart';
 
-class IncorrectEventParameterType extends CommonLintRule<_IncorrectEventParameterTypeOption> {
+class IncorrectEventParameterType extends CommonLintRule<_IncorrectEventParameterTypeParameter> {
   IncorrectEventParameterType(CustomLintConfigs configs)
       : super(
           RuleConfig(
             name: 'incorrect_event_parameter_type',
             configs: configs,
-            paramsParser: _IncorrectEventParameterTypeOption.fromMap,
+            paramsParser: _IncorrectEventParameterTypeParameter.fromMap,
             problemMessage: (params) => 'Parameters must only allow String, int or double values.',
           ),
         );
@@ -53,15 +53,15 @@ class IncorrectEventParameterType extends CommonLintRule<_IncorrectEventParamete
   }
 }
 
-class _IncorrectEventParameterTypeOption extends CommonLintParameter {
-  const _IncorrectEventParameterTypeOption({
+class _IncorrectEventParameterTypeParameter extends CommonLintParameter {
+  const _IncorrectEventParameterTypeParameter({
     super.excludes,
     super.includes,
     super.severity,
   });
 
-  static _IncorrectEventParameterTypeOption fromMap(Map<String, dynamic> map) {
-    return _IncorrectEventParameterTypeOption(
+  static _IncorrectEventParameterTypeParameter fromMap(Map<String, dynamic> map) {
+    return _IncorrectEventParameterTypeParameter(
       excludes: safeCastToListString(map['excludes']),
       includes: safeCastToListString(map['includes']),
       severity: convertStringToErrorSeverity(map['severity']),

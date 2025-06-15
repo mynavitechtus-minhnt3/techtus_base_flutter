@@ -2,14 +2,14 @@ import 'package:collection/collection.dart';
 
 import '../index.dart';
 
-class PreferCommonWidgets extends CommonLintRule<_PreferCommonWidgetsOption> {
+class PreferCommonWidgets extends CommonLintRule<_PreferCommonWidgetsParameter> {
   PreferCommonWidgets(
     CustomLintConfigs configs,
   ) : super(
           RuleConfig(
             name: 'prefer_common_widgets',
             configs: configs,
-            paramsParser: _PreferCommonWidgetsOption.fromMap,
+            paramsParser: _PreferCommonWidgetsParameter.fromMap,
             problemMessage: (_) =>
                 'Use Common Widgets(e.g. CommonText, CommonContainer,...) instead of built-in Widgets',
           ),
@@ -24,7 +24,7 @@ class PreferCommonWidgets extends CommonLintRule<_PreferCommonWidgetsOption> {
   ) async {
     context.registry.addInstanceCreationExpression((node) {
       final bannedWidget = parameters.bannedWidgets.firstWhereOrNull((element) {
-        final methodName = element[_PreferCommonWidgetsOption.keyBannedWidget];
+        final methodName = element[_PreferCommonWidgetsParameter.keyBannedWidget];
         return node.constructorName.type.toString() == methodName;
       });
 
@@ -36,12 +36,12 @@ class PreferCommonWidgets extends CommonLintRule<_PreferCommonWidgetsOption> {
 
   @override
   List<Fix> getFixes() => [
-        _ReplaceWithCommonWidget(config),
+        _PreferCommonWidgetsFix(config),
       ];
 }
 
-class _ReplaceWithCommonWidget extends CommonQuickFix<_PreferCommonWidgetsOption> {
-  _ReplaceWithCommonWidget(super.config);
+class _PreferCommonWidgetsFix extends CommonQuickFix<_PreferCommonWidgetsParameter> {
+  _PreferCommonWidgetsFix(super.config);
 
   @override
   Future<void> run(
@@ -57,7 +57,7 @@ class _ReplaceWithCommonWidget extends CommonQuickFix<_PreferCommonWidgetsOption
       }
 
       final bannedWidget = parameters.bannedWidgets.firstWhereOrNull((element) {
-        final methodName = element[_PreferCommonWidgetsOption.keyBannedWidget];
+        final methodName = element[_PreferCommonWidgetsParameter.keyBannedWidget];
         return node.constructorName.toString() == methodName;
       });
 
@@ -65,7 +65,7 @@ class _ReplaceWithCommonWidget extends CommonQuickFix<_PreferCommonWidgetsOption
         return;
       }
 
-      final commonWidget = bannedWidget[_PreferCommonWidgetsOption.keyCommonWidget];
+      final commonWidget = bannedWidget[_PreferCommonWidgetsParameter.keyCommonWidget];
 
       final changeBuilder = reporter.createChangeBuilder(
         message: 'Replace with \'$commonWidget\'',
@@ -82,8 +82,8 @@ class _ReplaceWithCommonWidget extends CommonQuickFix<_PreferCommonWidgetsOption
   }
 }
 
-class _PreferCommonWidgetsOption extends CommonLintParameter {
-  const _PreferCommonWidgetsOption({
+class _PreferCommonWidgetsParameter extends CommonLintParameter {
+  const _PreferCommonWidgetsParameter({
     super.excludes,
     super.includes,
     super.severity,
@@ -92,8 +92,8 @@ class _PreferCommonWidgetsOption extends CommonLintParameter {
 
   final List<Map<String, String>> bannedWidgets;
 
-  static _PreferCommonWidgetsOption fromMap(Map<String, dynamic> map) {
-    return _PreferCommonWidgetsOption(
+  static _PreferCommonWidgetsParameter fromMap(Map<String, dynamic> map) {
+    return _PreferCommonWidgetsParameter(
       excludes: safeCastToListString(map['excludes']),
       includes: safeCastToListString(map['includes']),
       severity: convertStringToErrorSeverity(map['severity']),

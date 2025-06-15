@@ -2,14 +2,14 @@ import 'package:collection/collection.dart';
 
 import '../index.dart';
 
-class MissingExpandedOrFlexible extends CommonLintRule<_MissingExpandedOrFlexibleOption> {
+class MissingExpandedOrFlexible extends CommonLintRule<_MissingExpandedOrFlexibleParameter> {
   MissingExpandedOrFlexible(
     CustomLintConfigs configs,
   ) : super(
           RuleConfig(
             name: 'missing_expanded_or_flexible',
             configs: configs,
-            paramsParser: _MissingExpandedOrFlexibleOption.fromMap,
+            paramsParser: _MissingExpandedOrFlexibleParameter.fromMap,
             problemMessage: (options) =>
                 'Should use Expanded or Flexible widget to avoid overflow error.',
           ),
@@ -51,15 +51,15 @@ class MissingExpandedOrFlexible extends CommonLintRule<_MissingExpandedOrFlexibl
   }
 }
 
-class _MissingExpandedOrFlexibleOption extends CommonLintParameter {
-  const _MissingExpandedOrFlexibleOption({
+class _MissingExpandedOrFlexibleParameter extends CommonLintParameter {
+  const _MissingExpandedOrFlexibleParameter({
     super.excludes,
     super.includes,
     super.severity,
   });
 
-  static _MissingExpandedOrFlexibleOption fromMap(Map<String, dynamic> map) {
-    return _MissingExpandedOrFlexibleOption(
+  static _MissingExpandedOrFlexibleParameter fromMap(Map<String, dynamic> map) {
+    return _MissingExpandedOrFlexibleParameter(
       excludes: safeCastToListString(map['excludes']),
       includes: safeCastToListString(map['includes']),
       severity: convertStringToErrorSeverity(map['severity']),
