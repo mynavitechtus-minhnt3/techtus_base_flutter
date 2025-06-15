@@ -6,14 +6,13 @@ class IncorrectEventParameterType extends OptionsLintRule<_IncorrectEventParamet
   IncorrectEventParameterType(CustomLintConfigs configs)
       : super(
           RuleConfig(
-            name: lintName,
+            name: 'incorrect_event_parameter_type',
             configs: configs,
             paramsParser: _IncorrectEventParameterTypeOption.fromMap,
             problemMessage: (params) => 'Parameters must only allow String, int or double values.',
           ),
         );
 
-  static const String lintName = 'incorrect_event_parameter_type';
 
   @override
   Future<void> run(
@@ -21,19 +20,10 @@ class IncorrectEventParameterType extends OptionsLintRule<_IncorrectEventParamet
     ErrorReporter reporter,
     CustomLintContext context,
   ) async {
-    final rootPath = await resolver.rootPath;
-    final parameters = config.parameters;
-
-    if (parameters.shouldSkipAnalysis(
-      path: resolver.path,
-      rootPath: rootPath,
-    )) {
-      return;
-    }
-
-    final code = this.code.copyWith(
-          errorSeverity: parameters.severity ?? this.code.errorSeverity,
-        );
+    final runCtx = await prepareRun(resolver);
+    if (runCtx == null) return;
+    final code = runCtx.code;
+    final parameters = runCtx.parameters;
 
     context.registry.addClassDeclaration((classNode) {
       final isAnalyticParameterSubclass =
@@ -68,18 +58,12 @@ class IncorrectEventParameterType extends OptionsLintRule<_IncorrectEventParamet
   }
 }
 
-class _IncorrectEventParameterTypeOption extends Excludable {
+class _IncorrectEventParameterTypeOption extends CommonLintOption {
   const _IncorrectEventParameterTypeOption({
-    this.excludes = const [],
-    this.includes = const [],
-    this.severity,
+    super.excludes,
+    super.includes,
+    super.severity,
   });
-
-  final ErrorSeverity? severity;
-  @override
-  final List<String> excludes;
-  @override
-  final List<String> includes;
 
   static _IncorrectEventParameterTypeOption fromMap(Map<String, dynamic> map) {
     return _IncorrectEventParameterTypeOption(

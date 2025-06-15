@@ -5,7 +5,7 @@ class PreferImportingIndexFile extends OptionsLintRule<_PreferImportingIndexFile
     CustomLintConfigs configs,
   ) : super(
           RuleConfig(
-            name: lintName,
+            name: 'prefer_importing_index_file',
             configs: configs,
             paramsParser: _PreferImportingIndexFileOption.fromMap,
             problemMessage: (options) =>
@@ -13,7 +13,6 @@ class PreferImportingIndexFile extends OptionsLintRule<_PreferImportingIndexFile
           ),
         );
 
-  static const String lintName = 'prefer_importing_index_file';
 
   @override
   Future<void> run(
@@ -21,18 +20,10 @@ class PreferImportingIndexFile extends OptionsLintRule<_PreferImportingIndexFile
     ErrorReporter reporter,
     CustomLintContext context,
   ) async {
-    final rootPath = await resolver.rootPath;
-    final parameters = config.parameters;
-    if (parameters.shouldSkipAnalysis(
-      path: resolver.path,
-      rootPath: rootPath,
-    )) {
-      return;
-    }
-
-    final code = this.code.copyWith(
-          errorSeverity: parameters.severity ?? this.code.errorSeverity,
-        );
+    final runCtx = await prepareRun(resolver);
+    if (runCtx == null) return;
+    final code = runCtx.code;
+    final parameters = runCtx.parameters;
 
     context.registry.addImportDirective((node) {
       final importUri = node.uri.stringValue;
@@ -46,20 +37,14 @@ class PreferImportingIndexFile extends OptionsLintRule<_PreferImportingIndexFile
   }
 }
 
-class _PreferImportingIndexFileOption extends Excludable {
+class _PreferImportingIndexFileOption extends CommonLintOption {
   const _PreferImportingIndexFileOption({
-    this.excludes = const [],
-    this.includes = const [],
-    this.severity,
+    super.excludes,
+    super.includes,
+    super.severity,
     this.classPostFixes = _defaultClassPostFixes,
     this.parentClassPreFixes = _defaultParentClassPreFixes,
   });
-
-  final ErrorSeverity? severity;
-  @override
-  final List<String> excludes;
-  @override
-  final List<String> includes;
 
   final List<String> classPostFixes;
   final List<String> parentClassPreFixes;

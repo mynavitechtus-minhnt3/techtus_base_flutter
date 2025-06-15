@@ -5,14 +5,12 @@ class AvoidUnnecessaryAsyncFunction extends OptionsLintRule<_AvoidUnnecessaryAsy
     CustomLintConfigs configs,
   ) : super(
           RuleConfig(
-              name: lintName,
+              name: 'avoid_unnecessary_async_function',
               configs: configs,
               paramsParser: _AvoidUnnecessaryAsyncFunctionOption.fromMap,
               problemMessage: (_) =>
                   'This async function is unnecessary. Please remove \'async\' keyword'),
         );
-
-  static const String lintName = 'avoid_unnecessary_async_function';
 
   @override
   Future<void> run(
@@ -20,18 +18,10 @@ class AvoidUnnecessaryAsyncFunction extends OptionsLintRule<_AvoidUnnecessaryAsy
     ErrorReporter reporter,
     CustomLintContext context,
   ) async {
-    final rootPath = await resolver.rootPath;
-    final parameters = config.parameters;
-    if (parameters.shouldSkipAnalysis(
-      path: resolver.path,
-      rootPath: rootPath,
-    )) {
-      return;
-    }
-
-    final code = this.code.copyWith(
-          errorSeverity: parameters.severity ?? this.code.errorSeverity,
-        );
+    final runCtx = await prepareRun(resolver);
+    if (runCtx == null) return;
+    final code = runCtx.code;
+    final parameters = runCtx.parameters;
 
     unawaited(resolver.getResolvedUnitResult().then(
           (value) => value.unit.visitChildren(
@@ -155,18 +145,12 @@ class _RemoveUnnecessaryAsyncKeyWord extends OptionsFix<_AvoidUnnecessaryAsyncFu
   }
 }
 
-class _AvoidUnnecessaryAsyncFunctionOption extends Excludable {
+class _AvoidUnnecessaryAsyncFunctionOption extends CommonLintOption {
   const _AvoidUnnecessaryAsyncFunctionOption({
-    this.excludes = const [],
-    this.includes = const [],
-    this.severity,
+    super.excludes,
+    super.includes,
+    super.severity,
   });
-
-  final ErrorSeverity? severity;
-  @override
-  final List<String> excludes;
-  @override
-  final List<String> includes;
 
   static _AvoidUnnecessaryAsyncFunctionOption fromMap(Map<String, dynamic> map) {
     return _AvoidUnnecessaryAsyncFunctionOption(

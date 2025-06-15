@@ -5,7 +5,7 @@ class AvoidHardCodedStrings extends OptionsLintRule<_AvoidHardCodedStringsOption
     CustomLintConfigs configs,
   ) : super(
           RuleConfig(
-            name: lintName,
+            name: 'avoid_hard_coded_strings',
             configs: configs,
             paramsParser: _AvoidHardCodedStringsOption.fromMap,
             problemMessage: (_) =>
@@ -13,7 +13,6 @@ class AvoidHardCodedStrings extends OptionsLintRule<_AvoidHardCodedStringsOption
           ),
         );
 
-  static const String lintName = 'avoid_hard_coded_strings';
 
   @override
   Future<void> run(
@@ -21,18 +20,10 @@ class AvoidHardCodedStrings extends OptionsLintRule<_AvoidHardCodedStringsOption
     ErrorReporter reporter,
     CustomLintContext context,
   ) async {
-    final rootPath = await resolver.rootPath;
-    final parameters = config.parameters;
-    if (parameters.shouldSkipAnalysis(
-      path: resolver.path,
-      rootPath: rootPath,
-    )) {
-      return;
-    }
-
-    final code = this.code.copyWith(
-          errorSeverity: parameters.severity ?? this.code.errorSeverity,
-        );
+    final runCtx = await prepareRun(resolver);
+    if (runCtx == null) return;
+    final code = runCtx.code;
+    final parameters = runCtx.parameters;
 
     context.registry.addSimpleStringLiteral((node) {
       if (node.value.length < config.parameters.minimumLength) {
@@ -120,19 +111,13 @@ class _AvoidHardCodedStringsFix extends OptionsFix<_AvoidHardCodedStringsOption>
   }
 }
 
-class _AvoidHardCodedStringsOption extends Excludable {
+class _AvoidHardCodedStringsOption extends CommonLintOption {
   const _AvoidHardCodedStringsOption({
-    this.excludes = const [],
-    this.includes = const [],
-    this.severity,
+    super.excludes,
+    super.includes,
+    super.severity,
     this.minimumLength = _defaultMinimumLength,
   });
-
-  final ErrorSeverity? severity;
-  @override
-  final List<String> excludes;
-  @override
-  final List<String> includes;
 
   final int minimumLength;
 

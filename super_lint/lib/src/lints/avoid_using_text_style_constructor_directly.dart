@@ -6,7 +6,7 @@ class AvoidUsingTextStyleConstructorDirectly
     CustomLintConfigs configs,
   ) : super(
           RuleConfig(
-            name: lintName,
+            name: 'avoid_using_text_style_constructor_directly',
             configs: configs,
             paramsParser: _AvoidUsingTextStyleConstructorOption.fromMap,
             problemMessage: (_) =>
@@ -14,7 +14,6 @@ class AvoidUsingTextStyleConstructorDirectly
           ),
         );
 
-  static const String lintName = 'avoid_using_text_style_constructor_directly';
 
   @override
   Future<void> run(
@@ -22,18 +21,10 @@ class AvoidUsingTextStyleConstructorDirectly
     ErrorReporter reporter,
     CustomLintContext context,
   ) async {
-    final rootPath = await resolver.rootPath;
-    final parameters = config.parameters;
-    if (parameters.shouldSkipAnalysis(
-      path: resolver.path,
-      rootPath: rootPath,
-    )) {
-      return;
-    }
-
-    final code = this.code.copyWith(
-          errorSeverity: parameters.severity ?? this.code.errorSeverity,
-        );
+    final runCtx = await prepareRun(resolver);
+    if (runCtx == null) return;
+    final code = runCtx.code;
+    final parameters = runCtx.parameters;
 
     context.registry.addInstanceCreationExpression((node) {
       if (node.constructorName.type.type.toString() == 'TextStyle') {
@@ -81,18 +72,12 @@ class _ReplaceTextStyleWithStyleFunction extends OptionsFix<_AvoidUsingTextStyle
   }
 }
 
-class _AvoidUsingTextStyleConstructorOption extends Excludable {
+class _AvoidUsingTextStyleConstructorOption extends CommonLintOption {
   const _AvoidUsingTextStyleConstructorOption({
-    this.excludes = const [],
-    this.includes = const [],
-    this.severity,
+    super.excludes,
+    super.includes,
+    super.severity,
   });
-
-  final ErrorSeverity? severity;
-  @override
-  final List<String> excludes;
-  @override
-  final List<String> includes;
 
   static _AvoidUsingTextStyleConstructorOption fromMap(Map<String, dynamic> map) {
     return _AvoidUsingTextStyleConstructorOption(

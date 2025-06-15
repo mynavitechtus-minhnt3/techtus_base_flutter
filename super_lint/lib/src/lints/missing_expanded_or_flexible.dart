@@ -7,7 +7,7 @@ class MissingExpandedOrFlexible extends OptionsLintRule<_MissingExpandedOrFlexib
     CustomLintConfigs configs,
   ) : super(
           RuleConfig(
-            name: lintName,
+            name: 'missing_expanded_or_flexible',
             configs: configs,
             paramsParser: _MissingExpandedOrFlexibleOption.fromMap,
             problemMessage: (options) =>
@@ -15,7 +15,6 @@ class MissingExpandedOrFlexible extends OptionsLintRule<_MissingExpandedOrFlexib
           ),
         );
 
-  static const String lintName = 'missing_expanded_or_flexible';
 
   @override
   Future<void> run(
@@ -23,18 +22,10 @@ class MissingExpandedOrFlexible extends OptionsLintRule<_MissingExpandedOrFlexib
     ErrorReporter reporter,
     CustomLintContext context,
   ) async {
-    final rootPath = await resolver.rootPath;
-    final parameters = config.parameters;
-    if (parameters.shouldSkipAnalysis(
-      path: resolver.path,
-      rootPath: rootPath,
-    )) {
-      return;
-    }
-
-    final code = this.code.copyWith(
-          errorSeverity: parameters.severity ?? this.code.errorSeverity,
-        );
+    final runCtx = await prepareRun(resolver);
+    if (runCtx == null) return;
+    final code = runCtx.code;
+    final parameters = runCtx.parameters;
 
     context.registry.addInstanceCreationExpression((node) {
       final widget = node.constructorName.type.toString();
@@ -65,18 +56,12 @@ class MissingExpandedOrFlexible extends OptionsLintRule<_MissingExpandedOrFlexib
   }
 }
 
-class _MissingExpandedOrFlexibleOption extends Excludable {
+class _MissingExpandedOrFlexibleOption extends CommonLintOption {
   const _MissingExpandedOrFlexibleOption({
-    this.excludes = const [],
-    this.includes = const [],
-    this.severity,
+    super.excludes,
+    super.includes,
+    super.severity,
   });
-
-  final ErrorSeverity? severity;
-  @override
-  final List<String> excludes;
-  @override
-  final List<String> includes;
 
   static _MissingExpandedOrFlexibleOption fromMap(Map<String, dynamic> map) {
     return _MissingExpandedOrFlexibleOption(

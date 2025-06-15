@@ -5,7 +5,7 @@ class MissingLogInCatchBlock extends OptionsLintRule<_MissingLogInCatchBlockOpti
     CustomLintConfigs configs,
   ) : super(
           RuleConfig(
-            name: lintName,
+            name: 'missing_log_in_catch_block',
             configs: configs,
             paramsParser: _MissingLogInCatchBlockOption.fromMap,
             problemMessage: (_) =>
@@ -13,7 +13,6 @@ class MissingLogInCatchBlock extends OptionsLintRule<_MissingLogInCatchBlockOpti
           ),
         );
 
-  static const String lintName = 'missing_log_in_catch_block';
 
   @override
   Future<void> run(
@@ -21,18 +20,10 @@ class MissingLogInCatchBlock extends OptionsLintRule<_MissingLogInCatchBlockOpti
     ErrorReporter reporter,
     CustomLintContext context,
   ) async {
-    final rootPath = await resolver.rootPath;
-    final parameters = config.parameters;
-    if (parameters.shouldSkipAnalysis(
-      path: resolver.path,
-      rootPath: rootPath,
-    )) {
-      return;
-    }
-
-    final code = this.code.copyWith(
-          errorSeverity: parameters.severity ?? this.code.errorSeverity,
-        );
+    final runCtx = await prepareRun(resolver);
+    if (runCtx == null) return;
+    final code = runCtx.code;
+    final parameters = runCtx.parameters;
 
     context.registry.addCatchClause((node) {
       final methodInvocations = node.body.childMethodInvocations;
@@ -49,20 +40,14 @@ class MissingLogInCatchBlock extends OptionsLintRule<_MissingLogInCatchBlockOpti
   }
 }
 
-class _MissingLogInCatchBlockOption extends Excludable {
+class _MissingLogInCatchBlockOption extends CommonLintOption {
   _MissingLogInCatchBlockOption({
-    this.excludes = const [],
-    this.includes = const [],
+    super.excludes,
+    super.includes,
     this.methods = _defaultMethods,
     this.className = _defaultClassName,
-    this.severity,
+    super.severity,
   });
-
-  final ErrorSeverity? severity;
-  @override
-  final List<String> excludes;
-  @override
-  final List<String> includes;
   final List<String> methods;
   final String className;
 

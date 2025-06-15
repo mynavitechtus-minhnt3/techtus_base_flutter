@@ -7,7 +7,7 @@ class PreferCommonWidgets extends OptionsLintRule<_PreferCommonWidgetsOption> {
     CustomLintConfigs configs,
   ) : super(
           RuleConfig(
-            name: lintName,
+            name: 'prefer_common_widgets',
             configs: configs,
             paramsParser: _PreferCommonWidgetsOption.fromMap,
             problemMessage: (_) =>
@@ -15,7 +15,6 @@ class PreferCommonWidgets extends OptionsLintRule<_PreferCommonWidgetsOption> {
           ),
         );
 
-  static const String lintName = 'prefer_common_widgets';
 
   @override
   Future<void> run(
@@ -23,18 +22,10 @@ class PreferCommonWidgets extends OptionsLintRule<_PreferCommonWidgetsOption> {
     ErrorReporter reporter,
     CustomLintContext context,
   ) async {
-    final rootPath = await resolver.rootPath;
-    final parameters = config.parameters;
-    if (parameters.shouldSkipAnalysis(
-      path: resolver.path,
-      rootPath: rootPath,
-    )) {
-      return;
-    }
-
-    final code = this.code.copyWith(
-          errorSeverity: parameters.severity ?? this.code.errorSeverity,
-        );
+    final runCtx = await prepareRun(resolver);
+    if (runCtx == null) return;
+    final code = runCtx.code;
+    final parameters = runCtx.parameters;
 
     context.registry.addInstanceCreationExpression((node) {
       final bannedWidget = parameters.bannedWidgets.firstWhereOrNull((element) {
@@ -96,19 +87,13 @@ class _ReplaceWithCommonWidget extends OptionsFix<_PreferCommonWidgetsOption> {
   }
 }
 
-class _PreferCommonWidgetsOption extends Excludable {
+class _PreferCommonWidgetsOption extends CommonLintOption {
   const _PreferCommonWidgetsOption({
-    this.excludes = const [],
-    this.includes = const [],
-    this.severity,
+    super.excludes,
+    super.includes,
+    super.severity,
     this.bannedWidgets = _defaultBannedWidgets,
   });
-
-  final ErrorSeverity? severity;
-  @override
-  final List<String> excludes;
-  @override
-  final List<String> includes;
 
   final List<Map<String, String>> bannedWidgets;
 

@@ -5,7 +5,7 @@ class IncorrectParentClass extends OptionsLintRule<_IncorrectParentClassOption> 
     CustomLintConfigs configs,
   ) : super(
           RuleConfig(
-            name: lintName,
+            name: 'incorrect_parent_class',
             configs: configs,
             paramsParser: _IncorrectParentClassOption.fromMap,
             problemMessage: (options) =>
@@ -13,7 +13,6 @@ class IncorrectParentClass extends OptionsLintRule<_IncorrectParentClassOption> 
           ),
         );
 
-  static const String lintName = 'incorrect_parent_class';
 
   @override
   Future<void> run(
@@ -21,18 +20,10 @@ class IncorrectParentClass extends OptionsLintRule<_IncorrectParentClassOption> 
     ErrorReporter reporter,
     CustomLintContext context,
   ) async {
-    final rootPath = await resolver.rootPath;
-    final parameters = config.parameters;
-    if (parameters.shouldSkipAnalysis(
-      path: resolver.path,
-      rootPath: rootPath,
-    )) {
-      return;
-    }
-
-    final code = this.code.copyWith(
-          errorSeverity: parameters.severity ?? this.code.errorSeverity,
-        );
+    final runCtx = await prepareRun(resolver);
+    if (runCtx == null) return;
+    final code = runCtx.code;
+    final parameters = runCtx.parameters;
 
     context.registry.addClassDeclaration((node) {
       final parent = node.extendsClause?.superclass;
@@ -51,20 +42,14 @@ class IncorrectParentClass extends OptionsLintRule<_IncorrectParentClassOption> 
   }
 }
 
-class _IncorrectParentClassOption extends Excludable {
+class _IncorrectParentClassOption extends CommonLintOption {
   const _IncorrectParentClassOption({
-    this.excludes = const [],
-    this.includes = const [],
-    this.severity,
+    super.excludes,
+    super.includes,
+    super.severity,
     this.classPostFixes = _defaultClassPostFixes,
     this.parentClassPreFixes = _defaultParentClassPreFixes,
   });
-
-  final ErrorSeverity? severity;
-  @override
-  final List<String> excludes;
-  @override
-  final List<String> includes;
 
   final List<String> classPostFixes;
   final List<String> parentClassPreFixes;

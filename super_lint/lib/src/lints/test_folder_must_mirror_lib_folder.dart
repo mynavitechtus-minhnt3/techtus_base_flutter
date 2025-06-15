@@ -7,7 +7,7 @@ class TestFolderMustMirrorLibFolder extends OptionsLintRule<_TestFolderMustMirro
     CustomLintConfigs configs,
   ) : super(
           RuleConfig(
-            name: lintName,
+            name: 'test_folder_must_mirror_lib_folder',
             configs: configs,
             paramsParser: _TestFolderMustMirrorLibFolderOption.fromMap,
             problemMessage: (_) =>
@@ -15,7 +15,6 @@ class TestFolderMustMirrorLibFolder extends OptionsLintRule<_TestFolderMustMirro
           ),
         );
 
-  static const String lintName = 'test_folder_must_mirror_lib_folder';
   static const _testFileSuffix = '_test';
 
   @override
@@ -24,18 +23,10 @@ class TestFolderMustMirrorLibFolder extends OptionsLintRule<_TestFolderMustMirro
     ErrorReporter reporter,
     CustomLintContext context,
   ) async {
-    final rootPath = await resolver.rootPath;
-    final parameters = config.parameters;
-    if (parameters.shouldSkipAnalysis(
-      path: resolver.path,
-      rootPath: rootPath,
-    )) {
-      return;
-    }
-
-    final code = this.code.copyWith(
-          errorSeverity: parameters.severity ?? this.code.errorSeverity,
-        );
+    final runCtx = await prepareRun(resolver);
+    if (runCtx == null) return;
+    final code = runCtx.code;
+    final parameters = runCtx.parameters;
 
     final relatedPath = relativePath(resolver.path, rootPath);
 
@@ -71,20 +62,14 @@ class TestFolderMustMirrorLibFolder extends OptionsLintRule<_TestFolderMustMirro
   }
 }
 
-class _TestFolderMustMirrorLibFolderOption extends Excludable {
+class _TestFolderMustMirrorLibFolderOption extends CommonLintOption {
   const _TestFolderMustMirrorLibFolderOption({
-    this.excludes = const [],
-    this.includes = const [],
-    this.severity,
+    super.excludes,
+    super.includes,
+    super.severity,
     this.libFolderPath = _defaultLibFolderPath,
     this.testFolderPaths = _defaultTestFolderPaths,
   });
-
-  final ErrorSeverity? severity;
-  @override
-  final List<String> excludes;
-  @override
-  final List<String> includes;
   final String libFolderPath;
   final List<String> testFolderPaths;
 

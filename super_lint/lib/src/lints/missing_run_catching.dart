@@ -10,7 +10,7 @@ class MissingRunCatching extends OptionsLintRule<_MissingRunCatchingOption> {
     CustomLintConfigs configs,
   ) : super(
           RuleConfig(
-            name: lintName,
+            name: 'missing_run_catching',
             configs: configs,
             paramsParser: _MissingRunCatchingOption.fromMap,
             problemMessage: (_) =>
@@ -18,7 +18,6 @@ class MissingRunCatching extends OptionsLintRule<_MissingRunCatchingOption> {
           ),
         );
 
-  static const String lintName = 'missing_run_catching';
 
   @override
   Future<void> run(
@@ -26,18 +25,10 @@ class MissingRunCatching extends OptionsLintRule<_MissingRunCatchingOption> {
     ErrorReporter reporter,
     CustomLintContext context,
   ) async {
-    final rootPath = await resolver.rootPath;
-    final parameters = config.parameters;
-    if (parameters.shouldSkipAnalysis(
-      path: resolver.path,
-      rootPath: rootPath,
-    )) {
-      return;
-    }
-
-    final code = this.code.copyWith(
-          errorSeverity: parameters.severity ?? this.code.errorSeverity,
-        );
+    final runCtx = await prepareRun(resolver);
+    if (runCtx == null) return;
+    final code = runCtx.code;
+    final parameters = runCtx.parameters;
 
     context.registry.addMethodInvocation((node) {
       if (_addPrivateCase(parameters.startsWithPatterns).any(
@@ -98,20 +89,14 @@ class MissingRunCatching extends OptionsLintRule<_MissingRunCatchingOption> {
   }
 }
 
-class _MissingRunCatchingOption extends Excludable {
+class _MissingRunCatchingOption extends CommonLintOption {
   const _MissingRunCatchingOption({
-    this.excludes = const [],
-    this.includes = const [],
-    this.severity,
+    super.excludes,
+    super.includes,
+    super.severity,
     this.startsWithPatterns = _defaultStartsWithPatterns,
     this.startsWithPatternsExcludes = _defaultStartsWithPatternsExcludes,
   });
-
-  final ErrorSeverity? severity;
-  @override
-  final List<String> excludes;
-  @override
-  final List<String> includes;
   final List<String> startsWithPatterns;
   final List<String> startsWithPatternsExcludes;
 

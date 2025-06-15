@@ -5,13 +5,12 @@ class AvoidHardCodedColors extends OptionsLintRule<_AvoidHardCodedColorsOption> 
     CustomLintConfigs configs,
   ) : super(
           RuleConfig(
-              name: lintName,
+              name: 'avoid_hard_coded_colors',
               configs: configs,
               paramsParser: _AvoidHardCodedColorsOption.fromMap,
               problemMessage: (_) =>
                   'Avoid hard-coding colors, except for Colors.transparent, such as Color(0xFFFFFF) and Colors.white.\nPlease use \'cl.xxx\' instead'),
         );
-  static const String lintName = 'avoid_hard_coded_colors';
 
   @override
   Future<void> run(
@@ -19,18 +18,10 @@ class AvoidHardCodedColors extends OptionsLintRule<_AvoidHardCodedColorsOption> 
     ErrorReporter reporter,
     CustomLintContext context,
   ) async {
-    final rootPath = await resolver.rootPath;
-    final parameters = config.parameters;
-    if (parameters.shouldSkipAnalysis(
-      path: resolver.path,
-      rootPath: rootPath,
-    )) {
-      return;
-    }
-
-    final code = this.code.copyWith(
-          errorSeverity: parameters.severity ?? this.code.errorSeverity,
-        );
+    final runCtx = await prepareRun(resolver);
+    if (runCtx == null) return;
+    final code = runCtx.code;
+    final parameters = runCtx.parameters;
 
     unawaited(resolver
         .getResolvedUnitResult()
@@ -115,18 +106,12 @@ class AvoidHardCodedColors extends OptionsLintRule<_AvoidHardCodedColorsOption> 
   }
 }
 
-class _AvoidHardCodedColorsOption extends Excludable {
+class _AvoidHardCodedColorsOption extends CommonLintOption {
   const _AvoidHardCodedColorsOption({
-    this.excludes = const [],
-    this.includes = const [],
-    this.severity,
+    super.excludes,
+    super.includes,
+    super.severity,
   });
-
-  final ErrorSeverity? severity;
-  @override
-  final List<String> excludes;
-  @override
-  final List<String> includes;
 
   static _AvoidHardCodedColorsOption fromMap(Map<String, dynamic> map) {
     return _AvoidHardCodedColorsOption(

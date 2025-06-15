@@ -7,14 +7,13 @@ class IncorrectFreezedDefaultValueType extends OptionsLintRule<_IncorrectFreezed
     CustomLintConfigs configs,
   ) : super(
           RuleConfig(
-            name: lintName,
+            name: 'incorrect_freezed_default_value_type',
             configs: configs,
             paramsParser: _IncorrectFreezedDefaultValueTypeOption.fromMap,
             problemMessage: (_) => 'The value used in @Default must match the field type.',
           ),
         );
 
-  static const String lintName = 'incorrect_freezed_default_value_type';
 
   @override
   Future<void> run(
@@ -22,18 +21,10 @@ class IncorrectFreezedDefaultValueType extends OptionsLintRule<_IncorrectFreezed
     ErrorReporter reporter,
     CustomLintContext context,
   ) async {
-    final rootPath = await resolver.rootPath;
-    final parameters = config.parameters;
-    if (parameters.shouldSkipAnalysis(
-      path: resolver.path,
-      rootPath: rootPath,
-    )) {
-      return;
-    }
-
-    final code = this.code.copyWith(
-          errorSeverity: parameters.severity ?? this.code.errorSeverity,
-        );
+    final runCtx = await prepareRun(resolver);
+    if (runCtx == null) return;
+    final code = runCtx.code;
+    final parameters = runCtx.parameters;
 
     final resolvedUnit = await resolver.getResolvedUnitResult();
     final typeSystem = resolvedUnit.typeSystem;
@@ -62,18 +53,12 @@ class IncorrectFreezedDefaultValueType extends OptionsLintRule<_IncorrectFreezed
   }
 }
 
-class _IncorrectFreezedDefaultValueTypeOption extends Excludable {
+class _IncorrectFreezedDefaultValueTypeOption extends CommonLintOption {
   const _IncorrectFreezedDefaultValueTypeOption({
-    this.excludes = const [],
-    this.includes = const [],
-    this.severity,
+    super.excludes,
+    super.includes,
+    super.severity,
   });
-
-  final ErrorSeverity? severity;
-  @override
-  final List<String> excludes;
-  @override
-  final List<String> includes;
 
   static _IncorrectFreezedDefaultValueTypeOption fromMap(Map<String, dynamic> map) {
     return _IncorrectFreezedDefaultValueTypeOption(

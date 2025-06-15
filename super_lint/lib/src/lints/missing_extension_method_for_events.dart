@@ -8,14 +8,13 @@ class MissingExtensionMethodForEvents
     CustomLintConfigs configs,
   ) : super(
           RuleConfig(
-            name: lintName,
+            name: 'missing_extension_method_for_events',
             configs: configs,
             paramsParser: _MissingExtensionMethodForEventsOption.fromMap,
             problemMessage: (params) => 'Missing extension method for events for this class',
           ),
         );
 
-  static const String lintName = 'missing_extension_method_for_events';
 
   @override
   Future<void> run(
@@ -23,19 +22,10 @@ class MissingExtensionMethodForEvents
     ErrorReporter reporter,
     CustomLintContext context,
   ) async {
-    final rootPath = await resolver.rootPath;
-    final parameters = config.parameters;
-
-    if (parameters.shouldSkipAnalysis(
-      path: resolver.path,
-      rootPath: rootPath,
-    )) {
-      return;
-    }
-
-    final code = this.code.copyWith(
-          errorSeverity: parameters.severity ?? this.code.errorSeverity,
-        );
+    final runCtx = await prepareRun(resolver);
+    if (runCtx == null) return;
+    final code = runCtx.code;
+    final parameters = runCtx.parameters;
 
     context.registry.addCompilationUnit((unit) {
       final extensions = <ExtensionDeclaration>[];
@@ -174,18 +164,12 @@ extension $expectedExtensionName on $_extendedType {}
   }
 }
 
-class _MissingExtensionMethodForEventsOption extends Excludable {
+class _MissingExtensionMethodForEventsOption extends CommonLintOption {
   const _MissingExtensionMethodForEventsOption({
-    this.excludes = const [],
-    this.includes = const [],
-    this.severity,
+    super.excludes,
+    super.includes,
+    super.severity,
   });
-
-  final ErrorSeverity? severity;
-  @override
-  final List<String> excludes;
-  @override
-  final List<String> includes;
 
   static _MissingExtensionMethodForEventsOption fromMap(Map<String, dynamic> map) {
     return _MissingExtensionMethodForEventsOption(

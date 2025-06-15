@@ -11,14 +11,13 @@ class PreferLowerCaseTestDescription
     CustomLintConfigs configs,
   ) : super(
           RuleConfig(
-              name: lintName,
+              name: 'prefer_lower_case_test_description',
               configs: configs,
               paramsParser: _PreferLowerCaseTestDescriptionOption.fromMap,
               problemMessage: (_) =>
                   'Lower case the first character when writing tests descriptions.'),
         );
 
-  static const String lintName = 'prefer_lower_case_test_description';
 
   @override
   Future<void> run(
@@ -26,18 +25,10 @@ class PreferLowerCaseTestDescription
     ErrorReporter reporter,
     CustomLintContext context,
   ) async {
-    final rootPath = await resolver.rootPath;
-    final parameters = config.parameters;
-    if (parameters.shouldSkipAnalysis(
-      path: resolver.path,
-      rootPath: rootPath,
-    )) {
-      return;
-    }
-
-    final code = this.code.copyWith(
-          errorSeverity: parameters.severity ?? this.code.errorSeverity,
-        );
+    final runCtx = await prepareRun(resolver);
+    if (runCtx == null) return;
+    final code = runCtx.code;
+    final parameters = runCtx.parameters;
 
     context.registry.addMethodInvocation((node) {
       final testMethod = parameters.testMethods.firstWhereOrNull((element) {
@@ -122,19 +113,13 @@ class _ChangeToLowerCase extends OptionsFix<_PreferLowerCaseTestDescriptionOptio
   }
 }
 
-class _PreferLowerCaseTestDescriptionOption extends Excludable {
+class _PreferLowerCaseTestDescriptionOption extends CommonLintOption {
   const _PreferLowerCaseTestDescriptionOption({
-    this.excludes = const [],
-    this.includes = const [],
-    this.severity,
+    super.excludes,
+    super.includes,
+    super.severity,
     this.testMethods = _defaultTestMethods,
   });
-
-  final ErrorSeverity? severity;
-  @override
-  final List<String> excludes;
-  @override
-  final List<String> includes;
 
   final List<Map<String, String>> testMethods;
 

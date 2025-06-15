@@ -7,29 +7,20 @@ class PreferSingleWidgetPerFile extends OptionsLintRule<_PreferSingleWidgetPerFi
     CustomLintConfigs configs,
   ) : super(
           RuleConfig(
-            name: lintName,
+            name: 'prefer_single_widget_per_file',
             configs: configs,
             paramsParser: _PreferSingleWidgetPerFileOption.fromMap,
             problemMessage: (_) => 'Prefer single public widget per file',
           ),
         );
 
-  static const String lintName = 'prefer_single_widget_per_file';
 
   @override
   void run(CustomLintResolver resolver, ErrorReporter reporter, CustomLintContext context) async {
-    final rootPath = await resolver.rootPath;
-    final parameters = config.parameters;
-    if (parameters.shouldSkipAnalysis(
-      path: resolver.path,
-      rootPath: rootPath,
-    )) {
-      return;
-    }
-
-    final code = this.code.copyWith(
-          errorSeverity: parameters.severity ?? this.code.errorSeverity,
-        );
+    final runCtx = await prepareRun(resolver);
+    if (runCtx == null) return;
+    final code = runCtx.code;
+    final parameters = runCtx.parameters;
 
     final unit = (await resolver.getResolvedUnitResult()).unit;
     final fileName = p.basenameWithoutExtension(resolver.path);
@@ -60,19 +51,12 @@ class PreferSingleWidgetPerFile extends OptionsLintRule<_PreferSingleWidgetPerFi
   }
 }
 
-class _PreferSingleWidgetPerFileOption extends Excludable {
+class _PreferSingleWidgetPerFileOption extends CommonLintOption {
   const _PreferSingleWidgetPerFileOption({
-    this.excludes = const [],
-    this.includes = const [],
-    this.severity,
+    super.excludes,
+    super.includes,
+    super.severity,
   });
-
-  final ErrorSeverity? severity;
-
-  @override
-  final List<String> excludes;
-  @override
-  final List<String> includes;
 
   static _PreferSingleWidgetPerFileOption fromMap(Map<String, dynamic> map) {
     return _PreferSingleWidgetPerFileOption(

@@ -5,7 +5,7 @@ class PreferIsEmptyString extends OptionsLintRule<_PreferIsEmptyStringOption> {
     CustomLintConfigs configs,
   ) : super(
           RuleConfig(
-            name: lintName,
+            name: 'prefer_is_empty_string',
             configs: configs,
             paramsParser: _PreferIsEmptyStringOption.fromMap,
             problemMessage: (_) =>
@@ -13,7 +13,6 @@ class PreferIsEmptyString extends OptionsLintRule<_PreferIsEmptyStringOption> {
           ),
         );
 
-  static const String lintName = 'prefer_is_empty_string';
 
   @override
   Future<void> run(
@@ -21,18 +20,10 @@ class PreferIsEmptyString extends OptionsLintRule<_PreferIsEmptyStringOption> {
     ErrorReporter reporter,
     CustomLintContext context,
   ) async {
-    final rootPath = await resolver.rootPath;
-    final parameters = config.parameters;
-    if (parameters.shouldSkipAnalysis(
-      path: resolver.path,
-      rootPath: rootPath,
-    )) {
-      return;
-    }
-
-    final code = this.code.copyWith(
-          errorSeverity: parameters.severity ?? this.code.errorSeverity,
-        );
+    final runCtx = await prepareRun(resolver);
+    if (runCtx == null) return;
+    final code = runCtx.code;
+    final parameters = runCtx.parameters;
 
     context.registry.addBinaryExpression((node) {
       if (node.operator.type == TokenType.EQ_EQ &&
@@ -84,18 +75,12 @@ class _ReplaceWithIsEmpty extends OptionsFix<_PreferIsEmptyStringOption> {
   }
 }
 
-class _PreferIsEmptyStringOption extends Excludable {
+class _PreferIsEmptyStringOption extends CommonLintOption {
   const _PreferIsEmptyStringOption({
-    this.excludes = const [],
-    this.includes = const [],
-    this.severity,
+    super.excludes,
+    super.includes,
+    super.severity,
   });
-
-  final ErrorSeverity? severity;
-  @override
-  final List<String> excludes;
-  @override
-  final List<String> includes;
 
   static _PreferIsEmptyStringOption fromMap(Map<String, dynamic> map) {
     return _PreferIsEmptyStringOption(

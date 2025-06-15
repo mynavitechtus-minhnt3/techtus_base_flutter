@@ -5,14 +5,12 @@ class AvoidDynamic extends OptionsLintRule<_AvoidDynamicOption> {
     CustomLintConfigs configs,
   ) : super(
           RuleConfig(
-            name: lintName,
+            name: 'avoid_dynamic',
             configs: configs,
             paramsParser: _AvoidDynamicOption.fromMap,
             problemMessage: (_) => 'Avoid using dynamic type.',
           ),
         );
-
-  static const String lintName = 'avoid_dynamic';
 
   @override
   Future<void> run(
@@ -20,18 +18,10 @@ class AvoidDynamic extends OptionsLintRule<_AvoidDynamicOption> {
     ErrorReporter reporter,
     CustomLintContext context,
   ) async {
-    final rootPath = await resolver.rootPath;
-    final parameters = config.parameters;
-    if (parameters.shouldSkipAnalysis(
-      path: resolver.path,
-      rootPath: rootPath,
-    )) {
-      return;
-    }
-
-    final code = this.code.copyWith(
-          errorSeverity: parameters.severity ?? this.code.errorSeverity,
-        );
+    final runCtx = await prepareRun(resolver);
+    if (runCtx == null) return;
+    final code = runCtx.code;
+    final parameters = runCtx.parameters;
 
     context.registry.addNamedType((node) {
       if (node.type is! DynamicType) return;
@@ -57,18 +47,12 @@ class AvoidDynamic extends OptionsLintRule<_AvoidDynamicOption> {
   }
 }
 
-class _AvoidDynamicOption extends Excludable {
+class _AvoidDynamicOption extends CommonLintOption {
   const _AvoidDynamicOption({
-    this.excludes = const [],
-    this.includes = const [],
-    this.severity,
+    super.excludes,
+    super.includes,
+    super.severity,
   });
-
-  final ErrorSeverity? severity;
-  @override
-  final List<String> excludes;
-  @override
-  final List<String> includes;
 
   static _AvoidDynamicOption fromMap(Map<String, dynamic> map) {
     return _AvoidDynamicOption(

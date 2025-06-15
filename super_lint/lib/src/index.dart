@@ -28,6 +28,7 @@ export 'package:yaml/yaml.dart';
 export 'base/excludable.dart';
 export 'base/options_fix.dart';
 export 'base/options_lint_rule.dart';
+export 'base/common_lint_option.dart';
 export 'base/rule_config.dart';
 export 'lints/avoid_dynamic.dart';
 export 'lints/avoid_hard_coded_colors.dart';

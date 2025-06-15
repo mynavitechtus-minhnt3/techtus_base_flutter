@@ -5,14 +5,13 @@ class AvoidUsingUnsafeCast extends OptionsLintRule<_AvoidUsingUnsafeCastOption> 
     CustomLintConfigs configs,
   ) : super(
           RuleConfig(
-            name: lintName,
+            name: 'avoid_using_unsafe_cast',
             configs: configs,
             paramsParser: _AvoidUsingUnsafeCastOption.fromMap,
             problemMessage: (_) => 'Avoid using unsafe cast. Use \'safeCast\' function instead.',
           ),
         );
 
-  static const String lintName = 'avoid_using_unsafe_cast';
 
   @override
   Future<void> run(
@@ -20,18 +19,10 @@ class AvoidUsingUnsafeCast extends OptionsLintRule<_AvoidUsingUnsafeCastOption> 
     ErrorReporter reporter,
     CustomLintContext context,
   ) async {
-    final rootPath = await resolver.rootPath;
-    final parameters = config.parameters;
-    if (parameters.shouldSkipAnalysis(
-      path: resolver.path,
-      rootPath: rootPath,
-    )) {
-      return;
-    }
-
-    final code = this.code.copyWith(
-          errorSeverity: parameters.severity ?? this.code.errorSeverity,
-        );
+    final runCtx = await prepareRun(resolver);
+    if (runCtx == null) return;
+    final code = runCtx.code;
+    final parameters = runCtx.parameters;
 
     context.registry.addAsExpression((node) {
       reporter.atToken(
@@ -105,18 +96,12 @@ class ReplaceWithSafeCast extends OptionsFix<_AvoidUsingUnsafeCastOption> {
   }
 }
 
-class _AvoidUsingUnsafeCastOption extends Excludable {
+class _AvoidUsingUnsafeCastOption extends CommonLintOption {
   const _AvoidUsingUnsafeCastOption({
-    this.excludes = const [],
-    this.includes = const [],
-    this.severity,
+    super.excludes,
+    super.includes,
+    super.severity,
   });
-
-  final ErrorSeverity? severity;
-  @override
-  final List<String> excludes;
-  @override
-  final List<String> includes;
 
   static _AvoidUsingUnsafeCastOption fromMap(Map<String, dynamic> map) {
     return _AvoidUsingUnsafeCastOption(

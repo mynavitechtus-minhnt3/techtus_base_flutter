@@ -5,14 +5,13 @@ class UtilFunctionsMustBeStatic extends OptionsLintRule<_UtilFunctionsMustBeStat
     CustomLintConfigs configs,
   ) : super(
           RuleConfig(
-            name: lintName,
+            name: 'util_functions_must_be_static',
             configs: configs,
             paramsParser: _UtilFunctionsMustBeStaticOption.fromMap,
             problemMessage: (_) => 'Util functions must be declared as static functions.',
           ),
         );
 
-  static const String lintName = 'util_functions_must_be_static';
 
   @override
   Future<void> run(
@@ -20,18 +19,10 @@ class UtilFunctionsMustBeStatic extends OptionsLintRule<_UtilFunctionsMustBeStat
     ErrorReporter reporter,
     CustomLintContext context,
   ) async {
-    final rootPath = await resolver.rootPath;
-    final parameters = config.parameters;
-    if (parameters.shouldSkipAnalysis(
-      path: resolver.path,
-      rootPath: rootPath,
-    )) {
-      return;
-    }
-
-    final code = this.code.copyWith(
-          errorSeverity: parameters.severity ?? this.code.errorSeverity,
-        );
+    final runCtx = await prepareRun(resolver);
+    if (runCtx == null) return;
+    final code = runCtx.code;
+    final parameters = runCtx.parameters;
 
     context.registry.addFunctionDeclaration((node) {
       if (node.parent is CompilationUnit && !node.isPrivate && !node.isAnnotation) {
@@ -84,19 +75,14 @@ class ConvertToStaticFunction extends OptionsFix<_UtilFunctionsMustBeStaticOptio
   }
 }
 
-class _UtilFunctionsMustBeStaticOption extends Excludable {
+class _UtilFunctionsMustBeStaticOption extends CommonLintOption {
   const _UtilFunctionsMustBeStaticOption({
-    this.excludes = const [],
-    this.includes = const [],
-    this.severity,
+    super.excludes,
+    super.includes,
+    super.severity,
     this.utilsFolderPath = _defaultUtilsFolderPath,
   });
 
-  final ErrorSeverity? severity;
-  @override
-  final List<String> excludes;
-  @override
-  final List<String> includes;
   final String utilsFolderPath;
 
   static _UtilFunctionsMustBeStaticOption fromMap(Map<String, dynamic> map) {

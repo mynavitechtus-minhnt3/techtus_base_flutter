@@ -207,3 +207,29 @@ extension LintCodeCopyWith on LintCode {
         errorSeverity: errorSeverity ?? this.errorSeverity,
       );
 }
+
+class _RunContext<T extends CommonLintOption> {
+  const _RunContext(this.code, this.parameters);
+
+  final LintCode code;
+  final T parameters;
+}
+
+extension OptionsLintRuleRunExt<T extends CommonLintOption> on OptionsLintRule<T> {
+  Future<_RunContext<T>?> prepareRun(CustomLintResolver resolver) async {
+    final rootPath = await resolver.rootPath;
+    final parameters = config.parameters;
+    if (parameters.shouldSkipAnalysis(
+      path: resolver.path,
+      rootPath: rootPath,
+    )) {
+      return null;
+    }
+
+    final code = this.code.copyWith(
+      errorSeverity: parameters.severity ?? this.code.errorSeverity,
+    );
+
+    return _RunContext(code, parameters);
+  }
+}

@@ -5,7 +5,7 @@ class IncorrectTodoComment extends OptionsLintRule<_IncorrectTodoCommentOption> 
     CustomLintConfigs configs,
   ) : super(
           RuleConfig(
-              name: lintName,
+              name: 'incorrect_todo_comment',
               configs: configs,
               paramsParser: _IncorrectTodoCommentOption.fromMap,
               problemMessage: (_) =>
@@ -13,7 +13,6 @@ class IncorrectTodoComment extends OptionsLintRule<_IncorrectTodoCommentOption> 
                   'Example: // TODO(username): some description text #123.'),
         );
 
-  static const String lintName = 'incorrect_todo_comment';
 
   @override
   Future<void> run(
@@ -21,18 +20,10 @@ class IncorrectTodoComment extends OptionsLintRule<_IncorrectTodoCommentOption> 
     ErrorReporter reporter,
     CustomLintContext context,
   ) async {
-    final rootPath = await resolver.rootPath;
-    final parameters = config.parameters;
-    if (parameters.shouldSkipAnalysis(
-      path: resolver.path,
-      rootPath: rootPath,
-    )) {
-      return;
-    }
-
-    final code = this.code.copyWith(
-          errorSeverity: parameters.severity ?? this.code.errorSeverity,
-        );
+    final runCtx = await prepareRun(resolver);
+    if (runCtx == null) return;
+    final code = runCtx.code;
+    final parameters = runCtx.parameters;
 
     resolver.getLineContents((codeLine) {
       if (codeLine.isEndOfLineComment) {
@@ -49,18 +40,12 @@ class IncorrectTodoComment extends OptionsLintRule<_IncorrectTodoCommentOption> 
   }
 }
 
-class _IncorrectTodoCommentOption extends Excludable {
+class _IncorrectTodoCommentOption extends CommonLintOption {
   const _IncorrectTodoCommentOption({
-    this.excludes = const [],
-    this.includes = const [],
-    this.severity,
+    super.excludes,
+    super.includes,
+    super.severity,
   });
-
-  final ErrorSeverity? severity;
-  @override
-  final List<String> excludes;
-  @override
-  final List<String> includes;
 
   static _IncorrectTodoCommentOption fromMap(Map<String, dynamic> map) {
     return _IncorrectTodoCommentOption(

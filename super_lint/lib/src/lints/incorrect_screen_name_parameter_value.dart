@@ -5,14 +5,13 @@ class IncorrectScreenNameParameterValue
   IncorrectScreenNameParameterValue(CustomLintConfigs configs)
       : super(
           RuleConfig(
-            name: lintName,
+            name: 'incorrect_screen_name_parameter_value',
             configs: configs,
             paramsParser: _IncorrectScreenNameParameterValueOption.fromMap,
             problemMessage: (params) => 'The screenName does not match the file name.',
           ),
         );
 
-  static const String lintName = 'incorrect_screen_name_parameter_value';
 
   @override
   Future<void> run(
@@ -20,19 +19,10 @@ class IncorrectScreenNameParameterValue
     ErrorReporter reporter,
     CustomLintContext context,
   ) async {
-    final rootPath = await resolver.rootPath;
-    final parameters = config.parameters;
-
-    if (parameters.shouldSkipAnalysis(
-      path: resolver.path,
-      rootPath: rootPath,
-    )) {
-      return;
-    }
-
-    final code = this.code.copyWith(
-          errorSeverity: parameters.severity ?? this.code.errorSeverity,
-        );
+    final runCtx = await prepareRun(resolver);
+    if (runCtx == null) return;
+    final code = runCtx.code;
+    final parameters = runCtx.parameters;
 
     final fileName = resolver.path.split('/').last.split('.').first;
     final expectedScreenName = fileName.toCamelCase();
@@ -94,18 +84,12 @@ class _FixIncorrectScreenName extends OptionsFix<_IncorrectScreenNameParameterVa
   }
 }
 
-class _IncorrectScreenNameParameterValueOption extends Excludable {
+class _IncorrectScreenNameParameterValueOption extends CommonLintOption {
   const _IncorrectScreenNameParameterValueOption({
-    this.excludes = const [],
-    this.includes = const [],
-    this.severity,
+    super.excludes,
+    super.includes,
+    super.severity,
   });
-
-  final ErrorSeverity? severity;
-  @override
-  final List<String> excludes;
-  @override
-  final List<String> includes;
 
   static _IncorrectScreenNameParameterValueOption fromMap(Map<String, dynamic> map) {
     return _IncorrectScreenNameParameterValueOption(
