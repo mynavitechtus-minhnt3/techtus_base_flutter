@@ -2,8 +2,8 @@ import '../../../../index.dart';
 
 class JsonArrayResponseDecoder<T extends Object> extends BaseSuccessResponseDecoder<T, List<T>> {
   @override
-  // ignore: avoid-dynamic
   List<T>? mapToDataModel({
+    // ignore: avoid_dynamic
     required dynamic response,
     Decoder<T>? decoder,
   }) {

@@ -32,7 +32,7 @@ class FirebaseFirestoreService {
     final documentSnapshot = await _userCollection.doc(userId).get();
 
     return FirebaseUserData.fromJson(
-      documentSnapshot.data() as Map<String, dynamic>,
+      documentSnapshot.data() ?? {},
     );
   }
 

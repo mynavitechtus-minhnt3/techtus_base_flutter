@@ -48,7 +48,7 @@ class MoreMenuIconButton extends StatelessWidget {
             Icons.copy,
             color: color.white,
           ),
-          textStyle: TextStyle(color: color.white, fontSize: 12),
+          textStyle: style(color: color.white, fontSize: 12),
         ),
         p.MenuItem(
           title: reply,
@@ -56,7 +56,7 @@ class MoreMenuIconButton extends StatelessWidget {
             Icons.reply,
             color: color.white,
           ),
-          textStyle: TextStyle(color: color.white, fontSize: 12),
+          textStyle: style(color: color.white, fontSize: 12),
         ),
       ],
       onClickMenu: (item) {

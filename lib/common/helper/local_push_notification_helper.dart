@@ -13,7 +13,7 @@ final localPushNotificationHelperProvider = Provider<LocalPushNotificationHelper
 );
 
 @LazySingleton()
-class LocalPushNotificationHelper with LogMixin {
+class LocalPushNotificationHelper {
   static const _channelId = 'jp.flutter.app';
   static const _channelName = 'flutter';
   static const _channelDescription = 'flutter';
@@ -62,8 +62,9 @@ class LocalPushNotificationHelper with LogMixin {
     if (payload.payload == null || payload.payload!.isEmpty) {
       return;
     }
-    final Map<String, dynamic> data = jsonDecode(payload.payload!) as Map<String, dynamic>;
-    final conversationId = data['conversation_id'] as String? ?? '';
+    final Map<String, dynamic> data =
+        safeCast<Map<String, dynamic>>(jsonDecode(payload.payload!)) ?? <String, dynamic>{};
+    final conversationId = safeCast<String>(data['conversation_id']) ?? '';
 
     onNavigate(conversationId);
   }
@@ -72,7 +73,7 @@ class LocalPushNotificationHelper with LogMixin {
     File? imageFile;
     if (notification.image.startsWith('http')) {
       imageFile = await FileUtil.getImageFileFromUrl(notification.image);
-      logD('Downloaded Image File: $imageFile');
+      Log.d('Downloaded Image File: $imageFile');
     }
 
     final androidPlatformChannelSpecifics = AndroidNotificationDetails(
@@ -111,7 +112,7 @@ class LocalPushNotificationHelper with LogMixin {
           platformChannelSpecifics,
           payload: jsonEncode(payload),
         )
-        .onError((error, stackTrace) => logE('Can not show notification cause $error'));
+        .onError((error, stackTrace) => Log.e('Can not show notification cause $error'));
   }
 
   Future<void> cancelAll() async => await FlutterLocalNotificationsPlugin().cancelAll();

@@ -13,12 +13,17 @@ class SharedViewModel {
   final Ref _ref;
 
   Future<String> get deviceToken async {
-    final deviceToken = await _ref.firebaseMessagingService.deviceToken;
-    if (deviceToken != null) {
-      await _ref.appPreferences.saveDeviceToken(deviceToken);
-    }
+    try {
+      final deviceToken = await _ref.firebaseMessagingService.deviceToken;
+      if (deviceToken != null) {
+        await _ref.appPreferences.saveDeviceToken(deviceToken);
+      }
 
-    return deviceToken ?? '';
+      return deviceToken ?? '';
+    } catch (e) {
+      Log.e('Error getting device token: $e');
+      return '';
+    }
   }
 
   Future<void> forceLogout() async {
@@ -27,6 +32,8 @@ class SharedViewModel {
       _ref.update<FirebaseUserData>(currentUserProvider, (state) => const FirebaseUserData());
       await _ref.nav.replaceAll([const LoginRoute()]);
     } catch (e) {
+      Log.e('Force logout error: $e');
+
       await _ref.nav.replaceAll([const LoginRoute()]);
     }
   }
@@ -44,6 +51,8 @@ class SharedViewModel {
       _ref.update<FirebaseUserData>(currentUserProvider, (state) => const FirebaseUserData());
       await _ref.nav.replaceAll([const LoginRoute()]);
     } catch (e) {
+      Log.e('Logout error: $e');
+
       await _ref.nav.replaceAll([const LoginRoute()]);
     }
   }

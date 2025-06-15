@@ -64,6 +64,7 @@ class RestApiClient {
       return BaseSuccessResponseDecoder<FirstOutput, FinalOutput>.fromType(
         successResponseDecoderType ?? this.successResponseDecoderType,
       ).map(response: response.data, decoder: decoder);
+      // ignore: missing_log_in_catch_block
     } catch (error) {
       throw DioExceptionMapper(
         BaseErrorResponseDecoder.fromType(
@@ -73,6 +74,7 @@ class RestApiClient {
     }
   }
 
+  // ignore: avoid_dynamic
   Future<Response<dynamic>> _requestByMethod({
     required RestMethod method,
     required String path,

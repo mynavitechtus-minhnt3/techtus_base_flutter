@@ -1,9 +1,6 @@
 class ParameterConstants {
   ParameterConstants._();
 
-  static const String separator = ',';
-  static const maxLengthParameter = 500;
-
   static const String obscureText = 'obscure_text';
   static const String userId = 'user_id';
 }

@@ -45,7 +45,8 @@ class CommonScaffold extends StatelessWidget {
             message: Env.flavor.name,
             // ignore: avoid_hard_coded_colors
             color: Colors.green.withValues(alpha: 0.6),
-            textStyle: const TextStyle(
+            textStyle: style(
+              color: color.white,
               fontWeight: FontWeight.w700,
               fontSize: 12,
               letterSpacing: 1,

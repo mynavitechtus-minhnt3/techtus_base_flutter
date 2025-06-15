@@ -13,6 +13,8 @@ class Result<T> with _$Result<T> {
     try {
       return Result.success(action.call());
     } on AppException catch (e) {
+      Log.e(e);
+
       return Result.failure(e);
     }
   }
@@ -23,6 +25,8 @@ class Result<T> with _$Result<T> {
 
       return Result.success(output);
     } on AppException catch (e) {
+      Log.e(e);
+
       return Result.failure(e);
     }
   }

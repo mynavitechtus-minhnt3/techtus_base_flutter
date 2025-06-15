@@ -57,6 +57,7 @@ app.*.map.json
 *.gen.dart
 *.mocks.dart
 **/generated/
+*.isar.lock
 
 tools/*/*.jar
 tools/*.txt

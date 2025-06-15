@@ -73,7 +73,7 @@ custom_lint:
         - "lib/src/navigation/routes/app_router.dart"
         - "lib/ui/base/*.dart"
         - "lib/src/ui/base/*.dart"
-    - missing_expanded_or_flexible:
+    - missing_expanded_or_flexible: false
     - prefer_common_widgets:
       excludes:
         - "test/*.dart"
@@ -141,47 +141,6 @@ custom_lint:
       includes:
         - "apps/**/lib/ui/*.dart"
         - "apps/**/lib/ui/**/*.dart"
-
-dart_code_metrics:
-  metrics:
-    # cyclomatic-complexity: 20
-    maximum-nesting-level: 8
-    #    number-of-parameters: 4
-    # source-lines-of-code: 50
-  rules:
-    - always-remove-listener
-    - no-boolean-literal-compare
-    - no-magic-number:
-      allowed: [-1, 0, 1, 2, 3]
-    - no-equal-then-else
-    - prefer-trailing-comma
-    - double-literal-format
-    - prefer-first
-    - prefer-last
-    - avoid-unnecessary-setstate
-    - prefer-single-widget-per-file:
-        ignore-private-widgets: true
-    - avoid-wrapping-in-padding
-    - avoid-nested-conditional-expressions:
-        acceptable-level: 3
-        ignored-annotations:
-          - allowedAnnotation
-    - avoid-cascade-after-if-null
-    - avoid-collection-methods-with-unrelated-types
-    - avoid-duplicate-exports
-    - avoid-missing-enum-constant-in-map
-    - avoid-unnecessary-type-casts
-    - avoid-unnecessary-type-assertions
-    - prefer-async-await
-    - prefer-correct-type-name:
-        - min-length: 2
-        - max-length: 100
-    - prefer-iterable-of
-    - avoid-expanded-as-spacer
-    - avoid-shrink-wrap-in-lists
-    - prefer-correct-edge-insets-constructor
-    - use-setstate-synchronously
-    - avoid-double-slash-imports
 
 linter:
   rules:

@@ -3,10 +3,10 @@ import 'package:injectable/injectable.dart';
 import '../../../../index.dart';
 
 @Injectable()
-// ignore: avoid-dynamic
+// ignore: avoid_dynamic
 class JsonArrayErrorResponseDecoder extends BaseErrorResponseDecoder<List<dynamic>> {
   @override
-  // ignore: avoid-dynamic
+  // ignore: avoid_dynamic
   ServerError mapToServerError(List<dynamic>? data) {
     return ServerError(
       errors: data

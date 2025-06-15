@@ -3,13 +3,17 @@ import 'dart:io';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:mime/mime.dart';
 
+import '../../index.dart';
+
 class FileUtil {
   static String? defaultDir;
 
   static Future<File?> getImageFileFromUrl(String imageUrl) async {
     try {
       return DefaultCacheManager().getSingleFile(imageUrl);
-    } catch (_) {
+    } catch (e) {
+      Log.e('Error fetching image from URL: $e');
+
       return null;
     }
   }
@@ -30,7 +34,9 @@ class FileUtil {
       File(filePath).deleteSync(recursive: recursive);
 
       return true;
-    } catch (e) {}
+    } catch (e) {
+      Log.e('Error deleting file: $e');
+    }
 
     return false;
   }

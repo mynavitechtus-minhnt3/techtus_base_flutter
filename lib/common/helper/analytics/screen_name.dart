@@ -1,50 +1,50 @@
 enum ScreenName {
-  allUsers(
+  allUsersPage(
     screenName: 'All Users Page',
     screenEventPrefix: 'all_users',
     screenClass: 'AllUsersPage',
   ),
-  chat(
+  chatPage(
     screenName: 'Chat Page',
     screenEventPrefix: 'chat',
     screenClass: 'ChatPage',
   ),
-  contactList(
+  contactListPage(
     screenName: 'Contact List Page',
     screenEventPrefix: 'contact_list',
     screenClass: 'ContactListPage',
   ),
-  home(
+  homePage(
     screenName: 'Home Page',
     screenEventPrefix: 'home',
     screenClass: 'HomePage',
   ),
-  login(
+  loginPage(
     screenName: 'Login Page',
     screenEventPrefix: 'login',
     screenClass: 'LoginPage',
   ),
-  main(
+  mainPage(
     screenName: 'Main Page',
     screenEventPrefix: 'main',
     screenClass: 'MainPage',
   ),
   myPage(
     screenName: 'My Page',
-    screenEventPrefix: 'my_page',
+    screenEventPrefix: 'my',
     screenClass: 'MyPage',
   ),
-  register(
+  registerPage(
     screenName: 'Register Page',
     screenEventPrefix: 'register',
     screenClass: 'RegisterPage',
   ),
-  renameConversation(
+  renameConversationPage(
     screenName: 'Rename Conversation Page',
     screenEventPrefix: 'rename_conversation',
     screenClass: 'RenameConversationPage',
   ),
-  setting(
+  settingPage(
     screenName: 'Setting Page',
     screenEventPrefix: 'setting',
     screenClass: 'SettingPage',

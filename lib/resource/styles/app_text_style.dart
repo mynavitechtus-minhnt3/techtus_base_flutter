@@ -1,3 +1,4 @@
+// ignore_for_file: avoid_using_text_style_constructor_directly
 import 'package:flutter/material.dart';
 
 const _defaultLetterSpacing = 0.03;

@@ -57,13 +57,14 @@ class _ShimmerLoadingState extends State<ShimmerLoading> {
     Offset offsetWithinShimmer = Offset.zero;
 
     try {
-      final descendant = context.findRenderObject() as RenderBox?;
+      final descendant = context.findRenderObject().safeCast<RenderBox>();
 
       offsetWithinShimmer = descendant != null
           ? shimmer.getDescendantOffset(
               descendant: descendant,
             )
           : Offset.zero;
+      // ignore: missing_log_in_catch_block
     } catch (e) {
       // Known issue: null pointer exception
     }

@@ -30,6 +30,7 @@ class AllUsersViewModel extends BaseViewModel<AllUsersState> {
     data = data.copyWith(
       conversationUsers: _conversation == null
           ? []
+          // ignore: missing_run_catching
           : _ref.sharedViewModel.getRenamedMembers(
               members: initialMembers,
               conversationId: _conversation.id,
@@ -48,7 +49,9 @@ class AllUsersViewModel extends BaseViewModel<AllUsersState> {
   }
 
   void listenToUsers(List<String> selectedUsers) {
+    // ignore: missing_run_catching
     _usersSubscription?.cancel();
+    // ignore: missing_run_catching
     _usersSubscription = _ref.firebaseFirestoreService
         .getUsersExceptMembersStream(
       selectedUsers.isNotEmpty ? selectedUsers : [_ref.appPreferences.userId],

@@ -32,23 +32,25 @@ abstract class BaseSuccessResponseDecoder<I extends Object, O extends Object> {
     };
   }
 
-  // ignore: avoid-dynamic
   O? map({
+    // ignore: avoid_dynamic
     required dynamic response,
     Decoder<I>? decoder,
   }) {
     assert(response != null);
     try {
       return mapToDataModel(response: response, decoder: decoder);
+      // ignore: missing_log_in_catch_block
     } on RemoteException catch (_) {
       rethrow;
+      // ignore: missing_log_in_catch_block
     } catch (e) {
       throw RemoteException(kind: RemoteExceptionKind.decodeError, rootException: e);
     }
   }
 
-  // ignore: avoid-dynamic
   O? mapToDataModel({
+    // ignore: avoid_dynamic
     required dynamic response,
     Decoder<I>? decoder,
   });

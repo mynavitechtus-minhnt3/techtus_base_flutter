@@ -7,6 +7,7 @@ environment:
   sdk: ">=3.1.5 <4.0.0"
 
 dependencies:
+  change_case: 2.2.0
   collection: 1.19.1
   custom_lint_builder: 0.7.5
   flutter_lints: 6.0.0

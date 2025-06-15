@@ -38,11 +38,10 @@ void main() {
 
     test('when `firebaseMessagingService.deviceToken` throws an error', () async {
       final dummyError = Exception();
-      const expectedError = throwsException;
 
       when(() => firebaseMessagingService.deviceToken).thenThrow(dummyError);
 
-      expect(sharedViewModel.deviceToken, expectedError);
+      expect(await sharedViewModel.deviceToken, '');
       verifyNever(() => appPreferences.saveDeviceToken(any()));
     });
   });

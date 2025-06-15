@@ -164,6 +164,8 @@ extension DartTypeExt on DartType {
   bool get isVoidType => this is VoidType;
 
   bool get isDynamicType => this is DynamicType;
+
+  bool get isEnum => element3?.toString().startsWith('enum') ?? false;
 }
 
 extension MethodDeclarationExt on MethodDeclaration {

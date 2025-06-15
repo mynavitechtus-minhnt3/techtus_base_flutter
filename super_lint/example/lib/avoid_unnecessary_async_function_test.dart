@@ -1,3 +1,4 @@
+// ignore_for_file: prefer_single_widget_per_file
 // ignore_for_file: avoid_dynamic, avoid_hard_coded_strings
 // ignore_for_file: missing_log_in_catch_block
 import 'dart:async';

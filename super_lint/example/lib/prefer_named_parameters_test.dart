@@ -1,3 +1,4 @@
+// ignore_for_file: prefer_single_widget_per_file
 // ~.~.~.~.~.~.~.~ THE FOLLOWING CASES SHOULD NOT BE WARNED ~.~.~.~.~.~.~.~
 
 class A {

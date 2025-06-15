@@ -13,16 +13,17 @@ class ViewUtil {
   }
 
   static Offset? getWidgetPosition(GlobalKey globalKey) {
-    return (globalKey.currentContext?.findRenderObject() as RenderBox?)
+    return (globalKey.currentContext?.findRenderObject().safeCast<RenderBox>())
         ?.let((it) => it.localToGlobal(Offset.zero));
   }
 
   static double? getWidgetWidth(GlobalKey globalKey) {
-    return (globalKey.currentContext?.findRenderObject() as RenderBox?)?.let((it) => it.size.width);
+    return (globalKey.currentContext?.findRenderObject().safeCast<RenderBox>())
+        ?.let((it) => it.size.width);
   }
 
   static double? getWidgetHeight(GlobalKey globalKey) {
-    return (globalKey.currentContext?.findRenderObject() as RenderBox?)
+    return (globalKey.currentContext?.findRenderObject().safeCast<RenderBox>())
         ?.let((it) => it.size.height);
   }
 }

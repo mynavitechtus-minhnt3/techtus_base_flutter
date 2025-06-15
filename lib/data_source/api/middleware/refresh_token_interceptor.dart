@@ -47,6 +47,7 @@ class RefreshTokenInterceptor extends BaseInterceptor {
       try {
         final newToken = await _refreshToken();
         await _onRefreshTokenSuccess(newToken);
+        // ignore: missing_log_in_catch_block
       } catch (e) {
         _onRefreshTokenError(e);
       } finally {
@@ -98,6 +99,7 @@ class RefreshTokenInterceptor extends BaseInterceptor {
       final response = await noneAuthAppServerApiClient.fetch(options);
       handler.resolve(response);
     } catch (e) {
+      Log.e('Error while _requestWithNewToken: $e');
       handler.next(DioException(requestOptions: options, error: e));
     }
   }
@@ -111,10 +113,12 @@ class RefreshTokenInterceptor extends BaseInterceptor {
         method: RestMethod.post,
         path: 'v1/auth/refresh',
         body: {'refresh_token': refreshToken},
-        decoder: (json) => ApiRefreshTokenData.fromJson(json as Map<String, dynamic>),
+        decoder: (json) =>
+            ApiRefreshTokenData.fromJson(json.safeCast<Map<String, dynamic>>() ?? {}),
       );
 
       return response;
+      // ignore: missing_log_in_catch_block
     } catch (e) {
       // TODO(minh): fix depend on project #0
       if (e is RemoteException && e.generalServerErrorId == Constant.refreshTokenFailedErrorId) {

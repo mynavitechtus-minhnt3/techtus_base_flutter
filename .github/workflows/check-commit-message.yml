@@ -1,39 +1,44 @@
-name: Check Latest Commit Message
+name: Check All Commit Messages
 
 on:
   pull_request:
     types: [opened, synchronize]
 
 jobs:
-  check-latest-commit:
+  check-commit-messages:
     runs-on: ubuntu-latest
 
     steps:
-      - name: ⬇️ Checkout full history
+      - name: ⬇️ Checkout code
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          fetch-depth: 0  # get full commit history
 
-      - name: 🔍 Validate latest commit message
+      - name: 🔍 Validate all commit messages
         run: |
-          echo "🔍 Getting latest commit SHA in PR..."
-          SHA=${{ github.event.pull_request.head.sha }}
-          echo "🔎 SHA: $SHA"
+          echo "🔍 Getting all commits in PR..."
+          BASE_SHA=${{ github.event.pull_request.base.sha }}
+          HEAD_SHA=${{ github.event.pull_request.head.sha }}
 
-          COMMIT_MSG=$(git log -1 --pretty=format:"%s" $SHA)
-          echo "🔎 Commit message: $COMMIT_MSG"
+          COMMITS=$(git log --pretty=format:"%H" $BASE_SHA..$HEAD_SHA)
 
-          # Skip merge commits (optional)
-          if [[ "$COMMIT_MSG" == Merge* ]]; then
-            echo "ℹ️ Skipping merge commit"
-            exit 0
-          fi
+          echo "🔎 Validating commit messages..."
+          for COMMIT in $COMMITS; do
+            MSG=$(git log -1 --pretty=format:"%s" $COMMIT)
+            echo "🔸 Commit: $COMMIT"
+            echo "📝 Message: $MSG"
 
-          # Validate with regex
-          if [[ ! "$COMMIT_MSG" =~ ^(feat|fix|chore|refactor|package):\ .+ ]]; then
-            echo "❌ Invalid commit message format"
-            echo "✅ Expected format: 'type: description' (e.g. 'feat: add login form')"
-            exit 1
-          fi
+            # Skip merge commits
+            if [[ "$MSG" == Merge* ]]; then
+              echo "↪️ Skipping merge commit"
+              continue
+            fi
 
-          echo "✅ Commit message is valid"
+            if [[ ! "$MSG" =~ ^(feat|fix|chore|refactor|package):\ .+ ]]; then
+              echo "❌ Invalid commit message format in commit $COMMIT"
+              echo "✅ Expected format: 'type: description' (e.g. 'feat: add login form')"
+              exit 1
+            fi
+          done
+
+          echo "✅ All commit messages are valid"

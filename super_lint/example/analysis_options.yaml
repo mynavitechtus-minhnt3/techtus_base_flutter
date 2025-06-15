@@ -46,3 +46,31 @@ custom_lint:
       severity: warning
     - missing_expanded_or_flexible:
       severity: warning
+    - avoid_using_text_style_constructor_directly:
+    - util_functions_must_be_static:
+      severity: warning
+      utils_folder_path: "lib/util_functions_must_be_static_test/utils"
+    - missing_run_catching:
+      severity: warning
+    - avoid_using_if_else_with_enums:
+      severity: warning
+    - avoid_nested_conditions:
+      severity: warning
+      acceptable_level: 3
+    - missing_log_in_catch_block:
+      severity: warning
+      class_name: "Log"
+      methods:
+        - "severe"
+        - "warning"
+        - "info"
+        - "debug"
+        - "error"
+    - missing_extension_method_for_events:
+    - missing_common_scrollbar:
+      excludes:
+        - "test/*.dart"
+        - "test/**/*.dart"
+        - "integration_test/*.dart"
+        - "integration_test/**/*.dart"
+      common_scrollbar_widget_name: "CommonScrollbar"

@@ -78,6 +78,7 @@ class CommonContainer extends StatelessWidget {
       width: width,
       height: height,
       decoration: border is DashBorder
+          // ignore: avoid_using_unsafe_cast
           ? DashBorderDecoration(dashBorder: border as DashBorder, shape: shape)
           : BoxDecoration(
               borderRadius: shape == CommonShape.circle ? null : border?.borderRadius,

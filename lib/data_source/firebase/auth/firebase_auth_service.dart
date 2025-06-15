@@ -66,7 +66,7 @@ class FirebaseAuthService {
 
       return user.user!.uid;
     } on FirebaseAuthException catch (e) {
-      Log.e('error: ${e.code} - ${e.message}');
+      Log.e('createUserWithEmailAndPassword: ${e.code} - ${e.message}');
       switch (e.code) {
         case 'email-already-in-use':
           throw AppFirebaseAuthException(
@@ -77,6 +77,11 @@ class FirebaseAuthService {
             kind: AppFirebaseAuthExceptionKind.unknown,
           );
       }
+    } catch (e) {
+      Log.e('createUserWithEmailAndPassword: $e');
+      throw AppFirebaseAuthException(
+        kind: AppFirebaseAuthExceptionKind.unknown,
+      );
     }
   }
 
@@ -88,6 +93,7 @@ class FirebaseAuthService {
     try {
       await currentUser?.delete();
     } on FirebaseAuthException catch (e) {
+      Log.e('deleteAccount: ${e.code} - ${e.message}');
       switch (e.code) {
         case 'requires-recent-login':
           throw AppFirebaseAuthException(

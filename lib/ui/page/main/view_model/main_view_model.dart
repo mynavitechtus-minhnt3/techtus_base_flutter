@@ -50,12 +50,14 @@ class MainViewModel extends BaseViewModel<MainState> {
     final userId = _ref.appPreferences.userId;
     if (userId.isNotEmpty) {
       currentUserSubscription =
+          // ignore: missing_run_catching
           _ref.firebaseFirestoreService.getUserDetailStream(userId).listen((user) async {
         // user deleted - force logout
         if (user.id.isEmpty) {
           await _ref.nav.showDialog(
             CommonPopup.infoDialog(l10n.forceLogout),
           );
+          // ignore: missing_run_catching
           await _ref.appPreferences.clearCurrentUserData();
           _updateCurrentUser(const FirebaseUserData());
           await _ref.nav.replaceAll([const LoginRoute()]);
@@ -84,6 +86,7 @@ class MainViewModel extends BaseViewModel<MainState> {
     onTokenRefreshSubscription?.cancel();
     onTokenRefreshSubscription = _ref.firebaseMessagingService.onTokenRefresh.listen((event) async {
       if (event.isNotEmpty) {
+        // ignore: missing_run_catching
         await _ref.appPreferences.saveDeviceToken(event);
       }
     });
@@ -121,6 +124,7 @@ class MainViewModel extends BaseViewModel<MainState> {
 
     if (_ref.nav.getCurrentRouteName() == ChatRoute.name) {
       final routeData = _ref.nav.getCurrentRouteData();
+      // ignore: avoid_using_unsafe_cast
       final arg = routeData.args as ChatRouteArgs;
       if (arg.conversation.id != conversationId) {
         await _ref.nav.pop();

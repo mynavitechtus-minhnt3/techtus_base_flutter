@@ -5,9 +5,9 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../../../index.dart';
 
 @RoutePage(name: 'MyPageRoute')
-class MyPagePage extends BasePage<MyPageState,
+class MyPage extends BasePage<MyPageState,
     AutoDisposeStateNotifierProvider<MyPageViewModel, CommonState<MyPageState>>> {
-  const MyPagePage({super.key});
+  const MyPage({super.key});
 
   @override
   ScreenViewEvent get screenViewEvent => ScreenViewEvent(screenName: ScreenName.myPage);
@@ -49,7 +49,7 @@ class MyPagePage extends BasePage<MyPageState,
                                 email,
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
-                                style: TextStyle(
+                                style: style(
                                   fontSize: 20.rps,
                                   fontWeight: FontWeight.w500,
                                   color: color.black,
@@ -77,7 +77,7 @@ class MyPagePage extends BasePage<MyPageState,
               leading: const Icon(Icons.home),
               title: CommonText(
                 l10n.home,
-                style: TextStyle(
+                style: style(
                   color: color.black,
                   fontSize: 14.rps,
                 ),
@@ -90,10 +90,7 @@ class MyPagePage extends BasePage<MyPageState,
               leading: const Icon(Icons.settings),
               title: CommonText(
                 l10n.settings,
-                style: TextStyle(
-                  color: color.black,
-                  fontSize: 14.rps,
-                ),
+                style: style(color: color.black, fontSize: 14.rps),
               ),
               onTap: () {
                 ref.read(appNavigatorProvider).push(const SettingRoute());
@@ -103,7 +100,7 @@ class MyPagePage extends BasePage<MyPageState,
               leading: const Icon(Icons.logout),
               title: CommonText(
                 l10n.logout,
-                style: TextStyle(
+                style: style(
                   color: color.black,
                   fontSize: 14.rps,
                 ),
@@ -119,7 +116,7 @@ class MyPagePage extends BasePage<MyPageState,
               leading: const Icon(Icons.delete),
               title: CommonText(
                 l10n.deleteAccount,
-                style: TextStyle(
+                style: style(
                   color: color.black,
                   fontSize: 14.rps,
                 ),

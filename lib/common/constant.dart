@@ -120,4 +120,8 @@ class Constant {
   static const female = 1;
   static const other = 2;
   static const unknown = -1;
+
+  // log event
+  static const parameterSeparator = ',';
+  static const parameterMaxLength = 500;
 }

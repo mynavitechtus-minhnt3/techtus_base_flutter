@@ -1,18 +1,20 @@
+// ignore_for_file: avoid_using_unsafe_cast
 import 'dart:async';
 
 import 'package:auto_route/auto_route.dart';
+import 'package:dartx/dartx.dart';
 import 'package:flutter/material.dart' as m;
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:injectable/injectable.dart';
 
-import '../index.dart';
+import '../../index.dart';
 
 final appNavigatorProvider = Provider<AppNavigator>(
   (ref) => getIt.get<AppNavigator>(),
 );
 
 @LazySingleton()
-class AppNavigator with LogMixin {
+class AppNavigator {
   AppNavigator(
     this._appRouter,
   );
@@ -25,6 +27,8 @@ class AppNavigator with LogMixin {
   TabsRouter? tabsRouter;
 
   final AppRouter _appRouter;
+
+  // ignore: avoid_dynamic
   final _popups = <String, Completer<dynamic>>{};
 
   StackRouter? get _currentTabRouter => tabsRouter?.stackRouterOfIndex(currentBottomTab);
@@ -48,13 +52,49 @@ class AppNavigator with LogMixin {
 
   bool get canPopSelfOrChildren => _appRouter.canPop();
 
-  String getCurrentRouteName({bool useRootNavigator = false}) =>
-      AutoRouter.of(useRootNavigator ? _rootRouterContext : _currentTabContextOrRootContext)
+  bool get isUseRootNavigator {
+    final stack = _appRouter.current.router.stack;
+
+    if (_popups.isNotEmpty && _popups.keys.any((key) => !key.contains('SnackBar'))) return true;
+
+    if (!stack.any((r) => r.routeData.name == _mainRoute)) {
+      return true;
+    }
+
+    if (stack.length <= 1) return false;
+
+    final previousRoute = stack[stack.length - 2];
+
+    if (checkExistsRouteInStack(
+      routeName: _mainRoute,
+      routerData: previousRoute.routeData,
+    )) {
+      return !tabRoutes.any((tab) => tab.routeName == previousRoute.routeData.name);
+    }
+
+    return true;
+  }
+
+  bool checkExistsRouteInStack({
+    // ignore: strict_raw_type
+    required RouteData routerData,
+    required String routeName,
+  }) {
+    final currentSegments = routerData.router.currentSegments;
+
+    return currentSegments.any((route) => route.name == routeName);
+  }
+
+  String get _mainRoute => 'MainRoute';
+
+  String getCurrentRouteName() =>
+      AutoRouter.of(isUseRootNavigator ? _rootRouterContext : _currentTabContextOrRootContext)
           .current
           .name;
 
-  RouteData<dynamic> getCurrentRouteData({bool useRootNavigator = false}) =>
-      AutoRouter.of(useRootNavigator ? _rootRouterContext : _currentTabContextOrRootContext)
+  // ignore: strict_raw_type
+  RouteData getCurrentRouteData() =>
+      AutoRouter.of(isUseRootNavigator ? _rootRouterContext : _currentTabContextOrRootContext)
           .current;
 
   void popUntilRootOfCurrentBottomTab() {
@@ -64,7 +104,7 @@ class AppNavigator with LogMixin {
 
     if (_currentTabRouter?.canPop() == true) {
       if (Config.enableNavigatorObserverLog) {
-        logD('popUntilRootOfCurrentBottomTab');
+        Log.d('popUntilRootOfCurrentBottomTab');
       }
       _currentTabRouter?.popUntilRoot();
     }
@@ -76,22 +116,23 @@ class AppNavigator with LogMixin {
     }
 
     if (Config.enableNavigatorObserverLog) {
-      logD('navigateToBottomTab with index = $index, notify = $notify');
+      Log.d('navigateToBottomTab with index = $index, notify = $notify');
     }
     tabsRouter?.setActiveIndex(index, notify: notify);
   }
 
-  Future<T?> push<T extends Object?>(PageRouteInfo routeInfo) {
+  // ignore: prefer_named_parameters
+  Future<T?> push<T extends Object?>(PageRouteInfo routeInfo, {String? name}) {
     if (Config.enableNavigatorObserverLog) {
-      logD('push $routeInfo');
+      Log.d('push $routeInfo');
     }
 
-    return _appRouter.push<T>(routeInfo);
+    return _appRouter.push<T>(routeInfo.copyWith(name: name));
   }
 
   Future<void> pushAll(List<PageRouteInfo> listRouteInfo) {
     if (Config.enableNavigatorObserverLog) {
-      logD('pushAll $listRouteInfo');
+      Log.d('pushAll $listRouteInfo');
     }
 
     return _appRouter.pushAll(listRouteInfo);
@@ -100,27 +141,34 @@ class AppNavigator with LogMixin {
   Future<T?> replace<T extends Object?>(PageRouteInfo routeInfo) {
     _popups.clear();
     if (Config.enableNavigatorObserverLog) {
-      logD('replace by $routeInfo');
+      Log.d('replace by $routeInfo');
     }
 
     return _appRouter.replace<T>(routeInfo);
   }
 
-  Future<void> replaceAll(List<PageRouteInfo> listRouteInfo) {
+  // ignore: prefer_named_parameters
+  Future<void> replaceAll(
+    List<PageRouteInfo> listRouteInfo, {
+    bool updateExistingRoutes = true,
+  }) {
     _popups.clear();
     if (Config.enableNavigatorObserverLog) {
-      logD('replaceAll by $listRouteInfo');
+      Log.d('replaceAll by $listRouteInfo');
     }
 
-    return _appRouter.replaceAll(listRouteInfo);
+    return _appRouter.replaceAll(
+      listRouteInfo,
+      updateExistingRoutes: updateExistingRoutes,
+    );
   }
 
   Future<bool> pop<T extends Object?>({
     T? result,
-    bool useRootNavigator = false,
-  }) {
+  }) async {
+    final useRootNavigator = isUseRootNavigator;
     if (Config.enableNavigatorObserverLog) {
-      logD('pop with result = $result, useRootNav = $useRootNavigator');
+      Log.d('pop with result = $result, useRootNavigator = $useRootNavigator');
     }
 
     return useRootNavigator
@@ -132,11 +180,11 @@ class AppNavigator with LogMixin {
   Future<T?> popAndPush<T extends Object?, R extends Object?>(
     PageRouteInfo routeInfo, {
     R? result,
-    bool useRootNavigator = false,
   }) {
+    final useRootNavigator = isUseRootNavigator;
     if (Config.enableNavigatorObserverLog) {
-      logD(
-        'popAndPush $routeInfo with result = $result, useRootNav = $useRootNavigator',
+      Log.d(
+        'popAndPush $routeInfo with result = $result, useRootNavigator = $useRootNavigator',
       );
     }
 
@@ -151,9 +199,10 @@ class AppNavigator with LogMixin {
           );
   }
 
-  void popUntilRoot({bool useRootNavigator = false}) {
+  void popUntilRoot() {
+    final useRootNavigator = isUseRootNavigator;
     if (Config.enableNavigatorObserverLog) {
-      logD('popUntilRoot, useRootNav = $useRootNavigator');
+      Log.d('popUntilRoot, useRootNavigator = $useRootNavigator');
     }
 
     useRootNavigator ? _appRouter.popUntilRoot() : _currentTabRouterOrRootRouter.popUntilRoot();
@@ -161,15 +210,28 @@ class AppNavigator with LogMixin {
 
   void popUntilRouteName(String routeName) {
     if (Config.enableNavigatorObserverLog) {
-      logD('popUntilRouteName $routeName');
+      Log.d('popUntilRouteName $routeName');
     }
 
     _appRouter.popUntilRouteWithName(routeName);
   }
 
+  Future<void> popUntilRouteNameOfCurrentTab({
+    required String routeName,
+    Object? result,
+  }) async {
+    if (Config.enableNavigatorObserverLog) {
+      Log.d('popUntilRouteNameOfCurrentTab $routeName');
+    }
+    await _appRouter.popUntilNamedWithResult(routeName: _mainRoute, result: result);
+    await Future.delayed(const Duration(milliseconds: 100));
+    await _currentTabRouterOrRootRouter.popUntilNamedWithResult(
+        routeName: routeName, result: result);
+  }
+
   bool removeUntilRouteName(String routeName) {
     if (Config.enableNavigatorObserverLog) {
-      logD('removeUntilRouteName $routeName');
+      Log.d('removeUntilRouteName $routeName');
     }
 
     return _appRouter.removeUntil((route) => route.name == routeName);
@@ -177,19 +239,17 @@ class AppNavigator with LogMixin {
 
   bool removeAllRoutesWithName(String routeName) {
     if (Config.enableNavigatorObserverLog) {
-      logD('removeAllRoutesWithName $routeName');
+      Log.d('removeAllRoutesWithName $routeName');
     }
 
     return _appRouter.removeWhere((route) => route.name == routeName);
   }
 
   // ignore: prefer_named_parameters
-  Future<void> popAndPushAll(
-    List<PageRouteInfo> listRouteInfo, {
-    bool useRootNavigator = false,
-  }) {
+  Future<void> popAndPushAll(List<PageRouteInfo> listRouteInfo) {
+    final useRootNavigator = isUseRootNavigator;
     if (Config.enableNavigatorObserverLog) {
-      logD('popAndPushAll $listRouteInfo, useRootNav = $useRootNavigator');
+      Log.d('popAndPushAll $listRouteInfo, useRootNavigator = $useRootNavigator');
     }
 
     return useRootNavigator
@@ -199,7 +259,7 @@ class AppNavigator with LogMixin {
 
   bool removeLast() {
     if (Config.enableNavigatorObserverLog) {
-      logD('removeLast');
+      Log.d('removeLast');
     }
 
     return _appRouter.removeLast();
@@ -214,7 +274,7 @@ class AppNavigator with LogMixin {
     bool canPop = true,
   }) async {
     if (_popups.containsKey(popup.id)) {
-      logD('Dialog $popup already shown');
+      Log.d('Dialog $popup already shown');
 
       return _popups[popup.id]!.future as Future<T?>;
     }
@@ -225,7 +285,7 @@ class AppNavigator with LogMixin {
       context: useRootNavigator ? _rootRouterContext : _currentTabContextOrRootContext,
       builder: (context) => m.PopScope(
         onPopInvokedWithResult: (didPop, result) async {
-          logD('Dialog $popup dismissed with result = $result');
+          Log.d('Dialog $popup dismissed with result = $result');
           _popups.remove(popup.id);
         },
         canPop: canPop,
@@ -253,7 +313,7 @@ class AppNavigator with LogMixin {
     bool canPop = true,
   }) {
     if (_popups.containsKey(popup.id)) {
-      logD('GeneralDialog $popup already shown');
+      Log.d('GeneralDialog $popup already shown');
 
       return _popups[popup.id]!.future as Future<T?>;
     }
@@ -271,7 +331,7 @@ class AppNavigator with LogMixin {
       ) =>
           m.PopScope(
         onPopInvokedWithResult: (didPop, result) async {
-          logD('GeneralDialog $popup dismissed with result = $result');
+          Log.d('GeneralDialog $popup dismissed with result = $result');
           _popups.remove(popup.id);
         },
         canPop: canPop,
@@ -294,7 +354,7 @@ class AppNavigator with LogMixin {
     bool canPop = true,
   }) {
     if (_popups.containsKey(popup.id)) {
-      logD('BottomSheet $popup already shown');
+      Log.d('BottomSheet $popup already shown');
 
       return _popups[popup.id]!.future as Future<T?>;
     }
@@ -304,7 +364,7 @@ class AppNavigator with LogMixin {
       context: useRootNavigator ? _rootRouterContext : _currentTabContextOrRootContext,
       builder: (context) => m.PopScope(
         onPopInvokedWithResult: (didPop, result) async {
-          logD('BottomSheet $popup dismissed with result = $result');
+          Log.d('BottomSheet $popup dismissed with result = $result');
           _popups.remove(popup.id);
         },
         canPop: canPop,
@@ -319,14 +379,45 @@ class AppNavigator with LogMixin {
     );
   }
 
-  void showSnackBar(CommonPopup popup) {
-    final messengerState = m.ScaffoldMessenger.maybeOf(_rootRouterContext);
+  // ignore: prefer_named_parameters
+  void showSnackBar(CommonPopup popup, {m.BuildContext? context}) {
+    if (_popups.containsKey(popup.id)) {
+      Log.d('showSnackBar $popup already shown');
+
+      return;
+    }
+    _popups[popup.id] = Completer<void>();
+
+    final messengerState = m.ScaffoldMessenger.maybeOf(context ?? _rootRouterContext);
     if (messengerState == null) {
       return;
     }
     messengerState.hideCurrentSnackBar();
     messengerState.showSnackBar(
-      popup.builder(_rootRouterContext, this) as m.SnackBar,
+      popup.builder(context ?? _rootRouterContext, this) as m.SnackBar,
     );
+    Future.delayed(Constant.snackBarDuration, () {
+      _popups.remove(popup.id);
+    });
+  }
+}
+
+extension RouterUtils<T extends Object?> on StackRouter {
+  Future<void> popUntilNamedWithResult({
+    required String routeName,
+    T? result,
+    bool forced = false,
+  }) async {
+    final targetRouteIndex = stackData.indexWhere((e) => e.name == routeName);
+
+    if (targetRouteIndex == -1) return;
+
+    for (var i = stackData.lastIndex; i > targetRouteIndex; i--) {
+      if (i == targetRouteIndex + 1) {
+        forced ? pop(result) : await maybePop(result);
+      } else {
+        forced ? pop() : await maybePop();
+      }
+    }
   }
 }

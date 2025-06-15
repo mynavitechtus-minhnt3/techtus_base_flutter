@@ -11,7 +11,9 @@ final crashlyticsHelperProvider = Provider<CrashlyticsHelper>(
 @LazySingleton()
 class CrashlyticsHelper {
   Future<void> recordError({
+    // ignore: avoid_dynamic
     dynamic exception,
+    // ignore: avoid_dynamic
     dynamic reason,
     bool? printDetails,
     StackTrace? stack,

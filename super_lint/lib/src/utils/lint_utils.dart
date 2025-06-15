@@ -72,6 +72,18 @@ extension StringExtension on String {
 
     return '$prefix$replacement$suffix';
   }
+
+  bool get isSnakeCase {
+    final snakeCaseRegex = RegExp(r'^[a-z0-9]+(_[a-z0-9]+)*$');
+    return snakeCaseRegex.hasMatch(this);
+  }
+
+  String snakeToPascal() {
+    return this
+        .split('_')
+        .map((s) => s.isNotEmpty ? s[0].toUpperCase() + s.substring(1) : '')
+        .join();
+  }
 }
 
 T run<T>(T Function() block) {

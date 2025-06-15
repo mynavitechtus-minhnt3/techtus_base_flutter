@@ -1,6 +1,6 @@
 import '../../../../index.dart';
 
-abstract class LoadMoreExecutor<T> with LogMixin {
+abstract class LoadMoreExecutor<T> {
   LoadMoreExecutor({
     this.initPage = Constant.initialPage,
     this.initOffset = 0,
@@ -32,7 +32,7 @@ abstract class LoadMoreExecutor<T> with LogMixin {
       if (isInitialLoad) {
         _output = LoadMoreOutput<T>(data: <T>[], page: initPage, offset: initOffset);
       }
-      logD('LoadMoreInput: page: $page, offset: $offset');
+      Log.d('LoadMoreInput: page: $page, offset: $offset');
       final pagedList = await action(page: page, limit: limit, params: params ?? {});
 
       final newOutput = _oldOutput.copyWith(
@@ -52,14 +52,14 @@ abstract class LoadMoreExecutor<T> with LogMixin {
       _output = newOutput;
       _oldOutput = newOutput;
       if (Config.enableLogExecutorOutput) {
-        logD(
+        Log.d(
           'LoadMoreOutput: pagedList: $pagedList, inputPage: $page, inputOffset: $offset, newOutput: $newOutput',
         );
       }
 
       return newOutput;
     } catch (e) {
-      logE('LoadMoreError: $e');
+      Log.e('LoadMoreError: $e');
       _output = _oldOutput;
 
       throw e is AppException ? e : AppUncaughtException(rootException: e);

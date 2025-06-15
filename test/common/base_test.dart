@@ -42,7 +42,7 @@ Future<void> main() async {
     registerFallbackValue(RestMethod.get);
     registerFallbackValue(_FakeNormalEvent());
     registerFallbackValue(_FakeScreenViewEvent());
-    registerFallbackValue(ScreenName.main);
+    registerFallbackValue(ScreenName.mainPage);
   });
 
   setUp(() {

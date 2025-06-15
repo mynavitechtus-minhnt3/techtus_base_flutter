@@ -1,3 +1,4 @@
+// ignore_for_file: avoid_nested_conditions, avoid_using_unsafe_cast, avoid_dynamic
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 

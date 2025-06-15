@@ -33,6 +33,7 @@ class RetryOnErrorInterceptor extends BaseInterceptor {
     if (retryCount > 0 && shouldRetry(err)) {
       await Future<void>.delayed(_retryHelper.getRetryInterval(retryCount));
       try {
+        // ignore: avoid_dynamic
         final response = await _dio.fetch<dynamic>(
           err.requestOptions
             ..headers[retryHeaderKey] = true
@@ -40,6 +41,7 @@ class RetryOnErrorInterceptor extends BaseInterceptor {
         );
 
         return handler.resolve(response);
+        // ignore: missing_log_in_catch_block
       } on Object catch (_) {
         return super.onError(err, handler);
       }

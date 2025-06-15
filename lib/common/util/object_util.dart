@@ -1,5 +1,6 @@
 import '../../index.dart';
 
+// ignore: avoid_dynamic
 T? safeCast<T>(dynamic value) {
   if (value is T) {
     return value;

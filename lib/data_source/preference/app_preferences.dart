@@ -9,7 +9,7 @@ import '../../index.dart';
 final appPreferencesProvider = Provider((ref) => getIt.get<AppPreferences>());
 
 @LazySingleton()
-class AppPreferences with LogMixin {
+class AppPreferences {
   AppPreferences(this._sharedPreference)
       : _encryptedSharedPreferences = EncryptedSharedPreferences(prefs: _sharedPreference),
         _secureStorage = const FlutterSecureStorage(

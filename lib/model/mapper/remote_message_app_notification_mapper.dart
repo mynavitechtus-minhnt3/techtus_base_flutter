@@ -16,8 +16,8 @@ class RemoteMessageAppNotificationMapper extends BaseDataMapper<RemoteMessage, A
     return AppNotification(
       title: data?.notification?.title ?? '',
       message: data?.notification?.body ?? '',
-      image: data?.data[Constant.fcmImage] as String? ?? '',
-      conversationId: data?.data[Constant.fcmConversationId] as String? ?? '',
+      image: safeCast<String>(data?.data[Constant.fcmImage]) ?? '',
+      conversationId: safeCast<String>(data?.data[Constant.fcmConversationId]) ?? '',
     );
   }
 }

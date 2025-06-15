@@ -25,7 +25,7 @@ class AllUsersPage extends BasePage<AllUsersState,
   const AllUsersPage({required this.action, this.conversation, super.key});
 
   @override
-  ScreenViewEvent get screenViewEvent => ScreenViewEvent(screenName: ScreenName.allUsers);
+  ScreenViewEvent get screenViewEvent => ScreenViewEvent(screenName: ScreenName.allUsersPage);
 
   @override
   AutoDisposeStateNotifierProvider<AllUsersViewModel, CommonState<AllUsersState>> get provider =>
@@ -46,6 +46,7 @@ class AllUsersPage extends BasePage<AllUsersState,
       },
       [],
     );
+    final scrollController = useScrollController();
 
     return CommonScaffold(
       hideKeyboardWhenTouchOutside: true,
@@ -74,95 +75,80 @@ class AllUsersPage extends BasePage<AllUsersState,
                   provider.select((value) => value.data.conversationUsers),
                 );
 
-                return ListView.separated(
-                  separatorBuilder: (context, index) {
-                    final hasMembersList = members.isNotEmpty;
-                    final isNotShowDivider = hasMembersList
-                        ? () {
-                            const membersTitleIndex = 0;
-                            final usersTitleIndex = members.length + 1;
-
-                            return index == membersTitleIndex ||
-                                index == usersTitleIndex ||
-                                index == members.length;
-                          }()
-                        : index == 0;
-
-                    return isNotShowDivider
-                        ? const SizedBox()
-                        : SizedBox(
-                            height: 1,
-                            child: CommonDivider(indent: 60.rps),
-                          );
-                  },
-                  padding: EdgeInsets.zero,
-                  itemCount: () {
-                    final hasMembersTitle = members.isNotEmpty;
-                    final hasUsersTitle = users.isNotEmpty;
-
-                    return members.length +
-                        users.length +
-                        (hasMembersTitle ? 1 : 0) +
-                        (hasUsersTitle ? 1 : 0);
-                  }(),
-                  itemBuilder: (context, index) {
-                    if (members.isNotEmpty && index == 0) {
-                      return Padding(
-                        padding: EdgeInsets.only(
-                          top: 16.rps,
-                          left: 16.rps,
-                        ),
-                        child: CommonText(
-                          l10n.members,
-                          style: style(
-                            fontSize: 16.rps,
-                            fontWeight: FontWeight.bold,
-                            color: color.black,
+                return CommonScrollbarWithIosStatusBarTapDetector(
+                  routeName: AllUsersRoute.name,
+                  controller: scrollController,
+                  child: ListView.separated(
+                    controller: scrollController,
+                    separatorBuilder: (context, index) {
+                      final hasMembersList = members.isNotEmpty;
+                      final isNotShowDivider = hasMembersList
+                          ? () {
+                              const membersTitleIndex = 0;
+                              final usersTitleIndex = members.length + 1;
+                              return index == membersTitleIndex ||
+                                  index == usersTitleIndex ||
+                                  index == members.length;
+                            }()
+                          : index == 0;
+                      return isNotShowDivider
+                          ? const SizedBox()
+                          : SizedBox(height: 1, child: CommonDivider(indent: 60.rps));
+                    },
+                    padding: EdgeInsets.zero,
+                    itemCount: () {
+                      final hasMembersTitle = members.isNotEmpty;
+                      final hasUsersTitle = users.isNotEmpty;
+                      return members.length +
+                          users.length +
+                          (hasMembersTitle ? 1 : 0) +
+                          (hasUsersTitle ? 1 : 0);
+                    }(),
+                    itemBuilder: (context, index) {
+                      if (members.isNotEmpty && index == 0) {
+                        return Padding(
+                          padding: EdgeInsets.only(top: 16.rps, left: 16.rps),
+                          child: CommonText(
+                            l10n.members,
+                            style: style(
+                              fontSize: 16.rps,
+                              fontWeight: FontWeight.bold,
+                              color: color.black,
+                            ),
                           ),
-                        ),
-                      );
-                    }
-
-                    if (users.isNotEmpty && index == (members.isEmpty ? 0 : members.length + 1)) {
-                      return Padding(
-                        padding: EdgeInsets.only(
-                          top: 16.rps,
-                          left: 16.rps,
-                        ),
-                        child: CommonText(
-                          l10n.allUsers,
-                          style: style(
-                            fontSize: 16.rps,
-                            fontWeight: FontWeight.bold,
-                            color: color.black,
+                        );
+                      }
+                      if (users.isNotEmpty && index == (members.isEmpty ? 0 : members.length + 1)) {
+                        return Padding(
+                          padding: EdgeInsets.only(top: 16.rps, left: 16.rps),
+                          child: CommonText(
+                            l10n.allUsers,
+                            style: style(
+                              fontSize: 16.rps,
+                              fontWeight: FontWeight.bold,
+                              color: color.black,
+                            ),
                           ),
-                        ),
-                      );
-                    }
-
-                    if (members.isNotEmpty && index < members.length + 1) {
-                      return _buildMemberItem(
+                        );
+                      }
+                      if (members.isNotEmpty && index < members.length + 1) {
+                        return _buildMemberItem(ref: ref, index: index - 1, users: members);
+                      }
+                      return _buildUserItem(
                         ref: ref,
-                        index: index - 1,
-                        users: members,
+                        index: () {
+                          final membersItemCount = members.length;
+                          final membersTitleItemCount = members.isNotEmpty ? 1 : 0;
+                          final usersTitleItemCount = users.isNotEmpty ? 1 : 0;
+                          return index -
+                              membersItemCount -
+                              membersTitleItemCount -
+                              usersTitleItemCount;
+                        }(),
+                        users: users,
                       );
-                    }
-
-                    return _buildUserItem(
-                      ref: ref,
-                      index: () {
-                        final membersItemCount = members.length;
-                        final membersTitleItemCount = members.isNotEmpty ? 1 : 0;
-                        final usersTitleItemCount = users.isNotEmpty ? 1 : 0;
-
-                        return index -
-                            membersItemCount -
-                            membersTitleItemCount -
-                            usersTitleItemCount;
-                      }(),
-                      users: users,
-                    );
-                  },
+                    },
+                  ),
                 );
               }),
             ),

@@ -54,7 +54,7 @@ class PreferNamedParameters extends OptionsLintRule<_PreferNamedParametersOption
           onVisitConstructorDeclaration: (ConstructorDeclaration node) {
             final formalParams = node.parameters.parameters;
             if (formalParams.length >= parameters.threshold &&
-                !_isConstuctorDeclarationException(node) &&
+                !_isConstructorDeclarationException(node) &&
                 formalParams.where((element) => element.isNamed).length != formalParams.length) {
               reporter.atNode(node.parameters, code);
             }
@@ -62,7 +62,7 @@ class PreferNamedParameters extends OptionsLintRule<_PreferNamedParametersOption
         ))));
   }
 
-  bool _isConstuctorDeclarationException(ConstructorDeclaration node) {
+  bool _isConstructorDeclarationException(ConstructorDeclaration node) {
     return node.name.toString() == 'fromJson' ||
         node.parentClassDeclaration?.toString().trim().startsWith(
                 RegExp(r'@injectable|@lazySingleton|@singleton', caseSensitive: false)) ==
