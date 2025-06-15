@@ -17,11 +17,12 @@ final chatViewModelProvider = StateNotifierProvider.autoDispose
   ),
 );
 
-class ChatViewModel extends BaseViewModel<ChatState> with LogMixin {
+class ChatViewModel extends BaseViewModel<ChatState> {
 // ignore: prefer_named_parameters
   ChatViewModel(
     this._ref,
     FirebaseConversationData conversation,
+    // ignore: missing_run_catching
   )   : _messageDataMapper = _ref.messageDataMapper(conversation.id),
         super(
           CommonState(
@@ -58,6 +59,7 @@ class ChatViewModel extends BaseViewModel<ChatState> with LogMixin {
       return;
     }
 
+    // ignore: missing_run_catching
     final messages = await _ref.firebaseFirestoreService.getOlderMessages(
       latestMessageId: oldestMessage!.uniqueId,
       conversationId: data.conversation.id,
@@ -67,16 +69,19 @@ class ChatViewModel extends BaseViewModel<ChatState> with LogMixin {
 
     final isLastPage = messages.length < Constant.itemsPerPage;
 
+    // ignore: missing_run_catching
     await _ref.appDatabase.putMessages(_messageDataMapper.mapToLocalList(messages));
 
     data = data.copyWith(isLastPage: isLastPage);
   }
 
   void listenToLocalmessages() {
+    // ignore: missing_run_catching
     _messagesSubscription?.cancel();
+    // ignore: missing_run_catching
     _messagesSubscription = _ref.appDatabase.getMessagesStream(data.conversation.id).listen(
       (event) {
-        logD('new local message event: $event'.hardcoded);
+        Log.d('new local message event: $event'.hardcoded);
         data = data.copyWith(messages: event);
       },
       onError: (e) {
@@ -89,6 +94,7 @@ class ChatViewModel extends BaseViewModel<ChatState> with LogMixin {
     _messagesFromFirestoreSubscription?.cancel();
     _messagesFromFirestoreSubscription = Rx.combineLatest(
       [
+        // ignore: missing_run_catching
         _ref.firebaseFirestoreService.getMessagesStream(
           conversationId: data.conversation.id,
           limit: limit,
@@ -96,10 +102,11 @@ class ChatViewModel extends BaseViewModel<ChatState> with LogMixin {
         _ref.connectivityHelper.onConnectivityChanged,
       ],
       (values) {
-        final newMessages = values.first as List<FirebaseMessageData>;
-        final isConnected = values[1] as bool;
+        final newMessages = values.first.safeCast<List<FirebaseMessageData>>() ?? [];
+        final isConnected = values[1].safeCast<bool>();
 
-        if (isConnected) {
+        if (isConnected == true && newMessages.isNotEmpty) {
+          // ignore: missing_run_catching
           _ref.appDatabase.putMessages(_messageDataMapper.mapToLocalList(newMessages));
         }
       },
@@ -112,8 +119,10 @@ class ChatViewModel extends BaseViewModel<ChatState> with LogMixin {
   }
 
   void listenToConversationDetail() {
+    // ignore: missing_run_catching
     _conversationSubscription?.cancel();
     _conversationSubscription =
+        // ignore: missing_run_catching
         _ref.firebaseFirestoreService.getConversationDetailStream(data.conversation.id).listen(
       (event) {
         Log.d('getConversationDetailStream event: $event'.hardcoded);

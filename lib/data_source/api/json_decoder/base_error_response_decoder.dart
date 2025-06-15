@@ -1,3 +1,4 @@
+// ignore_for_file: missing_log_in_catch_block
 import '../../../../index.dart';
 
 enum ErrorResponseDecoderType {
@@ -20,6 +21,7 @@ abstract class BaseErrorResponseDecoder<T extends Object> {
     }
   }
 
+  // ignore: avoid_dynamic
   ServerError map(dynamic errorResponse) {
     try {
       if (errorResponse is! T) {
@@ -32,7 +34,8 @@ abstract class BaseErrorResponseDecoder<T extends Object> {
       final serverError = mapToServerError(errorResponse);
 
       return serverError;
-    } on RemoteException catch (_) {
+      // ignore: unused_catch_clause
+    } on RemoteException catch (e) {
       rethrow;
     } catch (e) {
       throw RemoteException(kind: RemoteExceptionKind.decodeError, rootException: e);

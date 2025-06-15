@@ -29,6 +29,7 @@ class ContactListViewModel extends BaseViewModel<ContactListState> {
     _conversationsSubscription?.cancel();
     final userId = _ref.appPreferences.userId;
     _conversationsSubscription =
+        // ignore: missing_run_catching
         _ref.firebaseFirestoreService.getConversationsStream(userId).listen((event) {
       runCatching(
         action: () async {

@@ -50,7 +50,7 @@ class AppApiService {
       method: RestMethod.get,
       path: 'v1/me',
       successResponseDecoderType: SuccessResponseDecoderType.jsonObject,
-      decoder: (json) => ApiUserData.fromJson(json as Map<String, dynamic>),
+      decoder: (json) => ApiUserData.fromJson(json.safeCast<Map<String, dynamic>>() ?? {}),
     );
   }
 
@@ -66,7 +66,7 @@ class AppApiService {
         'results': limit,
       },
       successResponseDecoderType: SuccessResponseDecoderType.resultsJsonArray,
-      decoder: (json) => ApiUserData.fromJson(json as Map<String, dynamic>),
+      decoder: (json) => ApiUserData.fromJson(json.safeCast<Map<String, dynamic>>() ?? {}),
     );
   }
 }

@@ -5,7 +5,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../index.dart';
 
 abstract class BasePage<S extends BaseState, P extends ProviderListenable<CommonState<S>>>
-    extends HookConsumerWidget with LogMixin {
+    extends HookConsumerWidget {
   const BasePage({super.key});
 
   P get provider;

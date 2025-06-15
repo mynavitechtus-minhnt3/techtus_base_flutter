@@ -1,3 +1,4 @@
+// ignore_for_file: avoid_using_unsafe_cast
 import '../index.dart';
 
 class RemoteException extends AppException {

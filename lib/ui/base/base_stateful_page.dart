@@ -8,7 +8,7 @@ abstract class BaseStatefulPageState<
     S extends BaseState,
     VM extends BaseViewModel<S>,
     P extends ProviderListenable<CommonState<S>>,
-    W extends StatefulHookConsumerWidget> extends ConsumerState<W> with LogMixin {
+    W extends StatefulHookConsumerWidget> extends ConsumerState<W> {
   P get provider;
   ScreenViewEvent get screenViewEvent;
 

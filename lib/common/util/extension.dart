@@ -1,4 +1,5 @@
 import 'package:dartx/dartx.dart';
+import 'package:flutter/material.dart';
 
 extension NullableListExtensions<T> on List<T>? {
   bool get isNullOrEmpty => this == null || this!.isEmpty;
@@ -160,4 +161,19 @@ extension StringExtensions on String {
   }
 
   String get hardcoded => this;
+}
+
+extension ScrollControllerExtensions on ScrollController {
+  bool scrollToTop({int durationInMilliseconds = 300, Curve curve = Curves.easeOut}) {
+    if (!hasClients) {
+      return false;
+    }
+
+    animateTo(
+      0,
+      duration: Duration(milliseconds: durationInMilliseconds),
+      curve: curve,
+    );
+    return true;
+  }
 }

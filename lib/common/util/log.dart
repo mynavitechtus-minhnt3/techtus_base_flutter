@@ -27,7 +27,7 @@ class Log {
   const Log._();
 
   static const _enableLog = Config.enableGeneralLog;
-  static const generalLogMode = LogMode.logEventOnly;
+  static const generalLogMode = LogMode.all;
 
   static void d(
     Object? message, {
@@ -64,6 +64,7 @@ class Log {
     );
   }
 
+  // ignore: avoid_dynamic
   static String prettyJson(dynamic json) {
     if (!Config.isPrettyJson) {
       return json.toString();
@@ -99,45 +100,14 @@ class Log {
       );
     }
   }
-}
 
-mixin LogMixin on Object {
-  void logD(
-    String message, {
-    LogColor color = LogColor.green,
-    DateTime? time,
-  }) {
-    Log.d(
-      message,
-      name: runtimeType.toString(),
-      time: time,
-      color: color,
-    );
-  }
-
-  void logE(
-    Object? errorMessage, {
-    LogColor color = LogColor.red,
-    Object? errorObject,
-    StackTrace? stackTrace,
-    DateTime? time,
-  }) {
-    Log.e(
-      errorMessage,
-      name: runtimeType.toString(),
-      errorObject: errorObject,
-      stackTrace: stackTrace,
-      time: time,
-      color: color,
-    );
-  }
-
+  // ignore: avoid_dynamic
   static String prettyResponse(dynamic data) {
     if (data is Map) {
       final indent = '  ' * 2;
       final encoder = JsonEncoder.withIndent(indent);
 
-      return encoder.convert(data as Map<String, dynamic>);
+      return encoder.convert(safeCast<Map<String, dynamic>>(data));
     }
 
     return data.toString();

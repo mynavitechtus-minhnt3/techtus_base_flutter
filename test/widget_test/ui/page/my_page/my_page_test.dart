@@ -19,7 +19,7 @@ void main() {
       (tester) async {
         await tester.testWidget(
           filename: 'my_page_page/when_current_user_is_not_vip_member',
-          widget: const MyPagePage(),
+          widget: const MyPage(),
           overrides: [
             myPageViewModelProvider.overrideWith(
               (_) => MockMyPageViewModel(
@@ -42,7 +42,7 @@ void main() {
       (tester) async {
         await tester.testWidget(
           filename: 'my_page_page/when_current_user_is_vip_member',
-          widget: const MyPagePage(),
+          widget: const MyPage(),
           overrides: [
             myPageViewModelProvider.overrideWith(
               (_) => MockMyPageViewModel(

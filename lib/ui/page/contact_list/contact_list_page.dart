@@ -11,7 +11,7 @@ class ContactListPage extends BasePage<ContactListState,
   const ContactListPage({super.key});
 
   @override
-  ScreenViewEvent get screenViewEvent => ScreenViewEvent(screenName: ScreenName.contactList);
+  ScreenViewEvent get screenViewEvent => ScreenViewEvent(screenName: ScreenName.contactListPage);
 
   @override
   AutoDisposeStateNotifierProvider<ContactListViewModel, CommonState<ContactListState>>
@@ -31,6 +31,7 @@ class ContactListPage extends BasePage<ContactListState,
     );
 
     final email = ref.watch(currentUserProvider.select((value) => value.email));
+    final scrollController = useScrollController();
 
     return CommonScaffold(
       hideKeyboardWhenTouchOutside: true,
@@ -61,7 +62,7 @@ class ContactListPage extends BasePage<ContactListState,
                                 email,
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
-                                style: TextStyle(
+                                style: style(
                                   fontSize: 20.rps,
                                   fontWeight: FontWeight.w500,
                                   color: color.black,
@@ -98,7 +99,7 @@ class ContactListPage extends BasePage<ContactListState,
                   Expanded(
                     child: CommonText(
                       l10n.conversations,
-                      style: TextStyle(
+                      style: style(
                         fontSize: 20.rps,
                         fontWeight: FontWeight.w500,
                         color: color.black,
@@ -133,85 +134,85 @@ class ContactListPage extends BasePage<ContactListState,
                 builder: (context, ref, child) {
                   final filteredConversations = ref.watch(filteredConversationsProvider);
 
-                  return ListView.separated(
-                    separatorBuilder: (context, index) =>
-                        SizedBox(height: 1.rps, child: CommonDivider(indent: 68.rps)),
-                    padding: EdgeInsets.zero,
-                    itemCount: filteredConversations.length,
-                    itemBuilder: (context, index) {
-                      final conversation = filteredConversations[index];
-                      final conversationName = ref.watch(conversationNameProvider(conversation.id));
-
-                      return CommonInkWell(
-                        onTap: () {
-                          ref.read(appNavigatorProvider).push(ChatRoute(
-                                conversation: conversation,
-                              ));
-                        },
-                        child: Dismissible(
-                          key: UniqueKey(),
-                          onDismissed: (direction) {
-                            ref.read(provider.notifier).deleteConversation(conversation);
+                  return CommonScrollbarWithIosStatusBarTapDetector(
+                    routeName: ContactListRoute.name,
+                    controller: scrollController,
+                    child: ListView.separated(
+                      controller: scrollController,
+                      separatorBuilder: (context, index) => SizedBox(
+                        height: 1.rps,
+                        child: CommonDivider(indent: 68.rps),
+                      ),
+                      padding: EdgeInsets.zero,
+                      itemCount: filteredConversations.length,
+                      itemBuilder: (context, index) {
+                        final conversation = filteredConversations[index];
+                        final conversationName = ref.watch(
+                          conversationNameProvider(conversation.id),
+                        );
+                        return CommonInkWell(
+                          onTap: () {
+                            ref
+                                .read(appNavigatorProvider)
+                                .push(ChatRoute(conversation: conversation));
                           },
-                          confirmDismiss: (direction) async {
-                            return await ref.read(appNavigatorProvider).showDialog(
-                                  CommonPopup.confirmDialog(
-                                    message: l10n.deleteConversationConfirm,
-                                  ),
-                                );
-                          },
-                          child: Padding(
-                            padding: EdgeInsets.only(
-                              left: 16.rps,
-                              right: 16.rps,
-                            ),
-                            // ignore: missing_expanded_or_flexible
-                            child: Column(
-                              children: [
-                                SizedBox(height: 16.rps),
-                                Row(
-                                  children: [
-                                    AvatarView(
-                                      text: conversationName,
-                                      width: 36.rps,
-                                      height: 36.rps,
+                          child: Dismissible(
+                            key: UniqueKey(),
+                            onDismissed: (direction) {
+                              ref.read(provider.notifier).deleteConversation(conversation);
+                            },
+                            confirmDismiss: (direction) async {
+                              return await ref.read(appNavigatorProvider).showDialog(
+                                    CommonPopup.confirmDialog(
+                                      message: l10n.deleteConversationConfirm,
                                     ),
-                                    SizedBox(width: 20.rps),
-                                    Expanded(
-                                      // ignore: missing_expanded_or_flexible
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          CommonText(
-                                            conversationName,
-                                            style: TextStyle(
-                                              fontSize: 16.rps,
-                                              fontWeight: FontWeight.w500,
-                                              color: color.black,
-                                            ),
-                                          ),
-                                          if (conversation.lastMessage.isNotEmpty)
+                                  );
+                            },
+                            child: Padding(
+                              padding: EdgeInsets.only(left: 16.rps, right: 16.rps),
+                              child: Column(
+                                children: [
+                                  SizedBox(height: 16.rps),
+                                  Row(
+                                    children: [
+                                      AvatarView(
+                                        text: conversationName,
+                                        width: 36.rps,
+                                        height: 36.rps,
+                                      ),
+                                      SizedBox(width: 20.rps),
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
                                             CommonText(
-                                              conversation.lastMessage,
-                                              maxLines: 1,
-                                              overflow: TextOverflow.ellipsis,
-                                              style: TextStyle(
-                                                fontSize: 13.rps,
+                                              conversationName,
+                                              style: style(
+                                                fontSize: 16.rps,
+                                                fontWeight: FontWeight.w500,
                                                 color: color.black,
                                               ),
                                             ),
-                                        ],
+                                            if (conversation.lastMessage.isNotEmpty)
+                                              CommonText(
+                                                conversation.lastMessage,
+                                                maxLines: 1,
+                                                overflow: TextOverflow.ellipsis,
+                                                style: style(fontSize: 13.rps, color: color.black),
+                                              ),
+                                          ],
+                                        ),
                                       ),
-                                    ),
-                                  ],
-                                ),
-                                SizedBox(height: 16.rps),
-                              ],
+                                    ],
+                                  ),
+                                  SizedBox(height: 16.rps),
+                                ],
+                              ),
                             ),
                           ),
-                        ),
-                      );
-                    },
+                        );
+                      },
+                    ),
                   );
                 },
               ),

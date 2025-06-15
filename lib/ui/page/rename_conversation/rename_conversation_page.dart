@@ -13,7 +13,8 @@ class RenameConversationPage extends BasePage<
   const RenameConversationPage({required this.conversation, super.key});
 
   @override
-  ScreenViewEvent get screenViewEvent => ScreenViewEvent(screenName: ScreenName.renameConversation);
+  ScreenViewEvent get screenViewEvent =>
+      ScreenViewEvent(screenName: ScreenName.renameConversationPage);
 
   @override
   AutoDisposeStateNotifierProvider<RenameConversationViewModel,
@@ -35,6 +36,8 @@ class RenameConversationPage extends BasePage<
       [],
     );
 
+    final scrollController = useScrollController();
+
     return CommonScaffold(
       appBar: CommonAppBar.back(text: l10n.members),
       body: SafeArea(
@@ -44,64 +47,58 @@ class RenameConversationPage extends BasePage<
               child: Consumer(builder: (context, ref, child) {
                 final members = ref.watch(provider.select((value) => value.data.members)).toList();
 
-                return ListView.separated(
-                  separatorBuilder: (context, index) =>
-                      SizedBox(height: 1, child: CommonDivider(indent: 68.rps)),
-                  padding: EdgeInsets.zero,
-                  itemCount: members.length,
-                  itemBuilder: (context, index) => CommonInkWell(
-                    onTap: () {},
-                    child: Padding(
-                      padding: EdgeInsets.only(
-                        left: 16.rps,
-                        right: 16.rps,
-                      ),
-                      // ignore: missing_expanded_or_flexible
-                      child: Column(
-                        children: [
-                          SizedBox(height: 16.rps),
-                          Row(
-                            children: [
-                              AvatarView(
-                                text: members[index].email,
-                                width: 36.rps,
-                                height: 36.rps,
-                              ),
-                              SizedBox(width: 16.rps),
-                              Expanded(
-                                child: CommonText(
-                                  members[index].email,
-                                  style: style(
-                                    color: color.black,
-                                    fontSize: 16.rps,
+                return CommonScrollbarWithIosStatusBarTapDetector(
+                  routeName: RenameConversationRoute.name,
+                  controller: scrollController,
+                  child: ListView.separated(
+                    controller: scrollController,
+                    separatorBuilder: (context, index) =>
+                        SizedBox(height: 1, child: CommonDivider(indent: 68.rps)),
+                    padding: EdgeInsets.zero,
+                    itemCount: members.length,
+                    itemBuilder: (context, index) => CommonInkWell(
+                      onTap: () {},
+                      child: Padding(
+                        padding: EdgeInsets.only(left: 16.rps, right: 16.rps),
+                        child: Column(
+                          children: [
+                            SizedBox(height: 16.rps),
+                            Row(
+                              children: [
+                                AvatarView(
+                                  text: members[index].email,
+                                  width: 36.rps,
+                                  height: 36.rps,
+                                ),
+                                SizedBox(width: 16.rps),
+                                Expanded(
+                                  child: CommonText(
+                                    members[index].email,
+                                    style: style(color: color.black, fontSize: 16.rps),
                                   ),
                                 ),
-                              ),
-                              CommonInkWell(
-                                child: Icon(
-                                  Icons.edit,
-                                  size: 20.rps,
-                                  color: color.black,
+                                CommonInkWell(
+                                  child: Icon(Icons.edit, size: 20.rps, color: color.black),
+                                  onTap: () async {
+                                    await ref.read(appNavigatorProvider).showDialog(
+                                          CommonPopup.renameConversationDialog(
+                                            email: members[index].email,
+                                            onSubmit: (nickname) async {
+                                              ref.read(provider.notifier).renameUser(
+                                                    memberId: members[index].userId,
+                                                    nickname: nickname,
+                                                  );
+                                            },
+                                          ),
+                                        );
+                                  },
                                 ),
-                                onTap: () async {
-                                  await ref.read(appNavigatorProvider).showDialog(
-                                        CommonPopup.renameConversationDialog(
-                                          email: members[index].email,
-                                          onSubmit: (nickname) async {
-                                            ref.read(provider.notifier).renameUser(
-                                                  memberId: members[index].userId,
-                                                  nickname: nickname,
-                                                );
-                                          },
-                                        ),
-                                      );
-                                },
-                              ),
-                              SizedBox(width: 14.rps),
-                            ],
-                          ),
-                          SizedBox(height: 16.rps),
-                        ],
+                                SizedBox(width: 14.rps),
+                              ],
+                            ),
+                            SizedBox(height: 16.rps),
+                          ],
+                        ),
                       ),
                     ),
                   ),

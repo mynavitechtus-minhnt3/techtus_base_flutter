@@ -7,6 +7,7 @@ import '../../index.dart';
 class DioExceptionMapper extends AppExceptionMapper<RemoteException> {
   DioExceptionMapper(this._errorResponseDecoder);
 
+  // ignore: avoid_dynamic
   final BaseErrorResponseDecoder<dynamic> _errorResponseDecoder;
 
   @override
@@ -74,6 +75,7 @@ class DioExceptionMapper extends AppExceptionMapper<RemoteException> {
           }
 
           if (exception.error is RemoteException) {
+            // ignore: avoid_using_unsafe_cast
             return exception.error as RemoteException;
           }
       }

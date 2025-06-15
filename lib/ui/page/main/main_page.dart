@@ -32,7 +32,7 @@ class MainPage extends BasePage<MainState,
   MainPage({super.key});
 
   @override
-  ScreenViewEvent get screenViewEvent => ScreenViewEvent(screenName: ScreenName.main);
+  ScreenViewEvent get screenViewEvent => ScreenViewEvent(screenName: ScreenName.mainPage);
 
   @override
   AutoDisposeStateNotifierProvider<MainViewModel, CommonState<MainState>> get provider =>

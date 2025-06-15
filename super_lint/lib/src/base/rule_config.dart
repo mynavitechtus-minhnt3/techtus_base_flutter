@@ -21,8 +21,8 @@
 // SOFTWARE.
 
 // ignore: depend_on_referenced_packages
-import 'package:analyzer/error/error.dart' hide LintCode;
-import 'package:custom_lint_builder/custom_lint_builder.dart';
+
+import '../index.dart';
 
 /// Type definition of a value factory which allows us to map data from
 /// YAML configuration to an object of type [T].

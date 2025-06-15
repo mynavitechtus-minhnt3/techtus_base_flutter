@@ -90,6 +90,7 @@ abstract class BaseViewModel<S extends BaseState> extends StateNotifier<CommonSt
         hideLoading();
       }
       await doOnSuccessOrError?.call();
+      // ignore: missing_log_in_catch_block
     } on Object catch (e) {
       final appException = e is AppException ? e : AppUncaughtException(rootException: e);
 
@@ -106,10 +107,12 @@ abstract class BaseViewModel<S extends BaseState> extends StateNotifier<CommonSt
 
         if (shouldRetryAutomatically || shouldDoBeforeRetrying) {
           appException.onRetry = () async {
+            // ignore: avoid_nested_conditions
             if (shouldDoBeforeRetrying) {
               await doOnRetry.call();
             }
 
+            // ignore: avoid_nested_conditions
             if (shouldRetryAutomatically) {
               await runCatching(
                 action: action,

@@ -26,6 +26,7 @@ class RenameConversationViewModel extends BaseViewModel<RenameConversationState>
   FutureOr<void> initState() {
     final currentUserId = _ref.appPreferences.userId;
     data = data.copyWith(
+      // ignore: missing_run_catching
       members: _ref.sharedViewModel.getRenamedMembers(
         members:
             _conversation.members.filter((element) => element.userId != currentUserId).toList(),
@@ -38,11 +39,13 @@ class RenameConversationViewModel extends BaseViewModel<RenameConversationState>
     required String memberId,
     required String nickname,
   }) async {
+    // ignore: missing_run_catching
     await _ref.appPreferences.saveUserNickname(
       conversationId: _conversation.id,
       memberId: memberId,
       nickname: nickname,
     );
+    // ignore: missing_run_catching
     final actualMembers = _ref.sharedViewModel.getRenamedMembers(
       members: data.members,
       conversationId: _conversation.id,

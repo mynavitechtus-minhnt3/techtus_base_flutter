@@ -8,14 +8,20 @@ class DashBorderDecoration extends Decoration {
   const DashBorderDecoration({
     required this.dashBorder,
     this.shape = CommonShape.rectangle,
+    this.color,
   });
 
   final DashBorder dashBorder;
   final CommonShape shape;
+  final Color? color;
 
   @override
   BoxPainter createBoxPainter([VoidCallback? onChanged]) {
-    return _DashBorderDecotatorPainter(dashBorder: dashBorder, shape: shape);
+    return _DashBorderDecotatorPainter(
+      dashBorder: dashBorder,
+      shape: shape,
+      color: color,
+    );
   }
 }
 
@@ -23,33 +29,47 @@ class _DashBorderDecotatorPainter extends BoxPainter {
   _DashBorderDecotatorPainter({
     required this.dashBorder,
     required this.shape,
+    this.color,
   });
 
   final DashBorder dashBorder;
   final CommonShape shape;
+  final Color? color;
 
   @override
   void paint(Canvas canvas, Offset offset, ImageConfiguration configuration) {
     final Path outPath = Path();
-    if (shape == CommonShape.rectangle) {
-      final RRect rect = RRect.fromLTRBAndCorners(
-        offset.dx,
-        offset.dy,
-        offset.dx + (configuration.size?.width ?? 0),
-        offset.dy + (configuration.size?.height ?? 0),
-        bottomLeft: dashBorder.borderRadius?.bottomLeft ?? Radius.zero,
-        bottomRight: dashBorder.borderRadius?.bottomRight ?? Radius.zero,
-        topLeft: dashBorder.borderRadius?.topLeft ?? Radius.zero,
-        topRight: dashBorder.borderRadius?.topRight ?? Radius.zero,
+    switch (shape) {
+      case CommonShape.rectangle:
+        final RRect rect = RRect.fromLTRBAndCorners(
+          offset.dx,
+          offset.dy,
+          offset.dx + (configuration.size?.width ?? 0),
+          offset.dy + (configuration.size?.height ?? 0),
+          bottomLeft: dashBorder.borderRadius?.bottomLeft ?? Radius.zero,
+          bottomRight: dashBorder.borderRadius?.bottomRight ?? Radius.zero,
+          topLeft: dashBorder.borderRadius?.topLeft ?? Radius.zero,
+          topRight: dashBorder.borderRadius?.topRight ?? Radius.zero,
+        );
+        outPath.addRRect(rect);
+        break;
+      case CommonShape.circle:
+        outPath.addOval(Rect.fromLTWH(
+          offset.dx,
+          offset.dy,
+          configuration.size!.width,
+          configuration.size!.height,
+        ));
+        break;
+    }
+
+    if (color != null) {
+      canvas.drawPath(
+        outPath,
+        Paint()
+          ..color = color!
+          ..style = PaintingStyle.fill,
       );
-      outPath.addRRect(rect);
-    } else if (shape == CommonShape.circle) {
-      outPath.addOval(Rect.fromLTWH(
-        offset.dx,
-        offset.dy,
-        configuration.size!.width,
-        configuration.size!.height,
-      ));
     }
 
     final PathMetrics metrics = outPath.computeMetrics(forceClosed: false);
