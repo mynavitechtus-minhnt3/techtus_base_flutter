@@ -51,7 +51,8 @@ class IncorrectScreenNameParameterValue
   }
 }
 
-class _IncorrectScreenNameParameterValueFix extends CommonQuickFix<_IncorrectScreenNameParameterValueParameter> {
+class _IncorrectScreenNameParameterValueFix
+    extends CommonQuickFix<_IncorrectScreenNameParameterValueParameter> {
   _IncorrectScreenNameParameterValueFix(super.config);
 
   @override

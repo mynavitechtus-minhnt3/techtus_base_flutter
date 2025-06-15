@@ -8,8 +8,8 @@ class IncorrectParentClass extends CommonLintRule<_IncorrectParentClassParameter
             name: 'incorrect_parent_class',
             configs: configs,
             paramsParser: _IncorrectParentClassParameter.fromMap,
-            problemMessage: (options) =>
-                'Page classes must extend ${options.parentClassPreFixes.join(' or ')}',
+            problemMessage: (parameters) =>
+                'Page classes must extend ${parameters.parentClassPreFixes.join(' or ')}',
           ),
         );
 

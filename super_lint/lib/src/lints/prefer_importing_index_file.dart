@@ -8,7 +8,7 @@ class PreferImportingIndexFile extends CommonLintRule<_PreferImportingIndexFileP
             name: 'prefer_importing_index_file',
             configs: configs,
             paramsParser: _PreferImportingIndexFileParameter.fromMap,
-            problemMessage: (options) =>
+            problemMessage: (_) =>
                 'Should export these files to index.dart file and import index.dart file instead of importing each file separately.',
           ),
         );

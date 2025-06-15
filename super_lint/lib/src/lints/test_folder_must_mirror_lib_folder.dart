@@ -2,7 +2,8 @@ import 'package:collection/collection.dart';
 
 import '../index.dart';
 
-class TestFolderMustMirrorLibFolder extends CommonLintRule<_TestFolderMustMirrorLibFolderParameter> {
+class TestFolderMustMirrorLibFolder
+    extends CommonLintRule<_TestFolderMustMirrorLibFolderParameter> {
   TestFolderMustMirrorLibFolder(
     CustomLintConfigs configs,
   ) : super(

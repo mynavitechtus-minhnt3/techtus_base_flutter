@@ -1,6 +1,7 @@
 import '../index.dart';
 
-class AvoidUnnecessaryAsyncFunction extends CommonLintRule<_AvoidUnnecessaryAsyncFunctionParameter> {
+class AvoidUnnecessaryAsyncFunction
+    extends CommonLintRule<_AvoidUnnecessaryAsyncFunctionParameter> {
   AvoidUnnecessaryAsyncFunction(
     CustomLintConfigs configs,
   ) : super(
@@ -58,7 +59,8 @@ class AvoidUnnecessaryAsyncFunction extends CommonLintRule<_AvoidUnnecessaryAsyn
       ];
 }
 
-class _AvoidUnnecessaryAsyncFunctionFix extends CommonQuickFix<_AvoidUnnecessaryAsyncFunctionParameter> {
+class _AvoidUnnecessaryAsyncFunctionFix
+    extends CommonQuickFix<_AvoidUnnecessaryAsyncFunctionParameter> {
   _AvoidUnnecessaryAsyncFunctionFix(super.config);
 
   @override

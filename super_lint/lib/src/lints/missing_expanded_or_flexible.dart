@@ -10,7 +10,7 @@ class MissingExpandedOrFlexible extends CommonLintRule<_MissingExpandedOrFlexibl
             name: 'missing_expanded_or_flexible',
             configs: configs,
             paramsParser: _MissingExpandedOrFlexibleParameter.fromMap,
-            problemMessage: (options) =>
+            problemMessage: (_) =>
                 'Should use Expanded or Flexible widget to avoid overflow error.',
           ),
         );

@@ -5,7 +5,8 @@ import '../index.dart';
 const _testFunctionArgCount = 2;
 const _regex = r'[A-Z]';
 
-class PreferLowerCaseTestDescription extends CommonLintRule<_PreferLowerCaseTestDescriptionParameter> {
+class PreferLowerCaseTestDescription
+    extends CommonLintRule<_PreferLowerCaseTestDescriptionParameter> {
   PreferLowerCaseTestDescription(
     CustomLintConfigs configs,
   ) : super(
@@ -34,7 +35,8 @@ class PreferLowerCaseTestDescription extends CommonLintRule<_PreferLowerCaseTest
         return;
       }
 
-      final descriptionParamName = testMethod[_PreferLowerCaseTestDescriptionParameter.keyParamName];
+      final descriptionParamName =
+          testMethod[_PreferLowerCaseTestDescriptionParameter.keyParamName];
 
       if (node.argumentList.arguments.length >= _testFunctionArgCount) {
         final firstArgument = node.argumentList.arguments[0];
@@ -56,7 +58,8 @@ class PreferLowerCaseTestDescription extends CommonLintRule<_PreferLowerCaseTest
       ];
 }
 
-class _PreferLowerCaseTestDescriptionFix extends CommonQuickFix<_PreferLowerCaseTestDescriptionParameter> {
+class _PreferLowerCaseTestDescriptionFix
+    extends CommonQuickFix<_PreferLowerCaseTestDescriptionParameter> {
   _PreferLowerCaseTestDescriptionFix(super.config);
 
   @override
@@ -82,7 +85,8 @@ class _PreferLowerCaseTestDescriptionFix extends CommonQuickFix<_PreferLowerCase
         return;
       }
 
-      final descriptionParamName = testMethod[_PreferLowerCaseTestDescriptionParameter.keyParamName];
+      final descriptionParamName =
+          testMethod[_PreferLowerCaseTestDescriptionParameter.keyParamName];
 
       final firstArgument = node.argumentList.arguments[0];
       if (firstArgument is StringLiteral &&

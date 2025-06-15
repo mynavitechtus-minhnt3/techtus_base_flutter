@@ -10,7 +10,7 @@ class IncorrectEventName extends CommonLintRule<_IncorrectEventNameParameter> {
             name: 'incorrect_event_name',
             configs: configs,
             paramsParser: _IncorrectEventNameParameter.fromMap,
-            problemMessage: (options) => 'Events in `$_className` must use snake_case naming.',
+            problemMessage: (_) => 'Events in `$_className` must use snake_case naming.',
           ),
         );
 

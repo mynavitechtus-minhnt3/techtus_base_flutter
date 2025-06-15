@@ -81,7 +81,8 @@ class MissingExtensionMethodForEvents
   }
 }
 
-class _MissingExtensionMethodForEventsFix extends CommonQuickFix<_MissingExtensionMethodForEventsParameter> {
+class _MissingExtensionMethodForEventsFix
+    extends CommonQuickFix<_MissingExtensionMethodForEventsParameter> {
   _MissingExtensionMethodForEventsFix(super.config);
 
   @override
