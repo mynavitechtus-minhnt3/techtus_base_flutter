@@ -8,7 +8,6 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  freezed_annotation: any
 
 dev_dependencies:
   custom_lint: 0.7.5

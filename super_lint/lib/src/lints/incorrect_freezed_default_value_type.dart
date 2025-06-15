@@ -1,3 +1,5 @@
+import 'package:collection/collection.dart';
+
 import '../index.dart';
 
 class IncorrectFreezedDefaultValueType extends OptionsLintRule<_IncorrectFreezedDefaultValueTypeOption> {
@@ -39,7 +41,7 @@ class IncorrectFreezedDefaultValueType extends OptionsLintRule<_IncorrectFreezed
     context.registry.addSimpleFormalParameter((node) {
       final annotation = node.metadata.firstWhereOrNull((element) {
         if (element.name.name != 'Default') return false;
-        final libraryUri = element.element?.librarySource.uri.toString();
+        final libraryUri = element.element2?.library2?.uri.toString();
         return libraryUri?.contains('freezed_annotation') == true;
       });
 
@@ -50,7 +52,7 @@ class IncorrectFreezedDefaultValueType extends OptionsLintRule<_IncorrectFreezed
       if (defaultArg == null) return;
 
       final defaultType = defaultArg.staticType;
-      final paramType = node.declaredElement?.type;
+      final paramType = node.declaredFragment?.element.type;
       if (defaultType == null || paramType == null) return;
 
       if (!typeSystem.isAssignableTo(defaultType, paramType)) {
