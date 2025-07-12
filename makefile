@@ -47,7 +47,7 @@ ci:
 	cd tools/dart_tools && flutter pub get
 	make check_pubs
 	make rup
-	make check_arb
+	make fcl
 	make fm
 	make te
 	make lint
@@ -58,8 +58,9 @@ check_pubs:
 rup:
 	dart run $(DART_TOOLS_PATH)/remove_unused_pub.dart . comment
 
-check_arb:
+fcl:
 	dart run $(DART_TOOLS_PATH)/check_sorted_arb_keys.dart lib/resource/l10n
+	make clc
 	make rul
 	make rdl
 
@@ -71,6 +72,9 @@ rua:
 
 rdl:
 	dart run $(DART_TOOLS_PATH)/remove_duplicate_l10n.dart lib/resource/l10n
+
+clc:
+	dart run $(DART_TOOLS_PATH)/check_l10n_convention.dart lib/resource/l10n
 
 fm:
 	find . -name "*.dart" ! -name "*.g.dart" ! -name "*.freezed.dart" ! -name "*.gr.dart" ! -name "*.config.dart" ! -name "*.mocks.dart" ! -path '*/generated/*' ! -path '*/.dart_tool/*' | tr '\n' ' ' | xargs dart format --set-exit-if-changed -l 100

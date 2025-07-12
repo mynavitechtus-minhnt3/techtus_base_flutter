@@ -1,6 +1,6 @@
 import '../index.dart';
 
-enum Flavor { develop, qa, staging, production }
+enum Flavor { develop, qa, staging, production, test }
 
 class Env {
   const Env._();
@@ -11,7 +11,7 @@ class Env {
   static const _appDomain = 'APP_DOMAIN';
 
   static late Flavor flavor =
-      Flavor.values.byName(const String.fromEnvironment(_flavorKey, defaultValue: 'develop'));
+      Flavor.values.byName(const String.fromEnvironment(_flavorKey, defaultValue: 'test'));
   static const String appBasicAuthName = String.fromEnvironment(_appBasicAuthNameKey);
   static const String appBasicAuthPassword = String.fromEnvironment(_appBasicAuthPasswordKey);
   static const String appDomain =

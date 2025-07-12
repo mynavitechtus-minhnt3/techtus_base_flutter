@@ -11,7 +11,10 @@ class DioExceptionMapper extends AppExceptionMapper<RemoteException> {
   final BaseErrorResponseDecoder<dynamic> _errorResponseDecoder;
 
   @override
-  RemoteException map(Object? exception) {
+  RemoteException map({
+    required Object? exception,
+    required ApiInfo apiInfo,
+  }) {
     if (exception is RemoteException) {
       return exception;
     }
@@ -40,7 +43,8 @@ class DioExceptionMapper extends AppExceptionMapper<RemoteException> {
 
           /// server-defined error
           if (exception.response?.data != null) {
-            final serverError = _errorResponseDecoder.map(exception.response!.data!);
+            final serverError = _errorResponseDecoder.map(
+                errorResponse: exception.response!.data!, apiInfo: apiInfo);
 
             return switch (serverError.generalServerErrorId) {
               Constant.userNotFoundErrorId => RemoteException(

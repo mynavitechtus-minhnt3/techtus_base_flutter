@@ -30,7 +30,7 @@ class AnalyticsHelper {
       Log.d(
         'logEvent: ${event.fullEventName},\nparameters: ${Log.prettyJson(parameters)}',
         color: LogColor.cyan,
-        mode: LogMode.logEventOnly,
+        mode: LogMode.logEvent,
       );
     }
     return _firebaseAnalytics.logEvent(
@@ -48,7 +48,7 @@ class AnalyticsHelper {
       Log.d(
         'logScreenView: ${screenViewEvent.screenName},\nkey: ${screenViewEvent.fullKey}\nparameters: ${Log.prettyJson(parameters)}',
         color: LogColor.cyan,
-        mode: LogMode.logEventOnly,
+        mode: LogMode.logEvent,
       );
     }
     return _firebaseAnalytics.logScreenView(
@@ -72,7 +72,7 @@ class AnalyticsHelper {
       Log.d(
         'logPurchase: currency: $currency, coupon: $coupon, value: $value, tax: $tax, shipping: $shipping, transactionId: $transactionId, affiliation: $affiliation}',
         color: LogColor.cyan,
-        mode: LogMode.logEventOnly,
+        mode: LogMode.logEvent,
       );
     }
     await _firebaseAnalytics.logPurchase(

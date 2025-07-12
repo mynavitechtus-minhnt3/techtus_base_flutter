@@ -51,7 +51,7 @@ class Constant {
   static const settingsPath = '/mypage/settings';
 
   // Material app
-  static const materialAppTitle = 'My App';
+  static const materialAppTitle = 'App';
   // Can not use AppColor here
 // ignore: avoid_hard_coded_colors
   static const taskMenuMaterialAppColor = Colors.green;

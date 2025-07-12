@@ -65,7 +65,7 @@ class MyApp extends HookConsumerWidget {
               darkTheme: darkTheme,
               debugShowCheckedModeBanner: kDebugMode,
               localeResolutionCallback: (Locale? locale, Iterable<Locale> supportedLocales) =>
-                  supportedLocales.contains(locale)
+                  supportedLocales.map((e) => e.languageCode).contains(locale?.languageCode)
                       ? locale
                       : Locale(LanguageCode.defaultValue.localeCode),
               locale: Config.enableDevicePreview

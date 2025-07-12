@@ -160,9 +160,9 @@ void main() {
         },
         actions: (vm) => vm.login(),
         expect: () {
-          final state1 = seed.copyWith(isLoading: true);
+          final state1 = seed.copyWith(isLoading: true, isFirstLoading: true);
           final state2 = state1.copyWithData(onPageError: l10n.youHaveLoggedInOnAnotherDevice);
-          final state3 = state2.copyWith(isLoading: false);
+          final state3 = state2.copyWith(isLoading: false, isFirstLoading: false);
 
           return [seed, state1, state2, state3];
         },

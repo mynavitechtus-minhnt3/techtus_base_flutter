@@ -13,14 +13,14 @@ void main() {
         ],
       };
       final decoder = (json) => ApiUserData.fromJson(json as Map<String, dynamic>);
-      const expected = ResultsListResponse<ApiUserData>(
+      const expected = PagingDataResponse<ApiUserData>(
         results: [
           ApiUserData(id: 1, email: 'name1'),
           ApiUserData(id: 2, email: 'name2'),
         ],
       );
       // act
-      final result = ResultsJsonArrayResponseDecoder<ApiUserData>().mapToDataModel(
+      final result = PagingDataResponseDecoder<ApiUserData>().mapToDataModel(
         response: response,
         decoder: decoder,
       );
@@ -29,7 +29,7 @@ void main() {
     });
 
     test('should return null when decoder is null', () async {
-      final result = ResultsJsonArrayResponseDecoder<ApiUserData>().mapToDataModel(
+      final result = PagingDataResponseDecoder<ApiUserData>().mapToDataModel(
         response: '',
         decoder: null,
       );
@@ -41,7 +41,7 @@ void main() {
       final response = [];
       final decoder = (json) => ApiUserData.fromJson(json as Map<String, dynamic>);
 
-      final result = ResultsJsonArrayResponseDecoder<ApiUserData>().mapToDataModel(
+      final result = PagingDataResponseDecoder<ApiUserData>().mapToDataModel(
         response: response,
         decoder: decoder,
       );

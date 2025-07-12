@@ -24,7 +24,7 @@ void main() {
           email: 'email$index',
         ),
       );
-      final response = ResultsListResponse(
+      final response = PagingDataResponse(
         results: users,
       );
       when(() => appApiService.getUsers(page: page, limit: limit))
@@ -53,7 +53,7 @@ void main() {
       // Arrange
       const page = Constant.initialPage;
       const limit = Constant.itemsPerPage;
-      const response = ResultsListResponse(results: <ApiUserData>[]);
+      const response = PagingDataResponse(results: <ApiUserData>[]);
       when(() => appApiService.getUsers(page: page, limit: limit))
           .thenAnswer((_) async => response);
 
@@ -87,7 +87,7 @@ void main() {
           email: 'email$index',
         ),
       );
-      final response = ResultsListResponse(
+      final response = PagingDataResponse(
         results: users,
       );
       when(() => appApiService.getUsers(page: page, limit: limit))
@@ -138,7 +138,7 @@ void main() {
           email: 'email$index',
         ),
       );
-      final response = ResultsListResponse(results: users);
+      final response = PagingDataResponse(results: users);
       final exception = RemoteException(kind: RemoteExceptionKind.noInternet);
       when(() => appApiService.getUsers(page: page, limit: limit))
           .thenAnswer((_) async => response);
@@ -179,7 +179,7 @@ void main() {
           email: 'email$index',
         ),
       );
-      final response = ResultsListResponse(
+      final response = PagingDataResponse(
         results: users,
       );
       when(() => appApiService.getUsers(page: page, limit: limit))
@@ -201,7 +201,7 @@ void main() {
       );
 
       // fetch the next page
-      const lastPageResponse = ResultsListResponse(
+      const lastPageResponse = PagingDataResponse(
         results: <ApiUserData>[],
       );
       when(() => appApiService.getUsers(page: nextPage, limit: limit))
@@ -232,7 +232,7 @@ void main() {
           email: 'email$index',
         ),
       );
-      final response = ResultsListResponse(results: users);
+      final response = PagingDataResponse(results: users);
       final exception = RemoteException(kind: RemoteExceptionKind.noInternet);
       when(() => appApiService.getUsers(page: page, limit: limit))
           .thenAnswer((_) async => response);
@@ -290,7 +290,7 @@ void main() {
           email: 'email$index',
         ),
       );
-      final response = ResultsListResponse(results: users);
+      final response = PagingDataResponse(results: users);
       final exception = RemoteException(kind: RemoteExceptionKind.noInternet);
       when(() => appApiService.getUsers(page: page, limit: limit))
           .thenAnswer((_) async => response);
@@ -339,7 +339,7 @@ void main() {
           email: 'email$index',
         ),
       );
-      final response = ResultsListResponse(results: users);
+      final response = PagingDataResponse(results: users);
       final exception = RemoteException(kind: RemoteExceptionKind.noInternet);
       when(() => appApiService.getUsers(page: page, limit: limit))
           .thenAnswer((_) async => response);

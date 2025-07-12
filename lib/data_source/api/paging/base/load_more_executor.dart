@@ -1,6 +1,8 @@
-import '../../../../index.dart';
+import '../../../../../index.dart';
 
-abstract class LoadMoreExecutor<T> {
+abstract class LoadMoreParams {}
+
+abstract class LoadMoreExecutor<T, P extends LoadMoreParams> {
   LoadMoreExecutor({
     this.initPage = Constant.initialPage,
     this.initOffset = 0,
@@ -21,19 +23,18 @@ abstract class LoadMoreExecutor<T> {
   Future<PagedList<T>> action({
     required int page,
     required int limit,
-    required Map<String, dynamic> params,
+    required P? params,
   });
 
   Future<LoadMoreOutput<T>> execute({
     required bool isInitialLoad,
-    Map<String, dynamic>? params,
+    P? params,
   }) async {
     try {
       if (isInitialLoad) {
         _output = LoadMoreOutput<T>(data: <T>[], page: initPage, offset: initOffset);
       }
-      Log.d('LoadMoreInput: page: $page, offset: $offset');
-      final pagedList = await action(page: page, limit: limit, params: params ?? {});
+      final pagedList = await action(page: page, limit: limit, params: params);
 
       final newOutput = _oldOutput.copyWith(
         data: pagedList.data,
@@ -51,13 +52,9 @@ abstract class LoadMoreExecutor<T> {
 
       _output = newOutput;
       _oldOutput = newOutput;
-      if (Config.enableLogExecutorOutput) {
-        Log.d(
-          'LoadMoreOutput: pagedList: $pagedList, inputPage: $page, inputOffset: $offset, newOutput: $newOutput',
-        );
-      }
 
       return newOutput;
+      // ignore: missing_log_in_catch_block
     } catch (e) {
       Log.e('LoadMoreError: $e');
       _output = _oldOutput;

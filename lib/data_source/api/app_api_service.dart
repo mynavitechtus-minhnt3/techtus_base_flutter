@@ -54,7 +54,7 @@ class AppApiService {
     );
   }
 
-  Future<ResultsListResponse<ApiUserData>?> getUsers({
+  Future<PagingDataResponse<ApiUserData>?> getUsers({
     required int page,
     required int? limit,
   }) {
@@ -65,7 +65,7 @@ class AppApiService {
         'page': page,
         'results': limit,
       },
-      successResponseDecoderType: SuccessResponseDecoderType.resultsJsonArray,
+      successResponseDecoderType: SuccessResponseDecoderType.paging,
       decoder: (json) => ApiUserData.fromJson(json.safeCast<Map<String, dynamic>>() ?? {}),
     );
   }
