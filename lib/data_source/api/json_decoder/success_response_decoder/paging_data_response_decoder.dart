@@ -1,6 +1,6 @@
-import '../../../../index.dart';
+import '../../../../../index.dart';
 
-class ResultsJsonArrayResponseDecoder<T extends Object>
+class PagingDataResponseDecoder<T extends Object>
     extends BaseSuccessResponseDecoder<T, PagingDataResponse<T>> {
   @override
   PagingDataResponse<T>? mapToDataModel({

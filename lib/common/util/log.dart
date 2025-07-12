@@ -1,11 +1,11 @@
-// ignore_for_file: prefer_named_parameters
+// ignore_for_file: prefer_named_parameters, avoid_dynamic
 import 'dart:async';
 import 'dart:convert';
 import 'dart:developer' as dev;
 
 import 'package:flutter/foundation.dart';
 
-import '../../index.dart';
+import '../../../index.dart';
 
 enum LogColor {
   black('\x1B[30m'),
@@ -21,39 +21,40 @@ enum LogColor {
   final String code;
 }
 
-enum LogMode { all, apiOnly, logEventOnly, normalLogOnly, none }
+enum LogMode { all, api, logEvent, normal }
 
 class Log {
   const Log._();
 
   static const _enableLog = Config.enableGeneralLog;
-  static const generalLogMode = LogMode.all;
+  static const _generalLogMode = Config.generalLogMode;
+  static const _printStackTrace = Config.printStackTrace;
 
   static void d(
     Object? message, {
-    LogColor color = LogColor.green,
-    LogMode mode = LogMode.normalLogOnly,
+    LogColor color = LogColor.yellow,
+    LogMode mode = LogMode.normal,
     String? name,
     DateTime? time,
   }) {
     if (!kDebugMode ||
-        generalLogMode == LogMode.none ||
-        (generalLogMode != LogMode.all && generalLogMode != mode)) return;
+        _generalLogMode.isEmpty ||
+        (!_generalLogMode.contains(LogMode.all) && !_generalLogMode.contains(mode))) return;
     _log('$message', color: color, name: name ?? '', time: time);
   }
 
   static void e(
     Object? errorMessage, {
     LogColor color = LogColor.red,
-    LogMode mode = LogMode.normalLogOnly,
+    LogMode mode = LogMode.normal,
     String? name,
     Object? errorObject,
     StackTrace? stackTrace,
     DateTime? time,
   }) {
     if (!kDebugMode ||
-        generalLogMode == LogMode.none ||
-        (generalLogMode != LogMode.all && generalLogMode != mode)) return;
+        _generalLogMode.isEmpty ||
+        (!_generalLogMode.contains(LogMode.all) && !_generalLogMode.contains(mode))) return;
     _log(
       '$errorMessage',
       color: color,
@@ -64,7 +65,6 @@ class Log {
     );
   }
 
-  // ignore: avoid_dynamic
   static String prettyJson(dynamic json) {
     if (!Config.isPrettyJson) {
       return json.toString();
@@ -96,12 +96,43 @@ class Log {
         level: level,
         zone: zone,
         error: error,
-        stackTrace: stackTrace,
+        stackTrace: _printStackTrace ? stackTrace : null,
       );
     }
   }
+}
 
-  // ignore: avoid_dynamic
+mixin LogMixin on Object {
+  void logD(
+    String message, {
+    LogColor color = LogColor.yellow,
+    DateTime? time,
+  }) {
+    Log.d(
+      message,
+      name: runtimeType.toString(),
+      time: time,
+      color: color,
+    );
+  }
+
+  void logE(
+    Object? errorMessage, {
+    LogColor color = LogColor.red,
+    Object? errorObject,
+    StackTrace? stackTrace,
+    DateTime? time,
+  }) {
+    Log.e(
+      errorMessage,
+      name: runtimeType.toString(),
+      errorObject: errorObject,
+      stackTrace: stackTrace,
+      time: time,
+      color: color,
+    );
+  }
+
   static String prettyResponse(dynamic data) {
     if (data is Map) {
       final indent = '  ' * 2;

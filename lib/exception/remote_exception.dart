@@ -6,6 +6,7 @@ class RemoteException extends AppException {
     required this.kind,
     this.dioStatusCode,
     this.serverError,
+    this.apiInfo,
     super.rootException,
     super.onRetry,
   }) : super();
@@ -13,9 +14,15 @@ class RemoteException extends AppException {
   final RemoteExceptionKind kind;
   final int? dioStatusCode;
   final ServerError? serverError;
+  final ApiInfo? apiInfo;
+
+  String get _apiInfo => Env.flavor == Flavor.production || Env.flavor == Flavor.test
+      ? ''
+      : '\nTime: ${DateTime.now().toStringWithFormat(Constant.fddMMyyyyHHmm)}\nPath: $apiInfo';
 
   @override
-  String get message => switch (kind) {
+  String get message =>
+      switch (kind) {
         RemoteExceptionKind.badCertificate => l10n.unknownException('UE-01'),
         RemoteExceptionKind.noInternet => l10n.noInternetException,
         RemoteExceptionKind.network => l10n.canNotConnectToHost,
@@ -29,7 +36,8 @@ class RemoteException extends AppException {
         RemoteExceptionKind.refreshTokenFailed => l10n.tokenExpired,
         RemoteExceptionKind.decodeError => l10n.unknownException('UE-06'),
         RemoteExceptionKind.serverMaintenance => l10n.maintenanceTitle,
-      };
+      } +
+      _apiInfo;
 
   @override
   AppExceptionAction get action {

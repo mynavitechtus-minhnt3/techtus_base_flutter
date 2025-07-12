@@ -24,7 +24,10 @@ void main() {
         generalMessage: 'The request is invalid',
       );
       // act
-      final result = jsonObjectErrorResponseDecoder.map(errorResponse);
+      final result = jsonObjectErrorResponseDecoder.map(
+        errorResponse: errorResponse,
+        apiInfo: ApiInfo(method: 'GET', url: '/test'),
+      );
       // assert
       expect(result, expected);
     });
@@ -40,7 +43,10 @@ void main() {
       };
       const expected = ServerError(generalServerStatusCode: 400);
       // act
-      final result = jsonObjectErrorResponseDecoder.map(errorResponse);
+      final result = jsonObjectErrorResponseDecoder.map(
+        errorResponse: errorResponse,
+        apiInfo: ApiInfo(method: 'GET', url: '/test'),
+      );
       // assert
       expect(result, expected);
     });
@@ -56,7 +62,10 @@ void main() {
           },
         };
         const expected = ServerError();
-        final result = jsonObjectErrorResponseDecoder.map(errorResponse);
+        final result = jsonObjectErrorResponseDecoder.map(
+          errorResponse: errorResponse,
+          apiInfo: ApiInfo(method: 'GET', url: '/test'),
+        );
         // assert
         expect(result, expected);
       },
@@ -73,7 +82,10 @@ void main() {
       };
       // assert
       expect(
-        () => jsonObjectErrorResponseDecoder.map(errorResponse),
+        () => jsonObjectErrorResponseDecoder.map(
+          errorResponse: errorResponse,
+          apiInfo: ApiInfo(method: 'GET', url: '/test'),
+        ),
         throwsA(isA<RemoteException>()),
       );
     });

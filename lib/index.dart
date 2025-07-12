@@ -1,4 +1,3 @@
-// GENERATED CODE - DO NOT MODIFY BY HAND
 export 'app_initializer.dart';
 export 'common/config.dart';
 export 'common/constant.dart';
@@ -44,8 +43,8 @@ export 'data_source/api/json_decoder/success_response_decoder/data_json_array_re
 export 'data_source/api/json_decoder/success_response_decoder/data_json_object_response_decoder.dart';
 export 'data_source/api/json_decoder/success_response_decoder/json_array_response_decoder.dart';
 export 'data_source/api/json_decoder/success_response_decoder/json_object_response_decoder.dart';
+export 'data_source/api/json_decoder/success_response_decoder/paging_data_response_decoder.dart';
 export 'data_source/api/json_decoder/success_response_decoder/plain_response_decoder.dart';
-export 'data_source/api/json_decoder/success_response_decoder/records_json_array_response_decoder.dart';
 export 'data_source/api/json_decoder/success_response_decoder/results_json_array_response_decoder.dart';
 export 'data_source/api/middleware/access_token_interceptor.dart';
 export 'data_source/api/middleware/base_interceptor.dart';
@@ -82,8 +81,7 @@ export 'main.dart';
 export 'model/api/api_refresh_token_data.dart';
 export 'model/api/api_user_data.dart';
 export 'model/api/base/data_response.dart';
-export 'model/api/base/records_response.dart';
-export 'model/api/base/results_response.dart';
+export 'model/api/base/paging_data_response.dart';
 export 'model/api/mock/mock_data.dart';
 export 'model/api/server_error.dart';
 export 'model/api/server_error_detail.dart';
@@ -108,6 +106,7 @@ export 'model/firebase/firebase_user_data.dart';
 export 'model/mapper/base/base_data_mapper.dart';
 export 'model/mapper/message_data_mapper.dart';
 export 'model/mapper/remote_message_app_notification_mapper.dart';
+export 'model/other/api_info.dart';
 export 'model/other/app_notification.dart';
 export 'model/other/initial_resource.dart';
 export 'navigation/app_navigator.dart';

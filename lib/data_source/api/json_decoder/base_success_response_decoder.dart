@@ -5,8 +5,7 @@ enum SuccessResponseDecoderType {
   dataJsonArray,
   jsonObject,
   jsonArray,
-  recordsJsonArray,
-  resultsJsonArray,
+  paging,
   plain,
 }
 
@@ -23,10 +22,8 @@ abstract class BaseSuccessResponseDecoder<I extends Object, O extends Object> {
         JsonObjectResponseDecoder<I>() as BaseSuccessResponseDecoder<I, O>,
       SuccessResponseDecoderType.jsonArray =>
         JsonArrayResponseDecoder<I>() as BaseSuccessResponseDecoder<I, O>,
-      SuccessResponseDecoderType.recordsJsonArray =>
-        RecordsJsonArrayResponseDecoder<I>() as BaseSuccessResponseDecoder<I, O>,
-      SuccessResponseDecoderType.resultsJsonArray =>
-        ResultsJsonArrayResponseDecoder<I>() as BaseSuccessResponseDecoder<I, O>,
+      SuccessResponseDecoderType.paging =>
+        PagingDataResponseDecoder<I>() as BaseSuccessResponseDecoder<I, O>,
       SuccessResponseDecoderType.plain =>
         PlainResponseDecoder<I>() as BaseSuccessResponseDecoder<I, O>,
     };

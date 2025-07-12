@@ -38,7 +38,7 @@ class CommonScaffold extends StatelessWidget {
       floatingActionButton: floatingActionButton,
     );
 
-    final scaffoldWithBanner = Env.flavor == Flavor.production
+    final scaffoldWithBanner = Env.flavor == Flavor.production || Env.flavor == Flavor.test
         ? scaffold
         : Banner(
             location: BannerLocation.topStart,

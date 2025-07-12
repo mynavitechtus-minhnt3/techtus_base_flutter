@@ -21,8 +21,11 @@ abstract class BaseErrorResponseDecoder<T extends Object> {
     }
   }
 
-  // ignore: avoid_dynamic
-  ServerError map(dynamic errorResponse) {
+  ServerError map({
+    // ignore: avoid_dynamic
+    required dynamic errorResponse,
+    required ApiInfo apiInfo,
+  }) {
     try {
       if (errorResponse is! T) {
         throw RemoteException(
@@ -38,7 +41,11 @@ abstract class BaseErrorResponseDecoder<T extends Object> {
     } on RemoteException catch (e) {
       rethrow;
     } catch (e) {
-      throw RemoteException(kind: RemoteExceptionKind.decodeError, rootException: e);
+      throw RemoteException(
+        kind: RemoteExceptionKind.decodeError,
+        rootException: e,
+        apiInfo: apiInfo,
+      );
     }
   }
 

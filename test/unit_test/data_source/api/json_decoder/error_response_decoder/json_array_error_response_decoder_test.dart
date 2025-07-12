@@ -26,7 +26,10 @@ void main() {
         ],
       );
       // act
-      final result = jsonArrayErrorResponseDecoder.map(errorResponse);
+      final result = jsonArrayErrorResponseDecoder.map(
+        errorResponse: errorResponse,
+        apiInfo: ApiInfo(method: 'GET', url: '/test'),
+      );
       // assert
       expect(result, expected);
     });
@@ -41,7 +44,10 @@ void main() {
       ];
       const expected = ServerError(errors: [ServerErrorDetail(serverStatusCode: 400)]);
       // act
-      final result = jsonArrayErrorResponseDecoder.map(errorResponse);
+      final result = jsonArrayErrorResponseDecoder.map(
+        errorResponse: errorResponse,
+        apiInfo: ApiInfo(method: 'GET', url: '/test'),
+      );
       // assert
       expect(result, expected);
     });
@@ -57,7 +63,10 @@ void main() {
           },
         ];
         const expected = ServerError(errors: [ServerErrorDetail()]);
-        final result = jsonArrayErrorResponseDecoder.map(errorResponse);
+        final result = jsonArrayErrorResponseDecoder.map(
+          errorResponse: errorResponse,
+          apiInfo: ApiInfo(method: 'GET', url: '/test'),
+        );
         // assert
         expect(result, expected);
       },
@@ -73,7 +82,10 @@ void main() {
       ];
       // assert
       expect(
-        () => jsonArrayErrorResponseDecoder.map(errorResponse),
+        () => jsonArrayErrorResponseDecoder.map(
+          errorResponse: errorResponse,
+          apiInfo: ApiInfo(method: 'GET', url: '/test'),
+        ),
         throwsA((e) => e is RemoteException && e.kind == RemoteExceptionKind.decodeError),
       );
     });

@@ -34,14 +34,18 @@ class DeviceHelper {
   }
 
   DeviceType get deviceType {
-    const _maxMobileWidthForDeviceType = 550;
+    const _phoneMaxWidth = 550;
+    const _smallPhoneMaxWidth = 380;
 
-    return MediaQueryData.fromView(WidgetsBinding.instance.platformDispatcher.views.first)
-                .size
-                .shortestSide <
-            _maxMobileWidthForDeviceType
-        ? DeviceType.phone
-        : DeviceType.tablet;
+    final deviceWidth =
+        MediaQueryData.fromView(WidgetsBinding.instance.platformDispatcher.views.first)
+            .size
+            .shortestSide;
+    return deviceWidth < _smallPhoneMaxWidth
+        ? DeviceType.smallPhone
+        : deviceWidth < _phoneMaxWidth
+            ? DeviceType.phone
+            : DeviceType.tablet;
   }
 
   String get operatingSystem => Platform.operatingSystem;

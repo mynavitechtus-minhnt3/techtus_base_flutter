@@ -130,8 +130,8 @@ class TestUtil {
 extension CommonStateExt<T extends BaseState> on CommonState<T> {
   List<CommonState<T>> get showAndHideLoading {
     return [
-      copyWith(isLoading: true),
-      copyWith(isLoading: false),
+      copyWith(isLoading: true, isFirstLoading: true),
+      copyWith(isLoading: false, isFirstLoading: false),
     ];
   }
 }

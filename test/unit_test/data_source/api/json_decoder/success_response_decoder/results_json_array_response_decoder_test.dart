@@ -13,7 +13,7 @@ void main() {
         ],
       };
       final decoder = (json) => ApiUserData.fromJson(json as Map<String, dynamic>);
-      const expected = ResultsListResponse<ApiUserData>(
+      const expected = PagingDataResponse<ApiUserData>(
         results: [
           ApiUserData(id: 1, email: 'name1'),
           ApiUserData(id: 2, email: 'name2'),

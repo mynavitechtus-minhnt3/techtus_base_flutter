@@ -6,7 +6,7 @@ void main() {
   group('fromJson', () {
     test('when JSON response is valid', () async {
       final validResponse = {
-        'records': [
+        'results': [
           {
             'uid': 100,
             'email': 'ntminh@gmail.com',
@@ -30,8 +30,8 @@ void main() {
         'total': 5,
       };
 
-      final expected = RecordsListResponse(
-        records: [
+      final expected = PagingDataResponse(
+        results: [
           ApiUserData(
             id: 100,
             email: 'ntminh@gmail.com',
@@ -52,7 +52,7 @@ void main() {
         total: 5,
       );
 
-      final result = RecordsListResponse<ApiUserData>.fromJson(
+      final result = PagingDataResponse<ApiUserData>.fromJson(
         validResponse,
         (json) => ApiUserData.fromJson(json as Map<String, dynamic>),
       );

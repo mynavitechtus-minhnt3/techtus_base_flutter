@@ -12,7 +12,10 @@ void main() {
         generalMessage: 'The request is invalid',
       );
       // act
-      final result = LineErrorResponseDecoder().map(errorResponse);
+      final result = LineErrorResponseDecoder().map(
+        errorResponse: errorResponse,
+        apiInfo: ApiInfo(method: 'GET', url: '/test'),
+      );
       // assert
       expect(result, expected);
     });

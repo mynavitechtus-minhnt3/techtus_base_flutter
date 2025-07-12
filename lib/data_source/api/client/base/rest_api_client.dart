@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 
-import '../../../../index.dart';
+import '../../../../../index.dart';
 
 enum RestMethod { get, post, put, patch, delete }
 
@@ -24,6 +24,8 @@ class RestApiClient {
     SuccessResponseDecoderType? successResponseDecoderType,
     ErrorResponseDecoderType? errorResponseDecoderType,
     Options? options,
+    // ignore: avoid_dynamic
+    FinalOutput? Function(Response<dynamic> response)? customSuccessResponseDecoder,
   }) async {
     assert(
         method != RestMethod.get ||
@@ -52,25 +54,20 @@ class RestApiClient {
         return null;
       }
 
-      // There are 2 steps to decode response:
-      // Step 1: decoder: covert BE's response (Object?) to FirstOutput
-      // Step 2: BaseSuccessResponseDecoder<FirstOutput, FinalOutput>.fromType(): convert FirstOutput to FinalOutput
-      // Ex:
-      // Future<DataResponse<ApiUserData>?> getMe() {
-      //   return _apiClient.request<ApiUserData, DataResponse<ApiUserData>>(
-      //     decoder: (json) => ApiUserData.fromJson(json as Map<String, dynamic>),
-      //   );
-      // }
+      if (customSuccessResponseDecoder != null) {
+        return customSuccessResponseDecoder(response);
+      }
+
       return BaseSuccessResponseDecoder<FirstOutput, FinalOutput>.fromType(
         successResponseDecoderType ?? this.successResponseDecoderType,
       ).map(response: response.data, decoder: decoder);
       // ignore: missing_log_in_catch_block
-    } catch (error) {
+    } catch (error, _) {
       throw DioExceptionMapper(
         BaseErrorResponseDecoder.fromType(
           errorResponseDecoderType ?? this.errorResponseDecoderType,
         ),
-      ).map(error);
+      ).map(exception: error, apiInfo: ApiInfo(method: method.name, url: path));
     }
   }
 
@@ -121,5 +118,16 @@ class RestApiClient {
     }
   }
 
-  Future<Response<T>> fetch<T>(RequestOptions requestOptions) => dio.fetch<T>(requestOptions);
+  Future<Response<T>> fetch<T>(RequestOptions requestOptions) async {
+    try {
+      return await dio.fetch<T>(requestOptions);
+      // ignore: missing_log_in_catch_block
+    } catch (error, _) {
+      throw DioExceptionMapper(
+        BaseErrorResponseDecoder.fromType(ErrorResponseDecoderType.jsonObject),
+      ).map(
+          exception: error,
+          apiInfo: ApiInfo(method: requestOptions.method, url: requestOptions.path));
+    }
+  }
 }

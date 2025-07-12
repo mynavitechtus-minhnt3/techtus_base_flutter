@@ -8,8 +8,12 @@ final loadMoreUsersExecutorProvider = Provider<LoadMoreUsersExecutor>(
   (ref) => getIt.get<LoadMoreUsersExecutor>(),
 );
 
+class LoadMoreUsersParams extends LoadMoreParams {
+  LoadMoreUsersParams();
+}
+
 @Injectable()
-class LoadMoreUsersExecutor extends LoadMoreExecutor<ApiUserData> {
+class LoadMoreUsersExecutor extends LoadMoreExecutor<ApiUserData, LoadMoreUsersParams> {
   LoadMoreUsersExecutor(this.appApiService);
 
   final AppApiService appApiService;
@@ -19,7 +23,7 @@ class LoadMoreUsersExecutor extends LoadMoreExecutor<ApiUserData> {
   Future<PagedList<ApiUserData>> action({
     required int page,
     required int limit,
-    required Map<String, dynamic> params,
+    required LoadMoreUsersParams? params,
   }) async {
     final response = await appApiService.getUsers(page: page, limit: limit);
 

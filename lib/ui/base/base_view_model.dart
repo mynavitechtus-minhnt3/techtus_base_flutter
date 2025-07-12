@@ -42,6 +42,7 @@ abstract class BaseViewModel<S extends BaseState> extends StateNotifier<CommonSt
   S get data => state.data;
 
   int _loadingCount = 0;
+  bool firstLoadingShown = false;
 
   set exception(AppException appException) {
     if (mounted) {
@@ -51,17 +52,44 @@ abstract class BaseViewModel<S extends BaseState> extends StateNotifier<CommonSt
     }
   }
 
+  void startAction(String key) {
+    if (mounted) {
+      state = state.copyWith(doingAction: {...state.doingAction, key: true});
+    } else {
+      Log.e('Cannot start API calling when widget is not mounted', stackTrace: StackTrace.current);
+    }
+  }
+
+  void stopAction(String key) {
+    if (mounted) {
+      state = state.copyWith(doingAction: {...state.doingAction, key: false});
+    } else {
+      Log.e('Cannot stop API calling when widget is not mounted', stackTrace: StackTrace.current);
+    }
+  }
+
   void showLoading() {
     if (_loadingCount <= 0) {
-      state = state.copyWith(isLoading: true);
+      state = state.copyWith(
+        isLoading: true,
+        isFirstLoading: !firstLoadingShown && _loadingCount == 0,
+      );
+      firstLoadingShown = true;
     }
 
     _loadingCount++;
   }
 
   void hideLoading() {
+    if (!mounted) {
+      return;
+    }
+
     if (_loadingCount <= 1) {
-      state = state.copyWith(isLoading: false);
+      state = state.copyWith(
+        isLoading: false,
+        isFirstLoading: false,
+      );
     }
 
     _loadingCount--;
@@ -74,20 +102,27 @@ abstract class BaseViewModel<S extends BaseState> extends StateNotifier<CommonSt
     Future<void> Function()? doOnSuccessOrError,
     Future<void> Function()? doOnCompleted,
     bool handleLoading = true,
-    bool Function(AppException)? handleRetryWhen,
-    bool Function(AppException)? handleErrorWhen,
-    int? maxRetries = 3,
+    FutureOr<bool> Function(AppException)? handleRetryWhen,
+    FutureOr<bool> Function(AppException)? handleErrorWhen,
+    int? maxRetries = 2,
+    String? actionName,
   }) async {
     assert(maxRetries == null || maxRetries >= 0, 'maxRetries must be positive');
     try {
       if (handleLoading) {
         showLoading();
+        if (actionName != null) {
+          startAction(actionName);
+        }
       }
 
       await action.call();
 
       if (handleLoading) {
         hideLoading();
+        if (actionName != null) {
+          stopAction(actionName);
+        }
       }
       await doOnSuccessOrError?.call();
       // ignore: missing_log_in_catch_block
@@ -96,12 +131,16 @@ abstract class BaseViewModel<S extends BaseState> extends StateNotifier<CommonSt
 
       if (handleLoading) {
         hideLoading();
+        if (actionName != null) {
+          stopAction(actionName);
+        }
       }
       await doOnSuccessOrError?.call();
       await doOnError?.call(appException);
 
-      if (handleErrorWhen?.call(appException) != false || appException.isForcedErrorToHandle) {
-        final shouldRetryAutomatically = handleRetryWhen?.call(appException) != false &&
+      if (await handleErrorWhen?.call(appException) != false ||
+          appException.isForcedErrorToHandle) {
+        final shouldRetryAutomatically = await handleRetryWhen?.call(appException) != false &&
             (maxRetries == null || maxRetries - 1 >= 0);
         final shouldDoBeforeRetrying = doOnRetry != null;
 
