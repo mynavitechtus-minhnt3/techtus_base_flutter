@@ -20,7 +20,7 @@ void main() {
         ],
       );
       // act
-      final result = ResultsJsonArrayResponseDecoder<ApiUserData>().mapToDataModel(
+      final result = PagingDataResponseDecoder<ApiUserData>().mapToDataModel(
         response: response,
         decoder: decoder,
       );
@@ -29,7 +29,7 @@ void main() {
     });
 
     test('should return null when decoder is null', () async {
-      final result = ResultsJsonArrayResponseDecoder<ApiUserData>().mapToDataModel(
+      final result = PagingDataResponseDecoder<ApiUserData>().mapToDataModel(
         response: '',
         decoder: null,
       );
@@ -41,7 +41,7 @@ void main() {
       final response = [];
       final decoder = (json) => ApiUserData.fromJson(json as Map<String, dynamic>);
 
-      final result = ResultsJsonArrayResponseDecoder<ApiUserData>().mapToDataModel(
+      final result = PagingDataResponseDecoder<ApiUserData>().mapToDataModel(
         response: response,
         decoder: decoder,
       );

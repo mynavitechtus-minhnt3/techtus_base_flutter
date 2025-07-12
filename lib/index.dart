@@ -45,7 +45,6 @@ export 'data_source/api/json_decoder/success_response_decoder/json_array_respons
 export 'data_source/api/json_decoder/success_response_decoder/json_object_response_decoder.dart';
 export 'data_source/api/json_decoder/success_response_decoder/paging_data_response_decoder.dart';
 export 'data_source/api/json_decoder/success_response_decoder/plain_response_decoder.dart';
-export 'data_source/api/json_decoder/success_response_decoder/results_json_array_response_decoder.dart';
 export 'data_source/api/middleware/access_token_interceptor.dart';
 export 'data_source/api/middleware/base_interceptor.dart';
 export 'data_source/api/middleware/basic_auth_interceptor.dart';
