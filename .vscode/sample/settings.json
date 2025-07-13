@@ -14,7 +14,7 @@
     "editor.rulers": [100]
   },
   // VSCode Extension
-  "mynavimobiletool.appName": "nalsflutter",
+  "mynavimobiletool.riverpodPageTemplate": "singleModule",
   "mynavimobiletool.autoExportBarrier": "// GENERATED CODE - DO NOT MODIFY BY HAND",
   "mynavimobiletool.autoExportOnSave": false,
   "mynavimobiletool.dataModelPath": "lib/model/api",

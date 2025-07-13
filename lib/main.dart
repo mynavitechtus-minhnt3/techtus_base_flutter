@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'index.dart';
@@ -14,7 +15,8 @@ Future<void> main() async => runZonedGuarded(
     );
 
 Future<void> _runMyApp() async {
-  WidgetsFlutterBinding.ensureInitialized();
+  final widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   await Firebase.initializeApp();
   await AppInitializer.init();
   final initialResource = _loadInitialResource();
@@ -30,10 +32,5 @@ void _reportError({required error, required StackTrace stackTrace}) {
 }
 
 InitialResource _loadInitialResource() {
-  final appPreferences = getIt.get<AppPreferences>();
-  final result = InitialResource(
-    initialRoutes: [appPreferences.isLoggedIn ? InitialAppRoute.main : InitialAppRoute.login],
-  );
-
-  return result;
+  return const InitialResource();
 }

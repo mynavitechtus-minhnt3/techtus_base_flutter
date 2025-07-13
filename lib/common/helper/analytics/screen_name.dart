@@ -48,6 +48,11 @@ enum ScreenName {
     screenName: 'Setting Page',
     screenEventPrefix: 'setting',
     screenClass: 'SettingPage',
+  ),
+  splashPage(
+    screenName: 'Splash Page',
+    screenEventPrefix: 'splash',
+    screenClass: 'SplashPage',
   );
 
   const ScreenName({

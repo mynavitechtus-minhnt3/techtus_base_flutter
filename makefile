@@ -47,6 +47,7 @@ ci:
 	cd tools/dart_tools && flutter pub get
 	make check_pubs
 	make rup
+	make rua
 	make fcl
 	make fm
 	make te
