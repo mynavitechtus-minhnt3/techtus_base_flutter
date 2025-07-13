@@ -154,8 +154,8 @@ class CommonPopup {
             children: [
               Align(
                 alignment: Alignment.topCenter,
-                child: CommonImage.svg(
-                  path: image.appLogo,
+                child: CommonImage.asset(
+                  path: image.appIcon,
                   width: 128.rps,
                   height: 128.rps,
                 ),

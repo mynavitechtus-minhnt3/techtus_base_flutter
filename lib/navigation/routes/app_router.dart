@@ -1,8 +1,9 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:injectable/injectable.dart';
 
-import '../../index.dart';
+import '../../index.dart' hide PageInfo;
 
 final appRouterProvider = Provider<AppRouter>(
   (ref) => getIt.get<AppRouter>(),
@@ -17,31 +18,66 @@ class AppRouter extends RootStackRouter {
   @override
   RouteType get defaultRouteType => const RouteType.adaptive();
 
+  static const duration = Duration(milliseconds: 300);
+  // ignore: prefer_named_parameters
+  Widget bottomUpTransitionBuilder(
+    BuildContext context,
+    Animation<double> animation,
+    Animation<double> secondaryAnimation,
+    Widget child,
+  ) {
+    return SlideTransition(
+      position: Tween<Offset>(begin: const Offset(0, 1), end: const Offset(0, 0))
+          .animate(CurvedAnimation(parent: animation, curve: Curves.easeOut)),
+      child: child,
+    );
+  }
+
+  CustomRoute<void> buildCustomRoute({
+    required PageInfo page,
+    Widget Function(BuildContext, Animation<double>, Animation<double>, Widget)? transitionsBuilder,
+    List<AutoRoute>? children,
+  }) {
+    return CustomRoute(
+      page: page,
+      transitionsBuilder: transitionsBuilder ?? bottomUpTransitionBuilder,
+      fullscreenDialog: true,
+      barrierDismissible: false,
+      duration: duration,
+      reverseDuration: duration,
+      children: children,
+    );
+  }
+
   @override
   List<AutoRoute> get routes => [
-        AutoRoute(page: LoginRoute.page),
+        AutoRoute(page: SplashRoute.page),
+        buildCustomRoute(page: LoginRoute.page, transitionsBuilder: TransitionsBuilders.fadeIn),
         AutoRoute(page: RegisterRoute.page),
         AutoRoute(page: ChatRoute.page),
         AutoRoute(page: AllUsersRoute.page),
         AutoRoute(page: RenameConversationRoute.page),
         AutoRoute(page: HomeRoute.page),
-        AutoRoute(page: MainRoute.page, children: [
-          AutoRoute(
-            page: ContactListTab.page,
-            maintainState: true,
+        buildCustomRoute(
+            page: MainRoute.page,
+            transitionsBuilder: TransitionsBuilders.fadeIn,
             children: [
-              AutoRoute(page: ContactListRoute.page, initial: true),
-            ],
-          ),
-          AutoRoute(
-            page: MyPageTab.page,
-            maintainState: true,
-            children: [
-              AutoRoute(page: MyPageRoute.page, initial: true),
-              AutoRoute(page: SettingRoute.page),
-            ],
-          ),
-        ]),
+              AutoRoute(
+                page: ContactListTab.page,
+                maintainState: true,
+                children: [
+                  AutoRoute(page: ContactListRoute.page, initial: true),
+                ],
+              ),
+              AutoRoute(
+                page: MyPageTab.page,
+                maintainState: true,
+                children: [
+                  AutoRoute(page: MyPageRoute.page, initial: true),
+                  AutoRoute(page: SettingRoute.page),
+                ],
+              ),
+            ]),
       ];
 }
 

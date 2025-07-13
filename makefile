@@ -47,6 +47,8 @@ ci:
 	cd tools/dart_tools && flutter pub get
 	make check_pubs
 	make rup
+	make rua
+	make fds
 	make fcl
 	make fm
 	make te
@@ -69,6 +71,9 @@ rul:
 
 rua:
 	dart run $(DART_TOOLS_PATH)/remove_unused_asset.dart .
+
+fds:
+	dart run $(DART_TOOLS_PATH)/find_duplicate_svg.dart assets/images
 
 rdl:
 	dart run $(DART_TOOLS_PATH)/remove_duplicate_l10n.dart lib/resource/l10n

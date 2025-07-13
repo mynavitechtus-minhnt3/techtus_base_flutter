@@ -93,7 +93,6 @@ export 'model/converter/timestamp_converter.dart';
 export 'model/database/local_message_data.dart';
 export 'model/database/local_reply_message_data.dart';
 export 'model/enum/gender.dart';
-export 'model/enum/initial_app_route.dart';
 export 'model/enum/language_code.dart';
 export 'model/enum/message_status.dart';
 export 'model/enum/message_type.dart';
@@ -193,6 +192,9 @@ export 'ui/page/rename_conversation/view_model/rename_conversation_view_model.da
 export 'ui/page/setting/setting_page.dart';
 export 'ui/page/setting/view_model/setting_state.dart';
 export 'ui/page/setting/view_model/setting_view_model.dart';
+export 'ui/page/splash/splash_page.dart';
+export 'ui/page/splash/view_model/splash_state.dart';
+export 'ui/page/splash/view_model/splash_view_model.dart';
 export 'ui/popup/base/common_popup.dart';
 export 'ui/shared/shared_provider.dart';
 export 'ui/shared/shared_view_model.dart';

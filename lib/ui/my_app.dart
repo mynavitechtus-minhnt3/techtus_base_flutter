@@ -86,13 +86,6 @@ class MyApp extends HookConsumerWidget {
   }
 
   List<PageRouteInfo> _mapRouteToPageRouteInfo() {
-    return initialResource.initialRoutes.map<PageRouteInfo>((e) {
-      switch (e) {
-        case InitialAppRoute.login:
-          return const LoginRoute();
-        case InitialAppRoute.main:
-          return MainRoute();
-      }
-    }).toList(growable: false);
+    return [const SplashRoute()];
   }
 }
