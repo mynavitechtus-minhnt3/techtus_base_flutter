@@ -76,8 +76,6 @@ android {
     productFlavors {
         develop {
             dimension "flavor-type"
-            // versionCode 1
-            // versionName "1.0.0"
             applicationId "jp.flutter.app.dev"
             manifestPlaceholders["host"] = "dev.chatwork.com"
             manifestPlaceholders["applicationName"] = "Develop"
@@ -85,8 +83,6 @@ android {
 
         qa {
             dimension "flavor-type"
-            // versionCode 1
-            // versionName "1.0.0"
             applicationId "jp.flutter.app"
             manifestPlaceholders["host"] = "dev.chatwork.com"
             manifestPlaceholders["applicationName"] = "Qa"
@@ -94,8 +90,6 @@ android {
 
         staging {
             dimension "flavor-type"
-            // versionCode 1
-            // versionName "1.0.0"
             applicationId "jp.flutter.app"
             manifestPlaceholders["host"] = "stg.facebook.com"
             manifestPlaceholders["applicationName"] = "Staging"
@@ -103,8 +97,6 @@ android {
 
         production {
             dimension "flavor-type"
-            // versionCode 1
-            // versionName "1.0.0"
             applicationId "jp.flutter.app"
             manifestPlaceholders["host"] = "chatwork.com"
             manifestPlaceholders["applicationName"] = "Production"
