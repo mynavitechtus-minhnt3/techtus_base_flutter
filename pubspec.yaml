@@ -88,7 +88,7 @@ dev_dependencies:
   intl_utils: 2.8.10
   isar_generator:
     git:
-      url: https://github.com/mdddj/isar
+      url: https://github.com/minhnt3/isar
       ref: v3
       path: packages/isar_generator/
   json_serializable: 6.9.5
