@@ -1,3 +1,11 @@
+def getMyVersionCode = { ->
+    return project.hasProperty('versionCode') ? versionCode.toInteger() : 1
+}
+// get version name from the specified property argument `-PversionName` during the build call
+def getMyVersionName = { ->
+    return project.hasProperty('versionName') ? versionName : "1.0.0"
+}
+
 plugins {
     id "com.android.application"
     id "kotlin-android"
@@ -26,8 +34,8 @@ android {
         applicationId = "jp.flutter.app"
         minSdk = 26
         targetSdk = 35
-        versionCode = flutter.versionCode
-        versionName = flutter.versionName
+        versionCode getMyVersionCode()
+        versionName getMyVersionName()
         multiDexEnabled true
     }
 
@@ -68,8 +76,6 @@ android {
     productFlavors {
         develop {
             dimension "flavor-type"
-            versionCode 1
-            versionName "1.0.0"
             applicationId "jp.flutter.app.dev"
             manifestPlaceholders["host"] = "dev.chatwork.com"
             manifestPlaceholders["applicationName"] = "Develop"
@@ -77,26 +83,20 @@ android {
 
         qa {
             dimension "flavor-type"
-            versionCode 1
-            versionName "1.0.0"
-            applicationId "jp.flutter.app.qa"
+            applicationId "jp.flutter.app"
             manifestPlaceholders["host"] = "dev.chatwork.com"
             manifestPlaceholders["applicationName"] = "Qa"
         }
 
         staging {
             dimension "flavor-type"
-            versionCode 1
-            versionName "1.0.0"
-            applicationId "jp.flutter.app.stg"
+            applicationId "jp.flutter.app"
             manifestPlaceholders["host"] = "stg.facebook.com"
             manifestPlaceholders["applicationName"] = "Staging"
         }
 
         production {
             dimension "flavor-type"
-            versionCode 1
-            versionName "1.0.0"
             applicationId "jp.flutter.app"
             manifestPlaceholders["host"] = "chatwork.com"
             manifestPlaceholders["applicationName"] = "Production"
