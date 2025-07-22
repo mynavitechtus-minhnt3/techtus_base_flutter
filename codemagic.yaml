@@ -17,6 +17,7 @@ definitions:
       cache_paths:
         - $HOME/.gradle/caches
         - $HOME/.pub-cache
+        - $HOME/Library/Caches/CocoaPods
   env_config: &env_config
     flutter: 3.32.4
     xcode: 16.0
@@ -30,8 +31,6 @@ definitions:
       script: | 
         LATEST_BUILD_NUMBER=$(app-store-connect get-latest-app-store-build-number $APP_APPLE_ID)
         UPDATED_BUILD_NUMBER=$(($LATEST_BUILD_NUMBER + 1))
-        cd ./ios # avgtool must run in the folder where xcodeproj file is located
-        agvtool new-version -all $UPDATED_BUILD_NUMBER
         echo "🔢 Using build number: $UPDATED_BUILD_NUMBER"
         dart run ./tools/dart_tools/lib/set_build_number_pubspec.dart $UPDATED_BUILD_NUMBER
 
@@ -198,8 +197,8 @@ workflows:
       - *sync
       - *install_pods
       - *decode_dart_defines
-      - *change_build_number_pubspec_ios
-      - *build_stg_ipa
+      # - *change_build_number_pubspec_ios
+      # - *build_stg_ipa
       - *change_build_number_pubspec_android
       - *build_stg_aab
     artifacts:

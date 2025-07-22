@@ -7,7 +7,7 @@ void main(List<String> args) {
     exit(1);
   }
   final buildNumber = args[0];
-  final file = File('pubspec.yaml');
+  final file = File('./pubspec.yaml');
   if (!file.existsSync()) {
     stderr.writeln('Error: pubspec.yaml not found in current directory.');
     exit(1);
