@@ -33,7 +33,7 @@ definitions:
         cd ./ios # avgtool must run in the folder where xcodeproj file is located
         agvtool new-version -all $UPDATED_BUILD_NUMBER
         echo "🔢 Using build number: $UPDATED_BUILD_NUMBER"
-        dart run tools/dart_tools/lib/set_build_number_pubspec.dart $UPDATED_BUILD_NUMBER
+        dart run ./tools/dart_tools/lib/set_build_number_pubspec.dart $UPDATED_BUILD_NUMBER
 
     - &change_build_number_pubspec_android
       name: Change the build number in pubspec.yaml for Android
@@ -50,7 +50,7 @@ definitions:
             UPDATED_BUILD_NUMBER=$(($LATEST_GOOGLE_PLAY_BUILD_NUMBER + 1))
         fi
         echo "🔢 Using build number: $UPDATED_BUILD_NUMBER"
-        dart run tools/dart_tools/lib/set_build_number_pubspec.dart $UPDATED_BUILD_NUMBER 
+        dart run ./tools/dart_tools/lib/set_build_number_pubspec.dart $UPDATED_BUILD_NUMBER 
     - &sync
       name: Run pub get and gen files
       script: make sync
