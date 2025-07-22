@@ -73,3 +73,4 @@ ios/fastlane/report.xml
 *.jks
 pubspec_overrides.yaml
 **/failures/*.png
+android/.kotlin/
