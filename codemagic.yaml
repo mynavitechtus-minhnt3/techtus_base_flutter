@@ -115,6 +115,12 @@ definitions:
     - &build_prod_apk
       name: Build .apk production
       script: make build_prod_apk
+    - &build_dev_aab
+      name: Build .aab develop
+      script: make build_dev_aab
+    - &build_qa_aab
+      name: Build .aab qa
+      script: make build_qa_aab
     - &build_stg_aab
       name: Build .aab staging
       script: make build_stg_aab
@@ -151,7 +157,7 @@ workflows:
         - android_keystore
       ios_signing:
         provisioning_profiles:
-          - ios_production_distribution_profile
+          - ios_qa_distribution_profile
         certificates:
           - ios_p12
     scripts:
@@ -160,8 +166,8 @@ workflows:
       - *sync
       - *install_pods
       - *decode_dart_defines
-      - *build_prod_ipa
-      - *build_prod_apk
+      - *build_qa_ipa
+      - *build_qa_apk
     artifacts:
       - build/ios/ipa/*.ipa
       - $HOME/Library/Developer/Xcode/DerivedData/**/Build/**/*.dSYM
@@ -180,7 +186,7 @@ workflows:
         - android_keystore
       ios_signing:
         provisioning_profiles:
-          - ios_production_distribution_profile
+          - ios_staging_distribution_profile
         certificates:
           - ios_p12
     scripts:
@@ -190,9 +196,9 @@ workflows:
       - *install_pods
       - *decode_dart_defines
       - *change_build_number_pubspec_ios
-      - *build_prod_ipa
+      - *build_stg_ipa
       - *change_build_number_pubspec_android
-      - *build_prod_aab
+      - *build_stg_aab
     artifacts:
       - build/ios/ipa/*.ipa
       - $HOME/Library/Developer/Xcode/DerivedData/**/Build/**/*.dSYM
