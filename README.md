@@ -107,14 +107,14 @@ For example:
 
 ### 5. Setup Fastlane (optional)
 
-- Create files `.env.default` in [ios/fastlane](ios/fastlane) and [android/fastlane](android/fastlane)
-- Paste this into files `.env.default`
+ - Create file `.env.default` in [fastlane](fastlane)
+ - Paste this into file `.env.default`
 ```
 SLACK_URL = "https://hooks.slack.com/services/xxx"
 APPLE_TOKEN = "xxx"
 FIREBASE_TOKEN = "1//xxx"
 ```
-- Update config values in [ios/Fastfile](ios/fastlane/Fastfile) and [android/Fastfile](android/fastlane/Fastfile)
+ - Update config values in [Fastfile](fastlane/Fastfile)
 
 ### 6. Setup Lefthook (optional)
 

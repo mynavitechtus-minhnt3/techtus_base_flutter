@@ -64,8 +64,8 @@ tools/*.txt
 .vscode/settings.json
 dart_defines/
 .env.default
-android/fastlane/report.xml
-ios/fastlane/report.xml
+fastlane/report.xml
+
 .fvm/
 .fvmrc
 *.mdb

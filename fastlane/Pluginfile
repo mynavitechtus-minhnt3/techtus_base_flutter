@@ -3,4 +3,6 @@
 # Ensure this file is checked in to source control!
 
 gem 'fastlane-plugin-firebase_app_distribution'
+gem 'fastlane-plugin-android_versioning', git: 'https://github.com/mortenholmgaard/fastlane-plugin-android_versioning.git'
+gem 'fastlane-plugin-appcenter'
 gem 'fastlane-plugin-xcconfig'
