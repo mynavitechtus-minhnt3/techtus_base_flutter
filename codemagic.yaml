@@ -47,10 +47,6 @@ definitions:
         fi
         if [ -z $LATEST_GOOGLE_PLAY_BUILD_NUMBER ]
           then
-            # fallback in case no build number was found from Google Play.
-            # Alternatively, you can `exit 1` to fail the build
-            # BUILD_NUMBER is a Codemagic built-in variable tracking the number of
-            # times this workflow has been built
             echo "No build number found from Google Play, using the build number from the environment variable: $BUILD_NUMBER"
             UPDATED_BUILD_NUMBER=$BUILD_NUMBER
           else
@@ -207,9 +203,9 @@ workflows:
       - *install_pods
       - *decode_dart_defines
       - *change_build_number_pubspec_ios
-      - *build_prod_ipa
+      # - *build_prod_ipa
       - *change_build_number_pubspec_android
-      # - *build_stg_aab
+      - *build_prod_aab
     artifacts:
       - build/ios/ipa/*.ipa
       - $HOME/Library/Developer/Xcode/DerivedData/**/Build/**/*.dSYM
