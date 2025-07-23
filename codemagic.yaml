@@ -38,20 +38,14 @@ definitions:
     - &change_build_number_pubspec_android
       name: Change the build number in pubspec.yaml for Android
       script: | 
-        LATEST_GOOGLE_PLAY_BUILD_NUMBER=$(google-play get-latest-build-number --package-name 'jp.flutter.app' --log-stream stdout)
-        if [[ -z "${GOOGLE_PLAY_SERVICE_ACCOUNT_CREDENTIALS:-}" ]]; then
-          echo "❌ GOOGLE_PLAY_SERVICE_ACCOUNT_CREDENTIALS is not set"
-          exit 1
-        else
-          echo "✔ GOOGLE_PLAY_SERVICE_ACCOUNT_CREDENTIALS is set"
-        fi
+        LATEST_GOOGLE_PLAY_BUILD_NUMBER=$(google-play get-latest-build-number --package-name 'jp.flutter.app')
         if [ -z $LATEST_GOOGLE_PLAY_BUILD_NUMBER ]
           then
             echo "No build number found from Google Play, using the build number from the environment variable: $BUILD_NUMBER"
             UPDATED_BUILD_NUMBER=$BUILD_NUMBER
           else
             echo "Latest Google Play build number: $LATEST_GOOGLE_PLAY_BUILD_NUMBER"
-            UPDATED_BUILD_NUMBER=$(($LATEST_GOOGLE_PLAY_BUILD_NUMBER + 1))
+            UPDATED_BUILD_NUMBER=$(( LATEST_GOOGLE_PLAY_BUILD_NUMBER + 1 ))
         fi
         echo "🔢 Using build number: $UPDATED_BUILD_NUMBER"
         dart run ./tools/dart_tools/lib/set_build_number_pubspec.dart $UPDATED_BUILD_NUMBER
@@ -197,12 +191,12 @@ workflows:
         certificates:
           - ios_p12
     scripts:
-      - *set_up_code_signing_settings_on_xcode_project
-      - *setup_local_properties
-      - *sync
-      - *install_pods
-      - *decode_dart_defines
-      - *change_build_number_pubspec_ios
+      # - *set_up_code_signing_settings_on_xcode_project
+      # - *setup_local_properties
+      # - *sync
+      # - *install_pods
+      # - *decode_dart_defines
+      # - *change_build_number_pubspec_ios
       # - *build_prod_ipa
       - *change_build_number_pubspec_android
       - *build_prod_aab
