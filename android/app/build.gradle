@@ -7,14 +7,6 @@ plugins {
     id "com.google.firebase.crashlytics"
 }
 
-def getMyVersionCode = { ->
-    return project.hasProperty('versionCode') ? versionCode.toInteger() : 1
-}
-// get version name from the specified property argument `-PversionName` during the build call
-def getMyVersionName = { ->
-    return project.hasProperty('versionName') ? versionName : "1.0.0"
-}
-
 android {
     namespace = "jp.flutter.app"
     compileSdk = 35
@@ -34,8 +26,8 @@ android {
         applicationId = "jp.flutter.app"
         minSdk = 26
         targetSdk = 35
-        versionCode getMyVersionCode()
-        versionName getMyVersionName()
+        versionCode = flutter.versionCode
+        versionName = flutter.versionName
         multiDexEnabled true
     }
 
