@@ -29,7 +29,7 @@ definitions:
     - &change_build_number_pubspec_ios
       name: Change the build number in pubspec.yaml for iOS
       script: | 
-        LATEST_BUILD_NUMBER=$(app-store-connect get-latest-app-store-build-number $APP_APPLE_ID)
+        LATEST_BUILD_NUMBER=$(app-store-connect get-latest-testflight-build-number "$APP_APPLE_ID")
         echo "Latest App Store build number: $LATEST_BUILD_NUMBER"
         UPDATED_BUILD_NUMBER=$(( LATEST_BUILD_NUMBER + 1 ))
         echo "🔢 Using build number: $UPDATED_BUILD_NUMBER"
@@ -38,7 +38,13 @@ definitions:
     - &change_build_number_pubspec_android
       name: Change the build number in pubspec.yaml for Android
       script: | 
-        LATEST_GOOGLE_PLAY_BUILD_NUMBER=$(google-play get-latest-build-number --package-name "jp.flutter.app")
+        LATEST_GOOGLE_PLAY_BUILD_NUMBER=$(google-play get-latest-build-number --package-name 'jp.flutter.app' --log-stream stdout)
+        if [[ -z "${GOOGLE_PLAY_SERVICE_ACCOUNT_CREDENTIALS:-}" ]]; then
+          echo "❌ GOOGLE_PLAY_SERVICE_ACCOUNT_CREDENTIALS is not set"
+          exit 1
+        else
+          echo "✔ GOOGLE_PLAY_SERVICE_ACCOUNT_CREDENTIALS is set"
+        fi
         if [ -z $LATEST_GOOGLE_PLAY_BUILD_NUMBER ]
           then
             # fallback in case no build number was found from Google Play.
