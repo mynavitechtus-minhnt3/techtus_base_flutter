@@ -200,7 +200,7 @@ workflows:
       - *install_pods
       - *decode_dart_defines
       - *change_build_number_pubspec_ios
-      - *build_stg_ipa
+      - *build_prod_ipa
       - *change_build_number_pubspec_android
       # - *build_stg_aab
     artifacts:
