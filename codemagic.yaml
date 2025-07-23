@@ -196,11 +196,11 @@ workflows:
         certificates:
           - ios_p12
     scripts:
-      - *set_up_code_signing_settings_on_xcode_project
-      - *setup_local_properties
-      - *sync
-      - *install_pods
-      - *decode_dart_defines
+      # - *set_up_code_signing_settings_on_xcode_project
+      # - *setup_local_properties
+      # - *sync
+      # - *install_pods
+      # - *decode_dart_defines
       # - *change_build_number_pubspec_ios
       # - *build_stg_ipa
       - *change_build_number_pubspec_android
