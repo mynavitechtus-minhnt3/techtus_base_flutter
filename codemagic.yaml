@@ -44,12 +44,16 @@ definitions:
             # Alternatively, you can `exit 1` to fail the build
             # BUILD_NUMBER is a Codemagic built-in variable tracking the number of
             # times this workflow has been built
+            echo "No build number found from Google Play, using the build number from the environment variable: $BUILD_NUMBER"
             UPDATED_BUILD_NUMBER=$BUILD_NUMBER
           else
+            echo "Latest Google Play build number: $LATEST_GOOGLE_PLAY_BUILD_NUMBER"
             UPDATED_BUILD_NUMBER=$(($LATEST_GOOGLE_PLAY_BUILD_NUMBER + 1))
         fi
         echo "🔢 Using build number: $UPDATED_BUILD_NUMBER"
-        dart run ./tools/dart_tools/lib/set_build_number_pubspec.dart $UPDATED_BUILD_NUMBER 
+        dart run ./tools/dart_tools/lib/set_build_number_pubspec.dart $UPDATED_BUILD_NUMBER
+        echo "🔍 Contents of pubspec.yaml:"
+        cat pubspec.yaml
     - &sync
       name: Run pub get and gen files
       script: make sync
