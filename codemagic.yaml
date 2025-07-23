@@ -52,8 +52,6 @@ definitions:
         fi
         echo "🔢 Using build number: $UPDATED_BUILD_NUMBER"
         dart run ./tools/dart_tools/lib/set_build_number_pubspec.dart $UPDATED_BUILD_NUMBER
-        echo "🔍 Contents of pubspec.yaml:"
-        cat pubspec.yaml
     - &sync
       name: Run pub get and gen files
       script: make sync
@@ -204,7 +202,7 @@ workflows:
       # - *change_build_number_pubspec_ios
       # - *build_stg_ipa
       - *change_build_number_pubspec_android
-      - *build_stg_aab
+      # - *build_stg_aab
     artifacts:
       - build/ios/ipa/*.ipa
       - $HOME/Library/Developer/Xcode/DerivedData/**/Build/**/*.dSYM
@@ -233,8 +231,8 @@ workflows:
           include: true
           source: true 
     <<: *instance_mac_os
-    integrations:
-      app_store_connect: app-store-connect
+    # integrations:
+    #   app_store_connect: app-store-connect
     environment:
       <<: *env_config
       android_signing:
@@ -250,7 +248,7 @@ workflows:
       - *install_pods
       - *set_up_code_signing_settings_on_xcode_project
       - *decode_dart_defines
-      - *build_prod_ipa
+      # - *build_prod_ipa
       - *build_prod_aab
     artifacts:
       - build/ios/ipa/*.ipa
@@ -262,13 +260,13 @@ workflows:
       google_play:
         credentials: $GOOGLE_PLAY_SERVICE_ACCOUNT_CREDENTIALS
         track: internal
-      app_store_connect:
-        auth: integration
-        submit_to_testflight: true
-        beta_groups:
-          - "testers"
-        expire_build_submitted_for_review: false
-        submit_to_app_store: false
+      # app_store_connect:
+      #   auth: integration
+      #   submit_to_testflight: true
+      #   beta_groups:
+      #     - "testers"
+      #   expire_build_submitted_for_review: false
+      #   submit_to_app_store: false
       <<: *email_release
 
   ci:
