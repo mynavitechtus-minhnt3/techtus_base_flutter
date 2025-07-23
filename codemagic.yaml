@@ -1,5 +1,5 @@
 # Env variables:
-# - GCLOUD_SERVICE_ACCOUNT_CREDENTIALS
+# - GOOGLE_PLAY_SERVICE_ACCOUNT_CREDENTIALS
 # - DART_DEFINES_DEVELOP
 # - DART_DEFINES_QA
 # - DART_DEFINES_STAGING
@@ -207,7 +207,7 @@ workflows:
       - build/app/outputs/bundle/stagingRelease/*.aab
     publishing:
       google_play:
-        credentials: $GCLOUD_SERVICE_ACCOUNT_CREDENTIALS
+        credentials: $GOOGLE_PLAY_SERVICE_ACCOUNT_CREDENTIALS
         track: internal
         submit_as_draft: true
       app_store_connect:
@@ -256,7 +256,7 @@ workflows:
       scripts:
         - *upload_debug_symbols_to_crashlytics
       google_play:
-        credentials: $GCLOUD_SERVICE_ACCOUNT_CREDENTIALS
+        credentials: $GOOGLE_PLAY_SERVICE_ACCOUNT_CREDENTIALS
         track: internal
       app_store_connect:
         auth: integration
