@@ -30,7 +30,8 @@ definitions:
       name: Change the build number in pubspec.yaml for iOS
       script: | 
         LATEST_BUILD_NUMBER=$(app-store-connect get-latest-app-store-build-number $APP_APPLE_ID)
-        UPDATED_BUILD_NUMBER=$(($LATEST_BUILD_NUMBER + 1))
+        echo "Latest App Store build number: $LATEST_BUILD_NUMBER"
+        UPDATED_BUILD_NUMBER=$(( LATEST_BUILD_NUMBER + 1 ))
         echo "🔢 Using build number: $UPDATED_BUILD_NUMBER"
         dart run ./tools/dart_tools/lib/set_build_number_pubspec.dart $UPDATED_BUILD_NUMBER
 
