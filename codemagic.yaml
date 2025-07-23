@@ -144,13 +144,6 @@ definitions:
 workflows:
   distribution_qa:
     name: Distribution Qa
-    triggering:
-      events:
-        - pull_request
-      branch_patterns:
-        - pattern: 'build/qa/*'
-          include: true
-          source: true 
     <<: *instance_mac_os
     environment:
       <<: *env_config
@@ -167,8 +160,8 @@ workflows:
       - *sync
       - *install_pods
       - *decode_dart_defines
-      - *build_qa_ipa
-      - *build_qa_apk
+      - *build_prod_ipa
+      - *build_prod_apk
     artifacts:
       - build/ios/ipa/*.ipa
       - $HOME/Library/Developer/Xcode/DerivedData/**/Build/**/*.dSYM
@@ -191,13 +184,13 @@ workflows:
         certificates:
           - ios_p12
     scripts:
-      # - *set_up_code_signing_settings_on_xcode_project
-      # - *setup_local_properties
-      # - *sync
-      # - *install_pods
-      # - *decode_dart_defines
-      # - *change_build_number_pubspec_ios
-      # - *build_prod_ipa
+      - *set_up_code_signing_settings_on_xcode_project
+      - *setup_local_properties
+      - *sync
+      - *install_pods
+      - *decode_dart_defines
+      - *change_build_number_pubspec_ios
+      - *build_prod_ipa
       - *change_build_number_pubspec_android
       - *build_prod_aab
     artifacts:
@@ -266,9 +259,9 @@ workflows:
       events:
         - pull_request
       branch_patterns:
-        - pattern: "develop"
+        - pattern: "*"
           include: true
-          source: false
+          source: true
     when:
       condition: not event.pull_request.draft
     environment:
