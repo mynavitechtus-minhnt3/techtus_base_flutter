@@ -111,17 +111,12 @@ For example:
 - Paste this into files `.env.default`
 ```
 SLACK_URL = "https://hooks.slack.com/services/xxx"
-APP_CENTER_TOKEN = "xxx"
 APPLE_TOKEN = "xxx"
 FIREBASE_TOKEN = "1//xxx"
 ```
 - Update config values in [ios/Fastfile](ios/fastlane/Fastfile) and [android/Fastfile](android/fastlane/Fastfile)
 
-### 6. Setup Jenkins (optional)
-
-- Update `tokenCredentialId`, `channel` in [Jenkinsfile](Jenkinsfile)
-
-### 7. Setup Lefthook (optional)
+### 6. Setup Lefthook (optional)
 
 - Replace all text: `NFT` by `YOUR_PROJECT_CODE` in:
     - Commit message rule: [commit-msg.sh](.lefthook/commit-msg/commit-msg.sh) and [check_commit_message.sh](tools/check_commit_message.sh)
