@@ -223,13 +223,6 @@ workflows:
 
   distribution_store_production:
     name: Distribution Store Production
-    triggering:
-      events:
-        - pull_request
-      branch_patterns:
-        - pattern: 'build/prod/*'
-          include: true
-          source: true 
     <<: *instance_mac_os
     integrations:
       app_store_connect: app-store-connect
