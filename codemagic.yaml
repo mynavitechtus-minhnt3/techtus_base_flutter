@@ -194,13 +194,13 @@ workflows:
         certificates:
           - ios_p12
     scripts:
-      # - *set_up_code_signing_settings_on_xcode_project
-      # - *setup_local_properties
-      # - *sync
-      # - *install_pods
-      # - *decode_dart_defines
-      # - *change_build_number_pubspec_ios
-      # - *build_stg_ipa
+      - *set_up_code_signing_settings_on_xcode_project
+      - *setup_local_properties
+      - *sync
+      - *install_pods
+      - *decode_dart_defines
+      - *change_build_number_pubspec_ios
+      - *build_stg_ipa
       - *change_build_number_pubspec_android
       # - *build_stg_aab
     artifacts:
@@ -231,8 +231,8 @@ workflows:
           include: true
           source: true 
     <<: *instance_mac_os
-    # integrations:
-    #   app_store_connect: app-store-connect
+    integrations:
+      app_store_connect: app-store-connect
     environment:
       <<: *env_config
       android_signing:
@@ -248,7 +248,7 @@ workflows:
       - *install_pods
       - *set_up_code_signing_settings_on_xcode_project
       - *decode_dart_defines
-      # - *build_prod_ipa
+      - *build_prod_ipa
       - *build_prod_aab
     artifacts:
       - build/ios/ipa/*.ipa
@@ -260,13 +260,14 @@ workflows:
       google_play:
         credentials: $GOOGLE_PLAY_SERVICE_ACCOUNT_CREDENTIALS
         track: internal
-      # app_store_connect:
-      #   auth: integration
-      #   submit_to_testflight: true
-      #   beta_groups:
-      #     - "testers"
-      #   expire_build_submitted_for_review: false
-      #   submit_to_app_store: false
+        submit_as_draft: true
+      app_store_connect:
+        auth: integration
+        submit_to_testflight: true
+        beta_groups:
+          - "testers"
+        expire_build_submitted_for_review: false
+        submit_to_app_store: false
       <<: *email_release
 
   ci:
