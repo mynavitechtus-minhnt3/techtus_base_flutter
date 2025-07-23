@@ -3,7 +3,7 @@ import 'package:yaml/yaml.dart';
 
 void main(List<String> args) {
   if (args.isEmpty) {
-    stderr.writeln('Usage: dart bump_pubspec.dart <build number>');
+    stderr.writeln('Usage: dart set_build_number_pubspec.dart <build number>');
     exit(1);
   }
   final buildNumber = args[0];
