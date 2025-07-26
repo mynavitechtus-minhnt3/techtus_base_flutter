@@ -34,7 +34,6 @@ definitions:
         UPDATED_BUILD_NUMBER=$(( LATEST_BUILD_NUMBER + 1 ))
         echo "🔢 Using build number: $UPDATED_BUILD_NUMBER"
         dart run ./tools/dart_tools/lib/set_build_number_pubspec.dart $UPDATED_BUILD_NUMBER
-
     - &change_build_number_pubspec_android
       name: Change the build number in pubspec.yaml for Android
       script: | 

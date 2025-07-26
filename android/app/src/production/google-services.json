@@ -2,7 +2,7 @@
   "project_info": {
     "project_number": "598926766937",
     "project_id": "nals-flutter-prod",
-    "storage_bucket": "nals-flutter-prod.appspot.com"
+    "storage_bucket": "nals-flutter-prod.firebasestorage.app"
   },
   "client": [
     {
@@ -12,12 +12,7 @@
           "package_name": "jp.flutter.app"
         }
       },
-      "oauth_client": [
-        {
-          "client_id": "598926766937-time4t4ei8fdchtocdrlnidbais7l4st.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
+      "oauth_client": [],
       "api_key": [
         {
           "current_key": "AIzaSyCze5HFUzvhuLptqlcAIWk2n2KmZs_irwE"
@@ -25,12 +20,7 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "598926766937-time4t4ei8fdchtocdrlnidbais7l4st.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
+          "other_platform_oauth_client": []
         }
       }
     }

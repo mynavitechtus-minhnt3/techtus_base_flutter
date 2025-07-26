@@ -124,11 +124,23 @@ rm_spl:
 gen_env:
 	dart run $(DART_TOOLS_PATH)/gen_env.dart .
 
+build_dev_apk:
+	flutter build apk --flavor develop -t lib/main.dart --dart-define-from-file=dart_defines/develop.json --verbose
+
+build_qa_apk:
+	flutter build apk --flavor qa -t lib/main.dart --dart-define-from-file=dart_defines/qa.json --verbose
+
 build_stg_apk:
 	flutter build apk --flavor staging -t lib/main.dart --dart-define-from-file=dart_defines/staging.json --verbose
 
 build_prod_apk:
 	flutter build apk --flavor production -t lib/main.dart --dart-define-from-file=dart_defines/production.json --verbose
+
+build_dev_aab:
+	flutter build appbundle --flavor develop -t lib/main.dart --dart-define-from-file=dart_defines/develop.json --verbose
+
+build_qa_aab:
+	flutter build appbundle --flavor qa -t lib/main.dart --dart-define-from-file=dart_defines/qa.json --verbose
 
 build_stg_aab:
 	flutter build appbundle --flavor staging -t lib/main.dart --dart-define-from-file=dart_defines/staging.json --verbose
@@ -136,11 +148,51 @@ build_stg_aab:
 build_prod_aab:
 	flutter build appbundle --flavor production -t lib/main.dart --dart-define-from-file=dart_defines/production.json --verbose
 
+build_dev_ipa:
+	flutter build ipa --release --flavor develop -t lib/main.dart --dart-define-from-file=dart_defines/develop.json --export-options-plist=ios/exportOptions.plist --verbose
+
+build_qa_ipa:
+	flutter build ipa --release --flavor qa -t lib/main.dart --dart-define-from-file=dart_defines/qa.json --export-options-plist=ios/exportOptions.plist --verbose
+
 build_stg_ipa:
 	flutter build ipa --release --flavor staging -t lib/main.dart --dart-define-from-file=dart_defines/staging.json --export-options-plist=ios/exportOptions.plist --verbose
 
 build_prod_ipa:
 	flutter build ipa --release --flavor production -t lib/main.dart --dart-define-from-file=dart_defines/production.json --export-options-plist=ios/exportOptions.plist --verbose
+
+cd_dev:
+	make cd_dev_android
+	make cd_dev_ios
+
+cd_qa:
+	make cd_qa_android
+	make cd_qa_ios
+
+cd_stg:
+	make cd_stg_android
+	make cd_stg_ios
+
+cd_dev_android:
+	cd android && fastlane increase_version_build_and_up_firebase_develop
+
+cd_qa_android:
+	cd android && fastlane increase_version_build_and_up_firebase_qa
+
+cd_stg_android:
+	cd android && fastlane increase_version_build_and_up_firebase_staging
+
+cd_dev_ios:
+	cd ios && fastlane increase_version_build_and_up_testflight_develop
+
+cd_qa_ios:
+	cd ios && fastlane increase_version_build_and_up_testflight_qa
+
+cd_stg_ios:
+	cd ios && fastlane increase_version_build_and_up_testflight_staging
+
+fastlane_update_plugins:
+	cd ios && bundle install && fastlane update_plugins
+	cd android && bundle install && fastlane update_plugins
 
 cov:
 	flutter test --coverage
