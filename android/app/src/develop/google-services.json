@@ -1,43 +1,26 @@
 {
   "project_info": {
-    "project_number": "553358319716",
-    "project_id": "nals-flutter-dev",
-    "storage_bucket": "nals-flutter-dev.appspot.com"
+    "project_number": "598926766937",
+    "project_id": "nals-flutter-prod",
+    "storage_bucket": "nals-flutter-prod.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:553358319716:android:4a1d8352483ca8e20f3f71",
+        "mobilesdk_app_id": "1:598926766937:android:9592c6941fa17be8aed248",
         "android_client_info": {
-          "package_name": "jp.flutter.app.dev"
+          "package_name": "jp.flutter.app"
         }
       },
-      "oauth_client": [
-        {
-          "client_id": "553358319716-8sqdtrb2i4g821s2gtpd5v2mse5qucsu.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
+      "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyBr17xQRiNfN4zBPb8NVAbJkRH9usB7voo"
+          "current_key": "AIzaSyCze5HFUzvhuLptqlcAIWk2n2KmZs_irwE"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "553358319716-8sqdtrb2i4g821s2gtpd5v2mse5qucsu.apps.googleusercontent.com",
-              "client_type": 3
-            },
-            {
-              "client_id": "553358319716-hh3prvvushudmihf276ojej4mpgvc0oi.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "jp.flutter.app.dev"
-              }
-            }
-          ]
+          "other_platform_oauth_client": []
         }
       }
     }
