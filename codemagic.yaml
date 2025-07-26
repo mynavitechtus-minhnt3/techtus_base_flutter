@@ -1,13 +1,17 @@
 # Env variables:
-# - GOOGLE_PLAY_SERVICE_ACCOUNT_CREDENTIALS
-# - DART_DEFINES_DEVELOP
-# - DART_DEFINES_QA
-# - DART_DEFINES_STAGING
-# - DART_DEFINES_PRODUCTION
+# - GOOGLE_PLAY_SERVICE_ACCOUNT_CREDENTIALS - https://docs.codemagic.io/yaml-publishing/google-play/
+# - APP_APPLE_ID - https://docs.codemagic.io/knowledge-codemagic/build-versioning/
+# - APP_STORE_CONNECT_PRIVATE_KEY - https://docs.codemagic.io/knowledge-codemagic/build-versioning/
+# - APP_STORE_CONNECT_ISSUER_ID - https://docs.codemagic.io/knowledge-codemagic/build-versioning/
+# - APP_STORE_CONNECT_KEY_IDENTIFIER - https://docs.codemagic.io/knowledge-codemagic/build-versioning/
+# - DART_DEFINES_DEVELOP - Run `base64 -i dart_defines/develop.json | pbcopy`
+# - DART_DEFINES_QA - Run `base64 -i dart_defines/qa.json | pbcopy`
+# - DART_DEFINES_STAGING - Run `base64 -i dart_defines/staging.json | pbcopy`
+# - DART_DEFINES_PRODUCTION - Run `base64 -i dart_defines/production.json | pbcopy`
+# - IOS_FIREBASE_JSON_STAGING
 # - IOS_FIREBASE_JSON_PRODUCTION
 # - ANDROID_FIREBASE_JSON_STAGING
 # - ANDROID_FIREBASE_JSON_PRODUCTION
-# - IOS_FIREBASE_JSON_STAGING
 # - EMAIL_1 - EMAIL_10
 definitions:
   instance_mac_os: &instance_mac_os
