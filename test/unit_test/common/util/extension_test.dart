@@ -531,6 +531,12 @@ void main() {
         final result = string.equalsIgnoreCase('abcd');
         expect(result, false);
       });
+
+      test('when string is "abc" and other is "ab"', () {
+        const String string = 'abc';
+        final result = string.equalsIgnoreCase('ab');
+        expect(result, false);
+      });
     });
 
     group('containsIgnoreCase', () {
