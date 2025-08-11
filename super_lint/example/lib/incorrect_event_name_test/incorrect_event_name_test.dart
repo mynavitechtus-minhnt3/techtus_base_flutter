@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_single_widget_per_file, avoid_hard_coded_strings
+// ignore_for_file: require_matching_file_and_class_name,prefer_single_widget_per_file, avoid_hard_coded_strings
 class EventConstants {
   static const String value = 'value';
   static const String value2 = 'value2';

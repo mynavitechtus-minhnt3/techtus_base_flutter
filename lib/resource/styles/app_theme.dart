@@ -36,11 +36,11 @@ extension ThemeDataExtensions on ThemeData {
   }
 
   AppColor get appColor {
-    return _appColorMap[AppThemeSetting.currentAppThemeType] ?? AppColor.defaultAppColor;
+    return _appColorMap[AppTheme.currentAppThemeType] ?? AppColor.defaultAppColor;
   }
 }
 
-class AppThemeSetting {
-  const AppThemeSetting._();
+class AppTheme {
+  const AppTheme._();
   static late AppThemeType currentAppThemeType = AppThemeType.light;
 }

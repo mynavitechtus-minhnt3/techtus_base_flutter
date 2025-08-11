@@ -2,9 +2,9 @@ import 'package:json_annotation/json_annotation.dart';
 
 import '../../index.dart';
 
-class FirebaseConversionUserDataConverter
+class FirebaseConversationUserDataConverter
     implements JsonConverter<FirebaseConversationUserData, Map<String, dynamic>> {
-  const FirebaseConversionUserDataConverter();
+  const FirebaseConversationUserDataConverter();
 
   @override
   FirebaseConversationUserData fromJson(Map<String, dynamic> json) {

@@ -17,7 +17,7 @@ import 'index.dart';
 Future<void> main() async {
   l10n = await AppString.delegate.load(TestConfig.defaultLocale);
   AppColor.current = AppColor.defaultAppColor;
-  AppThemeSetting.currentAppThemeType = AppThemeType.light;
+  AppTheme.currentAppThemeType = AppThemeType.light;
 
   setUpAll(() async {
     VisibilityDetectorController.instance.updateInterval = Duration.zero;
