@@ -154,12 +154,15 @@ custom_lint:
     - missing_golden_test:
       widget_folders:
         - "lib/ui/page"
-        - "lib/src/ui/page"
         - "lib/ui/popup"
-        - "lib/src/ui/popup"
+        - "lib/ui/component"
       includes:
         - "lib/ui/popup/*.dart"
         - "lib/ui/page/**/*_page.dart"
+        - "lib/ui/component/*.dart"
+        - "lib/ui/component/**/*.dart"
+      excludes:
+        - "lib/ui/component/ui_kit/decoration/*.dart"
       test_folder: "test/widget_test"
 linter:
   rules:

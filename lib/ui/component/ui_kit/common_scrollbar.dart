@@ -1,3 +1,4 @@
+// ignore_for_file: missing_golden_test
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 

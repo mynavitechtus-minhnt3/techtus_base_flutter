@@ -1,3 +1,4 @@
+// ignore_for_file: missing_golden_test
 import 'dart:async';
 
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
