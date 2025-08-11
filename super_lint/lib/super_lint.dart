@@ -37,6 +37,8 @@ class _SuperLintPlugin extends PluginBase {
       MissingCommonScrollbar(configs),
       IncorrectFreezedDefaultValueType(configs),
       PreferSingleWidgetPerFile(configs),
+      RequireMatchingFileAndClassName(configs),
+      MissingGoldenTest(configs),
     ];
   }
 }

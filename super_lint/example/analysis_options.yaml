@@ -62,3 +62,8 @@ custom_lint:
     - avoid_using_unsafe_cast:
     - prefer_single_widget_per_file:
     - incorrect_freezed_default_value_type:
+    - require_matching_file_and_class_name:
+    - missing_golden_test:
+      widget_folders:
+        - "lib/missing_golden_test_test/lib"
+      test_folder: "lib/missing_golden_test_test/test"

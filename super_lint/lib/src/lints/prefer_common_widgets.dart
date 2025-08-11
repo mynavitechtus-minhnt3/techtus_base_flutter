@@ -23,6 +23,11 @@ class PreferCommonWidgets extends CommonLintRule<_PreferCommonWidgetsParameter> 
     String rootPath,
   ) async {
     context.registry.addInstanceCreationExpression((node) {
+      // Skip Text.rich - we only want to warn Text() but not Text.rich()
+      if (node.constructorName.toString() == 'Text.rich') {
+        return;
+      }
+
       final bannedWidget = parameters.bannedWidgets.firstWhereOrNull((element) {
         final methodName = element[_PreferCommonWidgetsParameter.keyBannedWidget];
         return node.constructorName.type.toString() == methodName;
@@ -133,7 +138,11 @@ class _PreferCommonWidgetsParameter extends CommonLintParameter {
     {
       keyBannedWidget: 'VerticalDivider',
       keyCommonWidget: 'CommonDivider',
-    }
+    },
+    {
+      keyBannedWidget: 'RichText',
+      keyCommonWidget: 'Text.rich',
+    },
   ];
 
   static const keyBannedWidget = 'banned_widget';

@@ -1,14 +1,17 @@
+import 'package:path/path.dart' as p;
+
 import '../index.dart';
 
-class PreferSingleWidgetPerFile extends CommonLintRule<_PreferSingleWidgetPerFileParameter> {
-  PreferSingleWidgetPerFile(
+class RequireMatchingFileAndClassName
+    extends CommonLintRule<_RequireMatchingFileAndClassNameOption> {
+  RequireMatchingFileAndClassName(
     CustomLintConfigs configs,
   ) : super(
           RuleConfig(
-            name: 'prefer_single_widget_per_file',
+            name: 'require_matching_file_and_class_name',
             configs: configs,
-            paramsParser: _PreferSingleWidgetPerFileParameter.fromMap,
-            problemMessage: (_) => 'Prefer single public widget per file',
+            paramsParser: _RequireMatchingFileAndClassNameOption.fromMap,
+            problemMessage: (_) => 'File name should match class name',
           ),
         );
 
@@ -20,6 +23,8 @@ class PreferSingleWidgetPerFile extends CommonLintRule<_PreferSingleWidgetPerFil
     String rootPath,
   ) async {
     final unit = (await resolver.getResolvedUnitResult()).unit;
+    final fileName = p.basenameWithoutExtension(resolver.path);
+    final expectedClassName = fileName.snakeToPascal();
     final classDecls = <ClassDeclaration>[];
 
     for (final declaration in unit.declarations) {
@@ -28,10 +33,8 @@ class PreferSingleWidgetPerFile extends CommonLintRule<_PreferSingleWidgetPerFil
       }
     }
 
-    if (classDecls.length > 1) {
-      for (final classDecl in classDecls) {
-        reporter.atNode(classDecl, code);
-      }
+    if (classDecls.length == 1 && classDecls.first.name.lexeme != expectedClassName) {
+      reporter.atNode(classDecls.first, code);
     }
   }
 
@@ -41,15 +44,15 @@ class PreferSingleWidgetPerFile extends CommonLintRule<_PreferSingleWidgetPerFil
   }
 }
 
-class _PreferSingleWidgetPerFileParameter extends CommonLintParameter {
-  const _PreferSingleWidgetPerFileParameter({
+class _RequireMatchingFileAndClassNameOption extends CommonLintParameter {
+  const _RequireMatchingFileAndClassNameOption({
     super.excludes,
     super.includes,
     super.severity,
   });
 
-  static _PreferSingleWidgetPerFileParameter fromMap(Map<String, dynamic> map) {
-    return _PreferSingleWidgetPerFileParameter(
+  static _RequireMatchingFileAndClassNameOption fromMap(Map<String, dynamic> map) {
+    return _RequireMatchingFileAndClassNameOption(
       severity: safeCast(map['severity']),
       excludes: safeCastToListString(map['excludes']),
       includes: safeCastToListString(map['includes']),
