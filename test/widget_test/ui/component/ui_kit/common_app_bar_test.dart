@@ -78,9 +78,9 @@ void main() {
         );
       });
 
-      testGoldens('when titleType is long text', (tester) async {
+      testGoldens('long text', (tester) async {
         await tester.testWidget(
-          filename: 'common_app_bar/title_text',
+          filename: 'common_app_bar/long_text',
           widget: Builder(
             builder: (context) {
               AppDimen.current = AppDimen.of(context);
