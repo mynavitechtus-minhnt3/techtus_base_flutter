@@ -23,6 +23,7 @@ void main() {
               body: const Center(child: Text('Body')),
             );
           }),
+          includeTextScalingCase: false,
         );
       });
 
@@ -44,6 +45,7 @@ void main() {
               ),
             );
           }),
+          includeTextScalingCase: false,
         );
       });
     },

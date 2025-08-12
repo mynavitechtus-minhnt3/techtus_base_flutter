@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:golden_toolkit/golden_toolkit.dart';
 import 'package:nalsflutter/index.dart';
+
 import '../../../../common/index.dart';
 
 void main() {
@@ -19,6 +20,7 @@ void main() {
               size: 48,
             ),
           ),
+          includeTextScalingCase: false,
         );
       });
 
@@ -32,6 +34,7 @@ void main() {
               height: 48,
             ),
           ),
+          includeTextScalingCase: false,
         );
       });
 
@@ -45,6 +48,7 @@ void main() {
               height: 48,
             ),
           ),
+          includeTextScalingCase: false,
         );
       });
 
@@ -59,6 +63,7 @@ void main() {
               height: 48,
             ),
           ),
+          includeTextScalingCase: false,
         );
       });
     },

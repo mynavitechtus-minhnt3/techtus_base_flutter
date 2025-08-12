@@ -77,6 +77,25 @@ void main() {
           ),
         );
       });
+
+      testGoldens('when titleType is long text', (tester) async {
+        await tester.testWidget(
+          filename: 'common_app_bar/title_text',
+          widget: Builder(
+            builder: (context) {
+              AppDimen.current = AppDimen.of(context);
+              return Scaffold(
+                appBar: CommonAppBar(
+                  titleType: AppBarTitle.text,
+                  leadingIcon: LeadingIcon.none,
+                  text: 'This is a very long title that should be truncated if it exceeds the available space',
+                ),
+                body: const SizedBox.shrink(),
+              );
+            }
+          ),
+        );
+      });
     },
   );
 }

@@ -15,6 +15,7 @@ void main() {
             color: Colors.black,
             thickness: 2,
           ),
+          includeTextScalingCase: false,
         );
       });
 
@@ -29,6 +30,7 @@ void main() {
               thickness: 2,
             ),
           ),
+          includeTextScalingCase: false,
         );
       });
 
@@ -41,6 +43,7 @@ void main() {
             indent: 8,
             endIndent: 8,
           ),
+          includeTextScalingCase: false,
         );
       });
     },
