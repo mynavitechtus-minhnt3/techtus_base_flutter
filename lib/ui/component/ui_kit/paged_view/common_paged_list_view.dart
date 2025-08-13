@@ -1,3 +1,4 @@
+// ignore_for_file: missing_golden_test
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';

@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_single_widget_per_file
+// ignore_for_file: prefer_single_widget_per_file, require_matching_file_and_class_name
 // ~.~.~.~.~.~.~.~ THE FOLLOWING CASES SHOULD NOT BE WARNED ~.~.~.~.~.~.~.~
 import 'package:flutter/material.dart';
 

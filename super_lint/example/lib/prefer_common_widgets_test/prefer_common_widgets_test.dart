@@ -10,6 +10,7 @@ void group() {
   CommonImage.network('');
   CommonScaffold();
   CommonDivider();
+  Text.rich(TextSpan()); // Should NOT be warned
 }
 
 // ~.~.~.~.~.~.~.~ THE FOLLOWING CASES SHOULD BE WARNED ~.~.~.~.~.~.~.~
@@ -17,6 +18,8 @@ void group() {
 void main() {
   // expect_lint: prefer_common_widgets
   Text('');
+  // expect_lint: prefer_common_widgets
+  RichText(text: TextSpan());
   // expect_lint: prefer_common_widgets
   AppBar();
   // expect_lint: prefer_common_widgets

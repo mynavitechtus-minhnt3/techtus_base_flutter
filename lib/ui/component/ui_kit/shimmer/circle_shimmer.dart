@@ -1,3 +1,4 @@
+// ignore_for_file: missing_golden_test
 // ignore_for_file: avoid_hard_coded_colors
 import 'package:flutter/material.dart';
 

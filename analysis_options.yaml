@@ -142,10 +142,28 @@ custom_lint:
         - "integration_test/**/*.dart"
     - prefer_single_widget_per_file:
       includes:
-        - "apps/**/lib/ui/*.dart"
-        - "apps/**/lib/ui/**/*.dart"
+        - "lib/ui/*.dart"
+        - "lib/ui/**/*.dart"
     - incorrect_freezed_default_value_type:
-
+    - require_matching_file_and_class_name:
+      excludes:
+        - "test/*.dart"
+        - "test/**/*.dart"
+        - "integration_test/*.dart"
+        - "integration_test/**/*.dart"      
+    - missing_golden_test:
+      widget_folders:
+        - "lib/ui/page"
+        - "lib/ui/popup"
+        - "lib/ui/component"
+      includes:
+        - "lib/ui/popup/*.dart"
+        - "lib/ui/page/**/*_page.dart"
+        - "lib/ui/component/*.dart"
+        - "lib/ui/component/**/*.dart"
+      excludes:
+        - "lib/ui/component/ui_kit/decoration/*.dart"
+      test_folder: "test/widget_test"
 linter:
   rules:
     - always_declare_return_types

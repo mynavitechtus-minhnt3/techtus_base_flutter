@@ -1,5 +1,3 @@
-import 'package:path/path.dart' as p;
-
 import '../index.dart';
 
 class PreferSingleWidgetPerFile extends CommonLintRule<_PreferSingleWidgetPerFileParameter> {
@@ -22,8 +20,6 @@ class PreferSingleWidgetPerFile extends CommonLintRule<_PreferSingleWidgetPerFil
     String rootPath,
   ) async {
     final unit = (await resolver.getResolvedUnitResult()).unit;
-    final fileName = p.basenameWithoutExtension(resolver.path);
-    final expectedClassName = fileName.snakeToPascal();
     final classDecls = <ClassDeclaration>[];
 
     for (final declaration in unit.declarations) {
@@ -36,11 +32,6 @@ class PreferSingleWidgetPerFile extends CommonLintRule<_PreferSingleWidgetPerFil
       for (final classDecl in classDecls) {
         reporter.atNode(classDecl, code);
       }
-      return;
-    }
-
-    if (classDecls.length == 1 && classDecls.first.name.lexeme != expectedClassName) {
-      reporter.atNode(classDecls.first, code);
     }
   }
 

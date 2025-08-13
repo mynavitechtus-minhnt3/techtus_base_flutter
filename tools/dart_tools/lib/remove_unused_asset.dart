@@ -8,11 +8,11 @@ void main(List<String> args) async {
     './assets/images/app_icon.png',
   ];
   if (!imageDir.existsSync()) {
-    print('❌ assets/images không tồn tại');
+    print('❌ assets/images does not exist');
     exit(1);
   }
 
-  print('🔍 Đang quét asset và mã nguồn...');
+  print('🔍 Scanning assets and source code...');
 
   final allAssetFiles = imageDir
       .listSync(recursive: true)
@@ -48,17 +48,17 @@ void main(List<String> args) async {
       .toList();
 
   if (unusedAssets.isEmpty) {
-    print('✅ Không có asset nào bị thừa 🎉');
+    print('✅ No unused assets found 🎉');
     exit(0);
   }
 
-  print('🗑 Đang xoá ${unusedAssets.length} asset không được sử dụng:');
+  print('🗑 Deleting ${unusedAssets.length} unused assets:');
   for (var file in unusedAssets) {
     print('- ${file.path}');
     await file.delete();
   }
 
-  print('✅ Đã xoá xong.');
+  print('✅ Deletion completed.');
   exit(1);
 }
 

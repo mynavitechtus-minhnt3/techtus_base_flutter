@@ -21,7 +21,7 @@ sealed class FirebaseConversationData with _$FirebaseConversationData {
     @JsonKey(name: FirebaseConversationData.keyLastMessageType)
     MessageType lastMessageType,
     @Default(FirebaseConversationData.defaultMembers)
-    @FirebaseConversionUserDataConverter()
+    @FirebaseConversationUserDataConverter()
     @JsonKey(name: FirebaseConversationData.keyMembers)
     List<FirebaseConversationUserData> members,
     @Default(FirebaseConversationData.defaultMemberIds)
