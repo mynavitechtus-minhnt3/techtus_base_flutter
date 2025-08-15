@@ -41,8 +41,11 @@ void main() {
           await tester.testWidget(
             filename: 'register_page/when_register_button_is_enabled',
             widget: const RegisterPage(),
-            onCreate: (tester) async {
-              final primaryTextFieldFinder = find.byType(PrimaryTextField);
+            onCreate: (tester, key) async {
+              final primaryTextFieldFinder = find.byType(PrimaryTextField).isDescendantOf(
+                    find.byKey(key!),
+                    find,
+                  );
               expect(primaryTextFieldFinder, findsExactly(3));
               final emailTextField = primaryTextFieldFinder.first;
               final passwordTextField = primaryTextFieldFinder.at(1);

@@ -44,8 +44,11 @@ void main() {
         await tester.testWidget(
           filename: 'contact_list_page/when_conversationList_is_not_empty',
           widget: const ContactListPage(),
-          onCreate: (tester) async {
-            final textFieldFinder = find.byType(TextField);
+          onCreate: (tester, key) async {
+            final textFieldFinder = find.byType(TextField).isDescendantOf(
+                  find.byKey(key!),
+                  find,
+                );
             expect(textFieldFinder, findsOneWidget);
 
             await tester.enterText(textFieldFinder, 'dog');

@@ -119,7 +119,6 @@ make build_prod_ipa # Production IPA
 
 ### UI & Navigation
 - `auto_route` - Type-safe navigation
-- `flutter_screenutil` - Screen adaptation
 - `cached_network_image` - Image caching
 
 ### Code Generation
@@ -173,7 +172,6 @@ make build_prod_ipa # Production IPA
 
 ### Performance Considerations
 - Images are cached via `cached_network_image`
-- Use `flutter_screenutil` for responsive design
 - Implement proper state management with Riverpod
 
 ## 🔧 Troubleshooting

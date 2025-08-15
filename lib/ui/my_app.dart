@@ -4,7 +4,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../index.dart';
@@ -30,58 +29,55 @@ class MyApp extends HookConsumerWidget {
 
     final appRouter = ref.watch(appRouterProvider);
 
-    return ScreenUtilInit(
-      designSize: const Size(Constant.designDeviceWidth, Constant.designDeviceHeight),
-      builder: (context, _) => Consumer(
-        builder: (BuildContext context, WidgetRef ref, Widget? child) {
-          final isDarkTheme = ref.watch(isDarkModeProvider);
-          final languageCode = ref.watch(languageCodeProvider);
+    return Consumer(
+      builder: (BuildContext context, WidgetRef ref, Widget? child) {
+        final isDarkTheme = ref.watch(isDarkModeProvider);
+        final languageCode = ref.watch(languageCodeProvider);
 
-          return DevicePreview(
-            enabled: Config.enableDevicePreview,
-            builder: (_) => MaterialApp.router(
-              builder: (context, child) {
-                final widget = MediaQuery.withClampedTextScaling(
-                  maxScaleFactor: Constant.appMaxTextScaleFactor,
-                  minScaleFactor: Constant.appMinTextScaleFactor,
-                  child: child ?? const SizedBox.shrink(),
-                );
+        return DevicePreview(
+          enabled: Config.enableDevicePreview,
+          builder: (_) => MaterialApp.router(
+            builder: (context, child) {
+              final widget = MediaQuery.withClampedTextScaling(
+                maxScaleFactor: Constant.appMaxTextScaleFactor,
+                minScaleFactor: Constant.appMinTextScaleFactor,
+                child: child ?? const SizedBox.shrink(),
+              );
 
-                return Config.enableDevicePreview
-                    ? DevicePreview.appBuilder(context, widget)
-                    : widget;
+              return Config.enableDevicePreview
+                  ? DevicePreview.appBuilder(context, widget)
+                  : widget;
+            },
+            routerDelegate: appRouter.delegate(
+              deepLinkBuilder: (deepLink) {
+                return DeepLink(_mapRouteToPageRouteInfo());
               },
-              routerDelegate: appRouter.delegate(
-                deepLinkBuilder: (deepLink) {
-                  return DeepLink(_mapRouteToPageRouteInfo());
-                },
-                navigatorObservers: () => [AppNavigatorObserver()],
-              ),
-              routeInformationParser: appRouter.defaultRouteParser(),
-              title: Constant.materialAppTitle,
-              color: Constant.taskMenuMaterialAppColor,
-              themeMode: isDarkTheme ? ThemeMode.dark : ThemeMode.light,
-              theme: lightTheme,
-              darkTheme: darkTheme,
-              debugShowCheckedModeBanner: kDebugMode,
-              localeResolutionCallback: (Locale? locale, Iterable<Locale> supportedLocales) =>
-                  supportedLocales.map((e) => e.languageCode).contains(locale?.languageCode)
-                      ? locale
-                      : Locale(LanguageCode.defaultValue.localeCode),
-              locale: Config.enableDevicePreview
-                  ? DevicePreview.locale(context)
-                  : Locale(languageCode.localeCode),
-              supportedLocales: AppString.supportedLocales,
-              localizationsDelegates: const [
-                AppString.delegate,
-                GlobalMaterialLocalizations.delegate,
-                GlobalWidgetsLocalizations.delegate,
-                GlobalCupertinoLocalizations.delegate,
-              ],
+              navigatorObservers: () => [AppNavigatorObserver()],
             ),
-          );
-        },
-      ),
+            routeInformationParser: appRouter.defaultRouteParser(),
+            title: Constant.materialAppTitle,
+            color: Constant.taskMenuMaterialAppColor,
+            themeMode: isDarkTheme ? ThemeMode.dark : ThemeMode.light,
+            theme: lightTheme,
+            darkTheme: darkTheme,
+            debugShowCheckedModeBanner: kDebugMode,
+            localeResolutionCallback: (Locale? locale, Iterable<Locale> supportedLocales) =>
+                supportedLocales.map((e) => e.languageCode).contains(locale?.languageCode)
+                    ? locale
+                    : Locale(LanguageCode.defaultValue.localeCode),
+            locale: Config.enableDevicePreview
+                ? DevicePreview.locale(context)
+                : Locale(languageCode.localeCode),
+            supportedLocales: AppString.supportedLocales,
+            localizationsDelegates: const [
+              AppString.delegate,
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+            ],
+          ),
+        );
+      },
     );
   }
 

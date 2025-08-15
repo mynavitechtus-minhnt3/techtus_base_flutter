@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../index.dart';
 
@@ -45,11 +44,11 @@ class AppDimen {
   }) {
     switch (screenType) {
       case ScreenType.mobile:
-        return mobile.w;
+        return mobile;
       case ScreenType.tablet:
-        return tablet?.w ?? ((mobile * maxMobileWidth) / Constant.designDeviceWidth);
+        return tablet ?? ((mobile * maxMobileWidth) / Constant.designDeviceWidth);
       case ScreenType.ultraTablet:
-        return ultraTablet?.w ?? ((mobile * maxMobileWidth) / Constant.designDeviceWidth);
+        return ultraTablet ?? ((mobile * maxMobileWidth) / Constant.designDeviceWidth);
     }
   }
 

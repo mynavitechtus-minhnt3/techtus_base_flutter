@@ -2,7 +2,6 @@ import 'package:auto_route/auto_route.dart';
 import 'package:clock/clock.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart' hide DeviceType;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:golden_toolkit/golden_toolkit.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -44,9 +43,8 @@ class TestUtil {
       data: const MediaQueryData(
         size: Size(Constant.designDeviceWidth, Constant.designDeviceHeight),
       ),
-      child: ScreenUtilInit(
-        designSize: const Size(Constant.designDeviceWidth, Constant.designDeviceHeight),
-        builder: (context, __) {
+      child: Builder(
+        builder: (context) {
           AppDimen.of(context);
           AppColor.of(context);
 
@@ -113,9 +111,8 @@ class TestUtil {
       MediaQuery.withClampedTextScaling(
         minScaleFactor: isTextScaling ? Constant.appMinTextScaleFactor : 1,
         maxScaleFactor: isTextScaling ? Constant.appMaxTextScaleFactor : 1,
-        child: ScreenUtilInit(
-          designSize: const Size(Constant.designDeviceWidth, Constant.designDeviceHeight),
-          builder: (context, __) {
+        child: Builder(
+          builder: (context) {
             AppDimen.of(context);
             AppColor.of(context);
 
@@ -140,67 +137,72 @@ extension WidgetTesterExt on WidgetTester {
   Future<void> testWidget({
     required String filename,
     required Widget widget,
-    Future<void> Function(WidgetTester)? onCreate,
+    Future<void> Function(WidgetTester, Key?)? onCreate,
     List<Override> overrides = const [],
-    bool runAsynchronous = true,
     bool hasNetworkImage = false,
     DateTime? mockToday,
     List<TestDevice> additionalDevices = const [],
     Future<void> Function(WidgetTester)? customPump,
+    bool mergeToSingleFile = true,
     bool useMultiScreenGolden = false,
-    bool includeFullHeightCase = true,
+    bool includeFullHeightCase = false,
     bool includeTextScalingCase = true,
     bool isDarkMode = false,
     Locale locale = TestConfig.defaultLocale,
   }) async {
     await withClock(Clock.fixed(mockToday ?? clock.now()), () async {
+      if (mergeToSingleFile) {
+        for (final isTextScaling in [false, if (includeTextScalingCase) true]) {
+          await _pumpDeviceBuilder(
+            widget: widget,
+            isTextScaling: isTextScaling,
+            isDarkMode: isDarkMode,
+            locale: locale,
+            overrides: overrides,
+            additionalDevices: additionalDevices,
+            onCreate: onCreate,
+            customPump: customPump,
+            hasNetworkImage: hasNetworkImage,
+            autoHeight: false,
+            useMultiScreenGolden: useMultiScreenGolden,
+            filename: '$filename/${isTextScaling ? 'text_scaling' : 'normal'}',
+          );
+        }
+      }
+
       await Future.forEach(TestConfig.targetGoldenTestDevices(additionalDevices: additionalDevices),
           (device) async {
         when(() => deviceHelper.deviceType).thenReturn(
           device.type.deviceType,
         );
-
-        await _testWidget(
-          filename: '$filename/${device.device.name}_${device.device.size}',
-          widget: widget,
-          device: device.device,
-          onCreate: onCreate,
-          overrides: overrides,
-          runAsynchronous: runAsynchronous,
-          customPump: customPump,
-          isTextScaling: false,
-          hasNetworkImage: hasNetworkImage,
-          autoHeight: false,
-          useMultiScreenGolden: useMultiScreenGolden,
-          additionalDevices: additionalDevices,
-          isDarkMode: isDarkMode,
-          locale: locale,
-        );
-        if (includeTextScalingCase)
-          await _testWidget(
-            filename: '$filename/text_scaling/${device.device.name}_${device.device.size}',
-            widget: widget,
-            device: device.device,
-            onCreate: onCreate,
-            overrides: overrides,
-            runAsynchronous: runAsynchronous,
-            customPump: customPump,
-            isTextScaling: true,
-            hasNetworkImage: hasNetworkImage,
-            autoHeight: false,
-            useMultiScreenGolden: useMultiScreenGolden,
-            additionalDevices: additionalDevices,
-            isDarkMode: isDarkMode,
-            locale: locale,
-          );
+        if (!mergeToSingleFile) {
+          for (final isTextScaling in [false, if (includeTextScalingCase) true]) {
+            await _pumpWidgetBuilder(
+              filename: isTextScaling
+                  ? '$filename/text_scaling/${device.device.name}_${device.device.size}'
+                  : '$filename/${device.device.name}_${device.device.size}',
+              widget: widget,
+              device: device.device,
+              isTextScaling: isTextScaling,
+              onCreate: onCreate,
+              overrides: overrides,
+              customPump: customPump,
+              hasNetworkImage: hasNetworkImage,
+              autoHeight: false,
+              useMultiScreenGolden: useMultiScreenGolden,
+              additionalDevices: additionalDevices,
+              isDarkMode: isDarkMode,
+              locale: locale,
+            );
+          }
+        }
         if (includeFullHeightCase)
-          await _testWidget(
+          await _pumpWidgetBuilder(
             filename: '$filename/full_height/${device.device.name}_${device.device.size}',
             widget: widget,
             device: device.device,
             onCreate: onCreate,
             overrides: overrides,
-            runAsynchronous: runAsynchronous,
             customPump: customPump,
             isTextScaling: true,
             autoHeight: true,
@@ -214,14 +216,13 @@ extension WidgetTesterExt on WidgetTester {
     });
   }
 
-  Future<void> _testWidget({
+  Future<void> _pumpWidgetBuilder({
     required String filename,
     required Widget widget,
     required Device device,
     required bool isTextScaling,
-    required Future<void> Function(WidgetTester)? onCreate,
+    required Future<void> Function(WidgetTester, Key?)? onCreate,
     required List<Override> overrides,
-    required bool runAsynchronous,
     required Future<void> Function(WidgetTester)? customPump,
     required bool hasNetworkImage,
     required bool autoHeight,
@@ -234,36 +235,20 @@ extension WidgetTesterExt on WidgetTester {
       ...TestConfig.baseOverrides(),
       ...overrides,
     ];
-    if (runAsynchronous) {
-      await runAsync(() async {
-        await _pumpWidgetBuilder(
-          widget: widget,
+    await runAsync(() async {
+      await pumpWidgetBuilder(
+        widget,
+        wrapper: (wrapper) => ProviderScope(
           overrides: fullOverrides,
-          device: device,
-          isTextScaling: isTextScaling,
-          isDarkMode: isDarkMode,
-          locale: locale,
-        );
-        if (hasNetworkImage) {
-          for (final element in find.byType(OctoImage).evaluate()) {
-            final widget = element.widget.safeCast<OctoImage>();
-            // ignore: avoid_nested_conditions
-            if (widget != null) {
-              final image = widget.image;
-              await precacheImage(image, element);
-            }
-          }
-          await pumpAndSettle();
-        }
-      });
-    } else {
-      await _pumpWidgetBuilder(
-        widget: widget,
-        overrides: fullOverrides,
-        device: device,
-        isTextScaling: isTextScaling,
-        isDarkMode: isDarkMode,
-        locale: locale,
+          child: TestUtil.buildMaterialApp(
+            wrapper,
+            isTextScaling: isTextScaling,
+            isDarkMode: isDarkMode,
+            locale: locale,
+          ),
+        ),
+        surfaceSize: device.size,
+        textScaleSize: isTextScaling ? 2 : 1,
       );
       if (hasNetworkImage) {
         for (final element in find.byType(OctoImage).evaluate()) {
@@ -276,9 +261,9 @@ extension WidgetTesterExt on WidgetTester {
         }
         await pumpAndSettle();
       }
-    }
+    });
 
-    await onCreate?.call(this);
+    await onCreate?.call(this, null);
 
     await _takeScreenshot(
       filename: filename,
@@ -290,27 +275,72 @@ extension WidgetTesterExt on WidgetTester {
     );
   }
 
-  Future<void> _pumpWidgetBuilder({
+  Future<void> _pumpDeviceBuilder({
+    required String filename,
     required Widget widget,
-    required Device device,
     required bool isTextScaling,
+    required Future<void> Function(WidgetTester, Key?)? onCreate,
+    required List<Override> overrides,
+    required Future<void> Function(WidgetTester)? customPump,
+    required bool hasNetworkImage,
+    required bool autoHeight,
+    required bool useMultiScreenGolden,
     required bool isDarkMode,
     required Locale locale,
-    required List<Override> overrides,
-  }) {
-    return pumpWidgetBuilder(
-      widget,
-      wrapper: (wrapper) => ProviderScope(
-        overrides: overrides,
-        child: TestUtil.buildMaterialApp(
-          wrapper,
-          isTextScaling: isTextScaling,
-          isDarkMode: isDarkMode,
-          locale: locale,
+    required List<TestDevice> additionalDevices,
+  }) async {
+    final fullOverrides = [
+      ...TestConfig.baseOverrides(),
+      ...overrides,
+    ];
+    await runAsync(() async {
+      await pumpDeviceBuilder(
+        DeviceBuilder()
+          ..overrideDevicesForAllScenarios(
+            devices: TestConfig.targetGoldenTestDevices(
+              additionalDevices: additionalDevices,
+              isTextScaling: isTextScaling,
+            ).map((e) => e.device).toList(),
+          )
+          ..addScenario(
+              widget: widget,
+              onCreate: (key) async {
+                if (onCreate != null) {
+                  await onCreate(this, key);
+                }
+              }),
+        wrapper: (wrapper) => ProviderScope(
+          overrides: fullOverrides,
+          child: TestUtil.buildMaterialApp(
+            wrapper,
+            isTextScaling: isTextScaling,
+            isDarkMode: isDarkMode,
+            locale: locale,
+          ),
         ),
-      ),
-      surfaceSize: device.size,
-      textScaleSize: isTextScaling ? 2 : 1,
+      );
+      if (hasNetworkImage) {
+        for (final element in find.byType(OctoImage).evaluate()) {
+          final widget = element.widget.safeCast<OctoImage>();
+          // ignore: avoid_nested_conditions
+          if (widget != null) {
+            final image = widget.image;
+            await precacheImage(image, element);
+          }
+        }
+        await pumpAndSettle();
+      }
+    });
+
+    // await onCreate?.call(this, null);
+
+    await _takeScreenshot(
+      filename: filename,
+      customPump: customPump,
+      autoHeight: autoHeight,
+      useMultiScreenGolden: useMultiScreenGolden,
+      additionalDevices: additionalDevices,
+      isTextScaling: isTextScaling,
     );
   }
 

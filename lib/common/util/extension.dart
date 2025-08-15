@@ -141,8 +141,7 @@ extension StringExtensions on String {
 
   String? get firstOrNull => isNotEmpty ? this[0] : null;
 
-  bool equalsIgnoreCase(String secondString) =>
-      toLowerCase() == secondString.toLowerCase();
+  bool equalsIgnoreCase(String secondString) => toLowerCase() == secondString.toLowerCase();
 
   bool containsIgnoreCase(String secondString) =>
       toLowerCase().contains(secondString.toLowerCase());

@@ -33,7 +33,7 @@ class TestConfig {
         device: Device(size: const Size(320, 568), name: 'small', textScale: textScale),
         type: TestDeviceType.smallPhone,
       ),
-      TestDevice(device: Device(size: const Size(375, 812), name: 'medium', textScale: textScale)),
+      TestDevice(device: Device(size: const Size(375, 812), name: 'tall', textScale: textScale)),
       TestDevice(device: Device(size: const Size(412, 730), name: 'wide', textScale: textScale)),
       TestDevice(
         device: Device(size: const Size(1024, 1366), name: 'tablet', textScale: textScale),
