@@ -243,10 +243,7 @@ void main() {
           filename: 'chat_page/when_user_is_typing',
           widget: const ChatPage(conversation: conversation),
           onCreate: (tester, key) async {
-            final textFieldFinder = find.byType(TextField).isDescendantOf(
-                  find.byKey(key!),
-                  find,
-                );
+            final textFieldFinder = find.byType(TextField).isDescendantOfKeyIfAny(key);
             expect(textFieldFinder, findsOneWidget);
 
             await tester.enterText(textFieldFinder, 'dog and cat');
@@ -301,10 +298,7 @@ void main() {
           widget: const ChatPage(conversation: conversation),
           onCreate: (tester, key) async {
             await tester.pump(5.seconds);
-            final moreMenuIconFinder = find.byType(MoreMenuIconButton).isDescendantOf(
-                  find.byKey(key!),
-                  find,
-                );
+            final moreMenuIconFinder = find.byType(MoreMenuIconButton).isDescendantOfKeyIfAny(key);
             expect(moreMenuIconFinder, findsOneWidget);
             await tester.tap(moreMenuIconFinder);
             await tester.pump();
@@ -375,10 +369,7 @@ void main() {
           widget: const ChatPage(conversation: conversation),
           onCreate: (tester, key) async {
             await tester.pump(5.seconds);
-            final moreMenuIconFinder = find.byType(MoreMenuIconButton).isDescendantOf(
-                  find.byKey(key!),
-                  find,
-                );
+            final moreMenuIconFinder = find.byType(MoreMenuIconButton).isDescendantOfKeyIfAny(key);
             expect(moreMenuIconFinder, findsOneWidget);
             await tester.tap(moreMenuIconFinder);
             await tester.pump();
@@ -444,8 +435,8 @@ void main() {
           await tester.pump(5.seconds);
           final menuFinder = find
               .byType(IconButton)
-              .isAncestorOf(find.byType(AnimatedIcon), find)
-              .isDescendantOf(find.byType(ChatPage).isDescendantOf(find.byKey(key!), find), find);
+              .isAncestorOf(find.byType(AnimatedIcon))
+              .isDescendantOf(find.byType(ChatPage).isDescendantOfKeyIfAny(key));
           await tester.tap(menuFinder);
           await tester.pumpAndSettle();
         },

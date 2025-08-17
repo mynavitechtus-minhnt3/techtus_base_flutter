@@ -73,10 +73,7 @@ void main() {
               keyboardType: TextInputType.visiblePassword,
             ),
             onCreate: (tester, key) async {
-              final eyeIconFinder = find.byType(GestureDetector).isDescendantOf(
-                    find.byKey(key!),
-                    find,
-                  );
+              final eyeIconFinder = find.byType(GestureDetector).isDescendantOfKeyIfAny(key);
 
               expect(eyeIconFinder, findsOneWidget);
 

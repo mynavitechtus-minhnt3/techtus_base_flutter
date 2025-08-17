@@ -21,10 +21,7 @@ void main() {
           filename: 'search_text_field/when_text_is_not_empty',
           widget: const SearchTextField(),
           onCreate: (tester, key) async {
-            final textFieldFinder = find.byType(TextField).isDescendantOf(
-                  find.byKey(key!),
-                  find,
-                );
+            final textFieldFinder = find.byType(TextField).isDescendantOfKeyIfAny(key);
             expect(textFieldFinder, findsOneWidget);
 
             await tester.enterText(textFieldFinder, 'ntminh');

@@ -145,7 +145,7 @@ extension WidgetTesterExt on WidgetTester {
     Future<void> Function(WidgetTester)? customPump,
     bool mergeToSingleFile = true,
     bool useMultiScreenGolden = false,
-    bool includeFullHeightCase = false,
+    List<AppTestDeviceType> fullHeightDeviceCases = const [],
     bool includeTextScalingCase = true,
     bool isDarkMode = false,
     Locale locale = TestConfig.defaultLocale,
@@ -168,14 +168,13 @@ extension WidgetTesterExt on WidgetTester {
             filename: '$filename/${isTextScaling ? 'text_scaling' : 'normal'}',
           );
         }
-      }
-
-      await Future.forEach(TestConfig.targetGoldenTestDevices(additionalDevices: additionalDevices),
-          (device) async {
-        when(() => deviceHelper.deviceType).thenReturn(
-          device.type.deviceType,
-        );
-        if (!mergeToSingleFile) {
+      } else {
+        await Future.forEach(
+            TestConfig.targetGoldenTestDevices(additionalDevices: additionalDevices),
+            (device) async {
+          when(() => deviceHelper.deviceType).thenReturn(
+            device.type.deviceType,
+          );
           for (final isTextScaling in [false, if (includeTextScalingCase) true]) {
             await _pumpWidgetBuilder(
               filename: isTextScaling
@@ -195,25 +194,31 @@ extension WidgetTesterExt on WidgetTester {
               locale: locale,
             );
           }
-        }
-        if (includeFullHeightCase)
-          await _pumpWidgetBuilder(
-            filename: '$filename/full_height/${device.device.name}_${device.device.size}',
-            widget: widget,
-            device: device.device,
-            onCreate: onCreate,
-            overrides: overrides,
-            customPump: customPump,
-            isTextScaling: true,
-            autoHeight: true,
-            hasNetworkImage: hasNetworkImage,
-            useMultiScreenGolden: useMultiScreenGolden,
-            additionalDevices: additionalDevices,
-            isDarkMode: isDarkMode,
-            locale: locale,
-          );
-      });
+        });
+      }
     });
+
+    if (fullHeightDeviceCases.isNotEmpty)
+      await Future.forEach(
+          TestConfig.targetGoldenTestDevices(
+              additionalDevices: additionalDevices,
+              appDevices: fullHeightDeviceCases), (device) async {
+        await _pumpWidgetBuilder(
+          filename: '$filename/full_height/${device.device.name}_${device.device.size}',
+          widget: widget,
+          device: device.device,
+          onCreate: onCreate,
+          overrides: overrides,
+          customPump: customPump,
+          isTextScaling: true,
+          autoHeight: true,
+          hasNetworkImage: hasNetworkImage,
+          useMultiScreenGolden: useMultiScreenGolden,
+          additionalDevices: additionalDevices,
+          isDarkMode: isDarkMode,
+          locale: locale,
+        );
+      });
   }
 
   Future<void> _pumpWidgetBuilder({
@@ -392,12 +397,17 @@ extension WidgetTesterExt on WidgetTester {
 
 extension FinderExt on Finder {
   // ignore: prefer_named_parameters
-  Finder isDescendantOf(Finder finder, CommonFinders find) {
+  Finder isDescendantOf(Finder finder) {
     return find.descendant(of: finder, matching: this);
   }
 
   // ignore: prefer_named_parameters
-  Finder isAncestorOf(Finder finder, CommonFinders find) {
+  Finder isAncestorOf(Finder finder) {
     return find.ancestor(of: finder, matching: this);
+  }
+
+  // ignore: prefer_named_parameters
+  Finder isDescendantOfKeyIfAny(Key? key) {
+    return key != null ? isDescendantOf(find.byKey(key)) : this;
   }
 }
