@@ -45,8 +45,8 @@ class TestUtil {
       ),
       child: Builder(
         builder: (context) {
-          AppDimen.of(context);
-          AppColor.of(context);
+          AppDimen.current = AppDimen.init();
+          AppColor.current = AppColor.of(context);
 
           return MaterialApp.router(
             builder: (context, child) {
@@ -113,8 +113,8 @@ class TestUtil {
         maxScaleFactor: isTextScaling ? Constant.appMaxTextScaleFactor : 1,
         child: Builder(
           builder: (context) {
-            AppDimen.of(context);
-            AppColor.of(context);
+            AppDimen.current = AppDimen.init();
+            AppColor.current = AppColor.of(context);
 
             return wrapper;
           },

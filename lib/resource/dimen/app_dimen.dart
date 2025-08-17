@@ -20,16 +20,19 @@ class AppDimen {
   final double devicePixelRatio;
   final ScreenType screenType;
 
-  static AppDimen of(BuildContext context) {
-    final screenWidth = MediaQuery.sizeOf(context).width;
-    final screenHeight = MediaQuery.sizeOf(context).height;
-    final devicePixelRatio = MediaQuery.devicePixelRatioOf(context);
+  static AppDimen init() {
+    final size = WidgetsBinding.instance.platformDispatcher.views.first.physicalSize;
+    final devicePixelRatio =
+        WidgetsBinding.instance.platformDispatcher.views.first.devicePixelRatio;
+
+    final width = size.width / devicePixelRatio;
+    final height = size.height / devicePixelRatio;
 
     final screen = AppDimen._(
-      screenWidth: screenWidth,
-      screenHeight: screenHeight,
+      screenWidth: width,
+      screenHeight: height,
       devicePixelRatio: devicePixelRatio,
-      screenType: _getScreenType(screenWidth),
+      screenType: _getScreenType(width),
     );
 
     current = screen;

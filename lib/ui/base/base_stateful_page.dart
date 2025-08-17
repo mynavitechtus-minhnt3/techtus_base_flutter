@@ -20,7 +20,7 @@ abstract class BaseStatefulPageState<
 
   @override
   Widget build(BuildContext context) {
-    AppDimen.of(context);
+    AppDimen.init();
     AppColor.of(context);
     l10n = AppString.of(context)!;
 
