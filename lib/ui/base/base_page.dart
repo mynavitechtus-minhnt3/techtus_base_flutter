@@ -13,7 +13,7 @@ abstract class BasePage<S extends BaseState, P extends ProviderListenable<Common
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    AppDimen.of(context);
+    AppDimen.init();
     AppColor.of(context);
     l10n = AppString.of(context)!;
 

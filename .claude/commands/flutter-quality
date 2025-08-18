@@ -1,0 +1,36 @@
+#!/bin/bash
+# Flutter code quality command
+# Usage: /flutter-quality [action]
+
+ACTION=${1:-"all"}
+
+case $ACTION in
+  "lint")
+    echo "🔍 Running linting..."
+    make lint
+    ;;
+  "format"|"fmt")
+    echo "💅 Formatting code..."
+    make fm
+    ;;
+  "analyze")
+    echo "🔍 Running static analysis..."
+    make analyze
+    make sl
+    ;;
+  "fix")
+    echo "🔧 Applying dart fixes..."
+    make dart_fix
+    ;;
+  "ci")
+    echo "🚀 Running full CI pipeline..."
+    make ci
+    ;;
+  "all"|*)
+    echo "🔍 Running linting and formatting..."
+    make lint
+    make fm
+    ;;
+esac
+
+echo "✅ Code quality check complete!"

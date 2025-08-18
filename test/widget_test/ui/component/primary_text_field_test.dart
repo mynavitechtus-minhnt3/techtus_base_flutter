@@ -72,8 +72,8 @@ void main() {
               controller: TextEditingController(text: '123456'),
               keyboardType: TextInputType.visiblePassword,
             ),
-            onCreate: (tester) async {
-              final eyeIconFinder = find.byType(GestureDetector);
+            onCreate: (tester, key) async {
+              final eyeIconFinder = find.byType(GestureDetector).isDescendantOfKeyIfAny(key);
 
               expect(eyeIconFinder, findsOneWidget);
 

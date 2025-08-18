@@ -22,6 +22,7 @@ void main() {
           await tester.testWidget(
             filename: 'register_page/when_register_button_is_disabled',
             widget: const RegisterPage(),
+            fullHeightDeviceCases: [AppTestDeviceType.smallPhone],
             overrides: [
               registerViewModelProvider.overrideWith(
                 (ref) => MockRegisterViewModel(
@@ -41,8 +42,10 @@ void main() {
           await tester.testWidget(
             filename: 'register_page/when_register_button_is_enabled',
             widget: const RegisterPage(),
-            onCreate: (tester) async {
-              final primaryTextFieldFinder = find.byType(PrimaryTextField);
+            fullHeightDeviceCases: [AppTestDeviceType.smallPhone],
+            onCreate: (tester, key) async {
+              final primaryTextFieldFinder =
+                  find.byType(PrimaryTextField).isDescendantOfKeyIfAny(key);
               expect(primaryTextFieldFinder, findsExactly(3));
               final emailTextField = primaryTextFieldFinder.first;
               final passwordTextField = primaryTextFieldFinder.at(1);
@@ -77,6 +80,7 @@ void main() {
           await tester.testWidget(
             filename: 'register_page/when_error_text_is_visible',
             widget: const RegisterPage(),
+            fullHeightDeviceCases: [AppTestDeviceType.smallPhone],
             overrides: [
               registerViewModelProvider.overrideWith(
                 (ref) => MockRegisterViewModel(

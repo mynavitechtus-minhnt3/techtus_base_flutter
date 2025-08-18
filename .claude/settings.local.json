@@ -1,7 +1,11 @@
 {
   "permissions": {
     "allow": [
-      "Bash(flutter test:*)"
+      "Bash(flutter test:*)",
+      "WebFetch(domain:www.anthropic.com)",
+      "Bash(mkdir:*)",
+      "Bash(chmod:*)",
+      "Bash(python3 parse_openapi.py:*)"
     ],
     "deny": []
   }

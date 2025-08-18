@@ -18,6 +18,7 @@ Future<void> main() async {
   l10n = await AppString.delegate.load(TestConfig.defaultLocale);
   AppColor.current = AppColor.defaultAppColor;
   AppTheme.currentAppThemeType = AppThemeType.light;
+  AppDimen.current = AppDimen.init();
 
   setUpAll(() async {
     VisibilityDetectorController.instance.updateInterval = Duration.zero;

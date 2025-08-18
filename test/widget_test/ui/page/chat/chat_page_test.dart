@@ -242,8 +242,8 @@ void main() {
         await tester.testWidget(
           filename: 'chat_page/when_user_is_typing',
           widget: const ChatPage(conversation: conversation),
-          onCreate: (tester) async {
-            final textFieldFinder = find.byType(TextField);
+          onCreate: (tester, key) async {
+            final textFieldFinder = find.byType(TextField).isDescendantOfKeyIfAny(key);
             expect(textFieldFinder, findsOneWidget);
 
             await tester.enterText(textFieldFinder, 'dog and cat');
@@ -296,9 +296,9 @@ void main() {
         await tester.testWidget(
           filename: 'chat_page/when_users_are_replying_themselves',
           widget: const ChatPage(conversation: conversation),
-          onCreate: (tester) async {
+          onCreate: (tester, key) async {
             await tester.pump(5.seconds);
-            final moreMenuIconFinder = find.byType(MoreMenuIconButton);
+            final moreMenuIconFinder = find.byType(MoreMenuIconButton).isDescendantOfKeyIfAny(key);
             expect(moreMenuIconFinder, findsOneWidget);
             await tester.tap(moreMenuIconFinder);
             await tester.pump();
@@ -367,9 +367,9 @@ void main() {
         await tester.testWidget(
           filename: 'chat_page/when_users_are_replying_to_other_users',
           widget: const ChatPage(conversation: conversation),
-          onCreate: (tester) async {
+          onCreate: (tester, key) async {
             await tester.pump(5.seconds);
-            final moreMenuIconFinder = find.byType(MoreMenuIconButton);
+            final moreMenuIconFinder = find.byType(MoreMenuIconButton).isDescendantOfKeyIfAny(key);
             expect(moreMenuIconFinder, findsOneWidget);
             await tester.tap(moreMenuIconFinder);
             await tester.pump();
@@ -431,12 +431,12 @@ void main() {
       await tester.testWidget(
         filename: 'chat_page/when_displaying_the_menu',
         widget: const ChatPage(conversation: conversation),
-        onCreate: (tester) async {
+        onCreate: (tester, key) async {
           await tester.pump(5.seconds);
           final menuFinder = find
               .byType(IconButton)
-              .isAncestorOf(find.byType(AnimatedIcon), find)
-              .isDescendantOf(find.byType(ChatPage), find);
+              .isAncestorOf(find.byType(AnimatedIcon))
+              .isDescendantOf(find.byType(ChatPage).isDescendantOfKeyIfAny(key));
           await tester.tap(menuFinder);
           await tester.pumpAndSettle();
         },

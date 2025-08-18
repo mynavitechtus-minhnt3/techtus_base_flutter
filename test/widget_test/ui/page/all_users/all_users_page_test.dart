@@ -136,8 +136,8 @@ void main() {
           filename:
               'all_users_page/when_members_is_not_empty_and_all_users_is_empty_and_add_button_is_disabled',
           widget: const AllUsersPage(action: AllUsersPageAction.addMembers),
-          onCreate: (tester) async {
-            final textFieldFinder = find.byType(TextField);
+          onCreate: (tester, key) async {
+            final textFieldFinder = find.byType(TextField).isDescendantOfKeyIfAny(key);
             expect(textFieldFinder, findsExactly(1));
 
             await tester.enterText(

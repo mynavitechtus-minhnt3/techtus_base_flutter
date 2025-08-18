@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../index.dart';
 
@@ -21,16 +20,19 @@ class AppDimen {
   final double devicePixelRatio;
   final ScreenType screenType;
 
-  static AppDimen of(BuildContext context) {
-    final screenWidth = MediaQuery.sizeOf(context).width;
-    final screenHeight = MediaQuery.sizeOf(context).height;
-    final devicePixelRatio = MediaQuery.devicePixelRatioOf(context);
+  static AppDimen init() {
+    final size = WidgetsBinding.instance.platformDispatcher.views.first.physicalSize;
+    final devicePixelRatio =
+        WidgetsBinding.instance.platformDispatcher.views.first.devicePixelRatio;
+
+    final width = size.width / devicePixelRatio;
+    final height = size.height / devicePixelRatio;
 
     final screen = AppDimen._(
-      screenWidth: screenWidth,
-      screenHeight: screenHeight,
+      screenWidth: width,
+      screenHeight: height,
       devicePixelRatio: devicePixelRatio,
-      screenType: _getScreenType(screenWidth),
+      screenType: _getScreenType(width),
     );
 
     current = screen;
@@ -45,11 +47,11 @@ class AppDimen {
   }) {
     switch (screenType) {
       case ScreenType.mobile:
-        return mobile.w;
+        return mobile;
       case ScreenType.tablet:
-        return tablet?.w ?? ((mobile * maxMobileWidth) / Constant.designDeviceWidth);
+        return tablet ?? ((mobile * maxMobileWidth) / Constant.designDeviceWidth);
       case ScreenType.ultraTablet:
-        return ultraTablet?.w ?? ((mobile * maxMobileWidth) / Constant.designDeviceWidth);
+        return ultraTablet ?? ((mobile * maxMobileWidth) / Constant.designDeviceWidth);
     }
   }
 

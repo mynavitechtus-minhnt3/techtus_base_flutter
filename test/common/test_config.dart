@@ -24,22 +24,60 @@ class TestConfig {
 
   static List<TestDevice> targetGoldenTestDevices({
     List<TestDevice> additionalDevices = const [],
+    List<AppTestDeviceType> appDevices = AppTestDeviceType.values,
     bool isTextScaling = false,
   }) {
     final textScale = isTextScaling ? Constant.appMaxTextScaleFactor : 1.0;
 
     return [
-      TestDevice(
-        device: Device(size: const Size(320, 568), name: 'small', textScale: textScale),
-        type: TestDeviceType.smallPhone,
-      ),
-      TestDevice(device: Device(size: const Size(375, 812), name: 'medium', textScale: textScale)),
-      TestDevice(device: Device(size: const Size(412, 730), name: 'wide', textScale: textScale)),
-      TestDevice(
-        device: Device(size: const Size(1024, 1366), name: 'tablet', textScale: textScale),
-        type: TestDeviceType.tablet,
-      ),
+      ...appDevices.map((e) => e.toTestDevice(textScale: textScale)),
       ...additionalDevices,
     ];
+  }
+}
+
+enum AppTestDeviceType {
+  smallPhone(
+    size: Size(320, 568),
+    name: 'small',
+    type: TestDeviceType.smallPhone,
+  ),
+  tall(
+    size: Size(375, 812),
+    name: 'tall',
+    type: TestDeviceType.phone,
+  ),
+  wide(
+    size: Size(412, 730),
+    name: 'wide',
+    type: TestDeviceType.phone,
+  ),
+  tablet(
+    size: Size(1024, 1366),
+    name: 'tablet',
+    type: TestDeviceType.tablet,
+  );
+
+  final Size size;
+  final String name;
+  final TestDeviceType type;
+
+  const AppTestDeviceType({
+    required this.size,
+    required this.name,
+    required this.type,
+  });
+
+  TestDevice toTestDevice({
+    double textScale = 1.0,
+  }) {
+    return TestDevice(
+      device: Device(
+        size: size,
+        name: name,
+        textScale: textScale,
+      ),
+      type: type,
+    );
   }
 }

@@ -13,6 +13,7 @@ void main() {
           filename: 'more_menu_icon_button/when_it_is_normal_state',
           widget: MoreMenuIconButton(onCopy: () {}, onReply: () {}),
           useMultiScreenGolden: true,
+          mergeToSingleFile: false,
         );
       });
     },

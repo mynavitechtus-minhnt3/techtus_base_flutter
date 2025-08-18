@@ -1,0 +1,77 @@
+---
+description: UI Component standards và patterns cho Flutter widgets
+globs: ["lib/ui/**/*.dart"]
+alwaysApply: false
+---
+
+# UI Component Standards
+
+## Base Classes và Architecture
+- Tất cả pages phải extend từ `BasePage<S, P>` hoặc `BaseStatefulPageState<S, VM, P, W>`
+- Sử dụng HookConsumerWidget cho stateless components
+- Sử dụng ConsumerState cho stateful components
+
+## Component Naming Convention
+```dart
+// Pages
+{Feature}Page extends BasePage
+{Feature}State extends BaseState  
+{Feature}ViewModel extends BaseViewModel
+
+// Components  
+Common{ComponentName} extends StatelessWidget/ConsumerWidget
+```
+
+## UI Kit Components
+- Sử dụng Common* widgets thay vì Flutter built-in widgets:
+  - `CommonScaffold` thay vì `Scaffold`
+  - `CommonContainer` thay vì `Container`  
+  - `CommonAppBar` thay vì `AppBar`
+  - `CommonInkWell` thay vì `InkWell`
+
+## Component Structure
+```dart
+class CommonComponent extends StatelessWidget {
+  const CommonComponent({
+    super.key,
+    required this.requiredParam,
+    this.optionalParam,
+  });
+
+  final RequiredType requiredParam;
+  final OptionalType? optionalParam;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(); // Implementation
+  }
+}
+```
+
+## Factory Constructors cho Common Patterns
+- Sử dụng factory constructors cho common use cases:
+```dart
+factory CommonAppBar.back({
+  String? text,
+  List<Widget>? actions = const [],
+}) {
+  return CommonAppBar(/* config */);
+}
+```
+
+## State Management Integration
+- Pages phải implement provider getter
+- Pages phải implement screenViewEvent getter  
+- Sử dụng ref.listen cho exception handling
+- Sử dụng ref.watch cho reactive UI updates
+
+## Theming và Styling
+- Sử dụng `AppColor.of(context)` và `color.*` cho colors
+- Sử dụng `style()` helper cho TextStyle
+- Sử dụng `.rps` extension cho responsive sizing
+- Initialize AppDimen.init() trong build method
+
+## Error Handling
+- Automatic exception handling qua BasePage
+- Loading states được handle tự động
+- Sử dụng FocusDetector cho lifecycle events
