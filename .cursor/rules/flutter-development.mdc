@@ -1,0 +1,39 @@
+---
+description: Flutter development standards và best practices cho TechTus project
+globs: ["**/*.dart"]
+alwaysApply: false
+---
+
+# Flutter Development Standards
+
+## Cấu trúc dự án
+- Sử dụng clean architecture với các layer: data_source, model, ui, navigation
+- Tất cả exports được quản lý trong `lib/index.dart`
+- UI components được tổ chức theo pattern: page -> view_model -> state
+
+## Coding Standards
+- Line length: 100 characters (theo .vscode/settings.json)
+- Sử dụng Riverpod cho state management
+- Sử dụng hooks_riverpod cho UI components
+- Format code automatically với dart formatter
+
+## Import và Export
+- Luôn sử dụng relative imports trong cùng module
+- Sử dụng `import '../../../index.dart';` cho cross-module imports
+- Tất cả public APIs phải được export qua index.dart
+
+## Logging và Error Handling
+- Sử dụng `Log.d()` cho debug logs với LogMode phù hợp
+- Sử dụng `Log.e()` cho error logs với stackTrace
+- Tất cả errors phải được handle qua exception_handler system
+
+## API và Data Layer
+- Sử dụng Dio cho HTTP clients
+- GraphQL clients cho complex queries
+- Repository pattern cho data access
+- JSON serialization với built_value/freezed
+
+## UI Components
+- Extend từ BasePage cho consistency
+- Sử dụng SharedProvider cho shared state
+- Component naming: {Feature}Page, {Feature}ViewModel, {Feature}State

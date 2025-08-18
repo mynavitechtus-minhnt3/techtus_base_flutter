@@ -1,0 +1,17 @@
+---
+description: Quy tắc giao tiếp bằng tiếng Việt theo user rules
+globs:
+alwaysApply: true
+---
+
+# Quy tắc giao tiếp
+
+## Ngôn ngữ
+- Luôn phản hồi bằng **tiếng Việt**
+- Sử dụng thuật ngữ kỹ thuật phù hợp khi cần thiết
+- Giải thích rõ ràng và dễ hiểu
+
+## Chỉnh sửa file ẩn / gitignore
+- Không tự ý sửa các file ẩn hoặc gitignore
+- Nếu phát hiện sai sót, chỉ **gợi ý (suggest)** và **chờ duyệt (approve)** trước khi sửa
+- Luôn hỏi ý kiến trước khi thay đổi cấu hình quan trọng
