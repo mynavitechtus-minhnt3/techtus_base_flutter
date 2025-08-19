@@ -5,7 +5,11 @@
       "WebFetch(domain:www.anthropic.com)",
       "Bash(mkdir:*)",
       "Bash(chmod:*)",
-      "Bash(python3 parse_openapi.py:*)"
+      "Bash(python3 parse_openapi.py:*)",
+      "Bash(claude mcp add:*)",
+      "WebFetch(domain:www.figma.com)",
+      "Bash(claude mcp:*)",
+      "Bash(make:*)"
     ],
     "deny": []
   }

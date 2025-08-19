@@ -81,6 +81,9 @@ rdl:
 clc:
 	dart run $(DART_TOOLS_PATH)/check_l10n_convention.dart lib/resource/l10n
 
+gen_api:
+	dart run $(DART_TOOLS_PATH)/generate_api_from_swagger.dart api_doc
+
 fm:
 	find . -name "*.dart" ! -name "*.g.dart" ! -name "*.freezed.dart" ! -name "*.gr.dart" ! -name "*.config.dart" ! -name "*.mocks.dart" ! -path '*/generated/*' ! -path '*/.dart_tool/*' | tr '\n' ' ' | xargs dart format --set-exit-if-changed -l 100
 	make sort_arb
