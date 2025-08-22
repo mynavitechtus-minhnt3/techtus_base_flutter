@@ -18,7 +18,7 @@ class RemoteException extends AppException {
 
   String get _apiInfo => Env.flavor == Flavor.production || Env.flavor == Flavor.test
       ? ''
-      : '\nTime: ${DateTime.now().toStringWithFormat(Constant.fddMMyyyyHHmm)}\nPath: $apiInfo';
+      : '\nTime: ${DateTimeUtil.now.toStringWithFormat(Constant.fddMMyyyyHHmm)}\nPath: $apiInfo';
 
   @override
   String get message =>

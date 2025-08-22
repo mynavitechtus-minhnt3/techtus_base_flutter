@@ -22,8 +22,7 @@ class AvoidUsingDateTimeNow extends CommonLintRule<_AvoidUsingDateTimeNowParamet
     context.registry.addInstanceCreationExpression((node) {
       final type = node.constructorName.type.type;
       final name = node.constructorName.name?.name;
-      if (type?.getDisplayString(withNullability: false) == 'DateTime' &&
-          name == 'now') {
+      if (type?.getDisplayString() == 'DateTime' && name == 'now') {
         reporter.atNode(node, code);
       }
     });
@@ -35,8 +34,7 @@ class AvoidUsingDateTimeNow extends CommonLintRule<_AvoidUsingDateTimeNowParamet
       ];
 }
 
-class _AvoidUsingDateTimeNowFix
-    extends CommonQuickFix<_AvoidUsingDateTimeNowParameter> {
+class _AvoidUsingDateTimeNowFix extends CommonQuickFix<_AvoidUsingDateTimeNowParameter> {
   _AvoidUsingDateTimeNowFix(super.config);
 
   @override
@@ -54,14 +52,13 @@ class _AvoidUsingDateTimeNowFix
       }
       final type = node.constructorName.type.type;
       final name = node.constructorName.name?.name;
-      if (type?.getDisplayString(withNullability: false) == 'DateTime' &&
-          name == 'now') {
+      if (type?.getDisplayString() == 'DateTime' && name == 'now') {
         final changeBuilder = reporter.createChangeBuilder(
-          message: "Replace with 'now'",
+          message: "Replace with 'DateTimeUtil.now'",
           priority: 70,
         );
         changeBuilder.addDartFileEdit((builder) {
-          builder.addSimpleReplacement(sourceRange, 'now');
+          builder.addSimpleReplacement(sourceRange, 'DateTimeUtil.now');
         });
       }
     });
@@ -83,4 +80,3 @@ class _AvoidUsingDateTimeNowParameter extends CommonLintParameter {
     );
   }
 }
-

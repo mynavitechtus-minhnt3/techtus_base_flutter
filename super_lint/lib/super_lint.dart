@@ -39,6 +39,7 @@ class _SuperLintPlugin extends PluginBase {
       PreferSingleWidgetPerFile(configs),
       RequireMatchingFileAndClassName(configs),
       MissingGoldenTest(configs),
+      AvoidUsingDateTimeNow(configs),
     ];
   }
 }

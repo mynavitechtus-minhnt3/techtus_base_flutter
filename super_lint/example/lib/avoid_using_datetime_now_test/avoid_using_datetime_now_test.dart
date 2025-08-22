@@ -1,4 +1,4 @@
-// ignore_for_file: avoid_dynamic, avoid_hard_coded_strings
+// ignore_for_file: avoid_dynamic, avoid_hard_coded_strings, unused_local_variable
 // ~.~.~.~.~.~.~.~ THE FOLLOWING CASES SHOULD NOT BE WARNED ~.~.~.~.~.~.~.~
 
 DateTime get now => DateTime(0);
@@ -13,4 +13,3 @@ void test() {
   final current = DateTime.now();
   print(current);
 }
-
