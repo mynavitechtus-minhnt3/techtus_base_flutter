@@ -10,7 +10,7 @@ dependencies:
     sdk: flutter
 
 dev_dependencies:
-  custom_lint: 0.7.5
+  custom_lint: 0.8.0
   super_lint:
     path: ../
 flutter:

@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_single_widget_per_file, avoid_hard_coded_strings
+// ignore_for_file: prefer_single_widget_per_file, avoid_hard_coded_strings, avoid_using_datetime_now
 abstract class AnalyticParameter {
   Map<String, Object>? get parameters;
 }

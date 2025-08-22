@@ -59,6 +59,7 @@ custom_lint:
     - incorrect_event_parameter_name:
     - incorrect_event_parameter_type:
     - incorrect_event_name:
+    - avoid_using_datetime_now:
     - avoid_using_unsafe_cast:
     - prefer_single_widget_per_file:
     - incorrect_freezed_default_value_type:
