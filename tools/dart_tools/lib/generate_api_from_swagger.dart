@@ -3,20 +3,60 @@ import 'dart:io';
 
 /// Tool to generate API methods from OpenAPI JSON specification
 ///
-/// Usage: dart tools/dart_tools/lib/generate_api_from_openapi.dart <folder_path>
+/// Usage: dart tools/dart_tools/lib/generate_api_from_openapi.dart [--input_path=path] [--apis=method_path,method_path] [--replace=true/false] [--output_path=path]
+
+/// - input_path: path to the folder containing the OpenAPI JSON file
+/// - apis: filter specific APIs by method and path (e.g., apis=get_v1/search,post_v2/city)
+/// - replace: true to replace all code below marker, false to append (default: true)
+/// - output_path: custom output directory (default: lib/data_source/api and lib/model/api)
 void main(List<String> args) {
   if (args.isEmpty) {
     print('❌ Error: Please provide folder path containing OpenAPI JSON file');
-    print('Usage: dart tools/dart_tools/lib/generate_api_from_openapi.dart <folder_path>');
+    print(
+        'Usage: dart tools/dart_tools/lib/generate_api_from_openapi.dart [--input_path=path] [--apis=method_path,method_path] [--replace=true/false] [--output_path=path]');
+    print('Examples:');
+    print('  dart tools/dart_tools/lib/generate_api_from_openapi.dart --input_path=api_doc');
+    print(
+        '  dart tools/dart_tools/lib/generate_api_from_openapi.dart --input_path=api_doc --apis=get_v1/search,post_v2/city');
+    print(
+        '  dart tools/dart_tools/lib/generate_api_from_openapi.dart --input_path=api_doc --replace=false');
+    print(
+        '  dart tools/dart_tools/lib/generate_api_from_openapi.dart --input_path=api_doc --output_path=api_doc');
     exit(1);
   }
 
-  final folderPath = args[0];
+  // Parse additional arguments
+  String? apisFilter;
+  bool replace = true;
+  String? outputPath;
+  String? inputPath;
+
+  for (int i = 0; i < args.length; i++) {
+    final arg = args[i];
+    if (arg.startsWith('--apis=')) {
+      apisFilter = arg.substring(7);
+    } else if (arg.startsWith('--replace=')) {
+      final replaceStr = arg.substring(10).toLowerCase();
+      replace = replaceStr == 'true';
+    } else if (arg.startsWith('--output_path=')) {
+      outputPath = arg.substring(14);
+    } else if (arg.startsWith('--input_path=')) {
+      inputPath = arg.substring(13);
+    }
+  }
+
   final generator = ApiGenerator();
 
   try {
-    generator.generateFromFolder(folderPath);
+    generator.generateFromFolder(
+      inputPath!,
+      apisFilter: apisFilter,
+      replace: replace,
+      outputPath: outputPath,
+    );
     print('✅ Successfully generated API methods from OpenAPI!');
+    print(
+        '⚠️  WARNING: We only use _authAppServerApiClient for all APIs. For APIs that should use _noneAuthAppServerApiClient, you must manually modify them.');
   } catch (e) {
     print('❌ Error: $e');
     exit(1);
@@ -25,10 +65,40 @@ void main(List<String> args) {
 
 class ApiGenerator {
   static const String appApiServicePath = 'lib/data_source/api/app_api_service.dart';
-  static const String generatedMethodsMarker = '// ===== Generated API Methods from OpenAPI =====';
+  static const String modelApiPath = 'lib/model/api';
+  static const String generatedMethodsMarker =
+      '// GENERATED CODE - DO NOT MODIFY OR DELETE THIS COMMENT';
 
-  void generateFromFolder(String folderPath) {
+  late String _appApiServicePath;
+  late String _modelApiPath;
+  late bool _replace;
+  late Set<String> _allowedApis;
+
+  void generateFromFolder(
+    String folderPath, {
+    String? apisFilter,
+    bool replace = true,
+    String? outputPath,
+  }) {
+    // Initialize configuration
+    _replace = replace;
+    _allowedApis = _parseApisFilter(apisFilter);
+
+    if (outputPath != null) {
+      _appApiServicePath = '$outputPath/app_api_service.dart';
+      _modelApiPath = '$outputPath/model';
+    } else {
+      _appApiServicePath = appApiServicePath;
+      _modelApiPath = modelApiPath;
+    }
     print('📁 Checking folder: $folderPath');
+    if (_allowedApis.isNotEmpty) {
+      print('🔍 Filtering APIs: ${_allowedApis.join(', ')}');
+    }
+    print('🔄 Replace mode: $_replace');
+    print('📂 Output paths:');
+    print('  - API Service: $_appApiServicePath');
+    print('  - Models: $_modelApiPath');
 
     // Check if folder exists
     final folder = Directory(folderPath);
@@ -53,6 +123,22 @@ class ApiGenerator {
 
     final openApiFilePath = jsonFiles.first.path;
     generateFromOpenApi(openApiFilePath);
+  }
+
+  Set<String> _parseApisFilter(String? apisFilter) {
+    if (apisFilter == null || apisFilter.isEmpty) {
+      return <String>{};
+    }
+
+    return apisFilter.split(',').map((api) => api.trim().toLowerCase()).toSet();
+  }
+
+  bool _shouldIncludeEndpoint(EndpointInfo endpoint) {
+    if (_allowedApis.isEmpty) return true;
+
+    // Create key in format: method_path (e.g., "get_v1/search", "post_v2/city")
+    final key = '${endpoint.method.toLowerCase()}_${endpoint.path}'.toLowerCase();
+    return _allowedApis.contains(key);
   }
 
   void generateFromOpenApi(String openApiFilePath) {
@@ -236,6 +322,7 @@ class ApiGenerator {
 
     for (final endpoint in endpoints) {
       if (endpoint.responseExample == null) continue;
+      if (!_shouldIncludeEndpoint(endpoint)) continue;
 
       final methodCode = _generateSingleApiMethod(endpoint, v1Paths);
       methods.add(methodCode);
@@ -247,9 +334,8 @@ class ApiGenerator {
   String _generateSingleApiMethod(EndpointInfo endpoint, Set<String> v1Paths) {
     final methodName = _generateMethodName(endpoint.path, endpoint.method, v1Paths);
     final modelName = _generateModelName(endpoint.path);
-    final client = endpoint.path.startsWith('/v2/')
-        ? '_authAppServerApiClient'
-        : '_noneAuthAppServerApiClient';
+    // Always use _authAppServerApiClient for consistency
+    final client = '_authAppServerApiClient';
 
     // Generate parameters
     final params = <String>[];
@@ -306,7 +392,7 @@ class ApiGenerator {
     methodLines.addAll([
       '    return $client.request(',
       '      method: RestMethod.${endpoint.method.toLowerCase()},',
-      "      path: '${endpoint.path}',",
+      "      path: '${endpoint.path.startsWith('/') ? endpoint.path.substring(1) : endpoint.path}',",
     ]);
 
     if (queryLines.isNotEmpty) {
@@ -360,19 +446,7 @@ class ApiGenerator {
 
   String _generateModelName(String path) {
     final cleanPath = _cleanPathForName(path);
-    var modelName = 'Api${_toPascalCase(cleanPath)}Data';
-
-    // Simplify long names
-    modelName = modelName
-        .replaceAll('Internal', 'Int')
-        .replaceAll('Multiple', 'Multi')
-        .replaceAll('Features', 'Feature')
-        .replaceAll('Industries', 'Industry')
-        .replaceAll('Occupations', 'Occupation')
-        .replaceAll('Statistics', 'Stats')
-        .replaceAll('Recommendations', 'Rec')
-        .replaceAll('Browsing', 'Browse')
-        .replaceAll('Histories', 'History');
+    final modelName = 'Api${_toPascalCase(cleanPath)}Data';
 
     return modelName;
   }
@@ -396,9 +470,23 @@ class ApiGenerator {
   }
 
   void _updateAppApiService(List<String> apiMethods) {
-    final file = File(appApiServicePath);
+    final file = File(_appApiServicePath);
     if (!file.existsSync()) {
-      throw Exception('app_api_service.dart file does not exist');
+      // Try to copy from the default location if using custom output path
+      if (_appApiServicePath != appApiServicePath) {
+        final sourceFile = File(appApiServicePath);
+        if (sourceFile.existsSync()) {
+          print('📋 Copying app_api_service.dart from ${sourceFile.path} to $_appApiServicePath');
+          // Create directory if it doesn't exist
+          file.parent.createSync(recursive: true);
+          // Copy file content
+          file.writeAsStringSync(sourceFile.readAsStringSync());
+        } else {
+          throw Exception('Source app_api_service.dart file does not exist: ${sourceFile.path}');
+        }
+      } else {
+        throw Exception('app_api_service.dart file does not exist: $_appApiServicePath');
+      }
     }
 
     var content = file.readAsStringSync();
@@ -427,18 +515,26 @@ class ApiGenerator {
       throw Exception('Could not find class end');
     }
 
-    // Remove all methods after marker
-    final beforeMarker = content.substring(0, markerIndex + generatedMethodsMarker.length);
-    final afterClass = content.substring(classEndIndex);
-
-    // Create new content
     final newMethods = apiMethods.join('\n\n');
-    final newContent = '$beforeMarker\n\n$newMethods\n$afterClass';
+    String newContent;
+
+    if (_replace) {
+      // Replace mode: Remove all methods after marker
+      final beforeMarker = content.substring(0, markerIndex + generatedMethodsMarker.length);
+      final afterClass = content.substring(classEndIndex);
+      newContent = '$beforeMarker\n\n$newMethods\n$afterClass';
+    } else {
+      // Append mode: Add new methods before class end
+      final beforeClassEnd = content.substring(0, classEndIndex);
+      final afterClassEnd = content.substring(classEndIndex);
+      newContent = '$beforeClassEnd\n\n$newMethods\n$afterClassEnd';
+    }
 
     // Write file
     file.writeAsStringSync(newContent);
 
-    print('📝 Updated ${apiMethods.length} API methods in $appApiServicePath');
+    final mode = _replace ? 'replaced' : 'appended';
+    print('📝 ${mode.toUpperCase()} ${apiMethods.length} API methods in $_appApiServicePath');
   }
 
   List<String> _generateModelClasses(List<EndpointInfo> endpoints) {
@@ -448,6 +544,7 @@ class ApiGenerator {
 
     for (final endpoint in endpoints) {
       if (endpoint.responseExample == null) continue;
+      if (!_shouldIncludeEndpoint(endpoint)) continue;
 
       final modelName = _generateModelName(endpoint.path);
 
@@ -647,7 +744,7 @@ ${itemResult.mainClass}''';
   }
 
   void _writeModelFile(String fileName, String content) {
-    final filePath = 'lib/model/api/$fileName.dart';
+    final filePath = '$_modelApiPath/$fileName.dart';
     final file = File(filePath);
 
     // Create directory if it doesn't exist
@@ -660,7 +757,6 @@ ${itemResult.mainClass}''';
         .replaceFirst("part '${_modelNameToFileName('')}.g.dart';", "part '$fileName.g.dart';");
 
     file.writeAsStringSync(updatedContent);
-    print('📄 Created model file: $filePath');
   }
 
   String _toPascalCase(String input) {

@@ -75,6 +75,7 @@ export 'generated/app_string_en.dart';
 export 'generated/app_string_ja.dart';
 export 'generated/assets.gen.dart';
 export 'generated/fonts.gen.dart';
+export 'generated/l10n.dart';
 export 'index.dart';
 export 'main.dart';
 export 'model/api/api_refresh_token_data.dart';
