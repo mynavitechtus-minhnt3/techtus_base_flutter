@@ -1,4 +1,4 @@
-image: ghcr.io/cirruslabs/flutter:3.32.4
+image: ghcr.io/cirruslabs/flutter:3.35.1
 
 definitions:
   steps:

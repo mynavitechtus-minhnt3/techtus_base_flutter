@@ -6,7 +6,7 @@ The simple Flutter project
 
 ### Requirements
 
-- Flutter SDK: 3.32.4
+- Flutter SDK: 3.35.1
 - CocoaPods: 1.16.2
 
 ### How to run app
