@@ -5,7 +5,7 @@ on:
     types: [opened, edited, synchronize]
 
 env:
-  EXCLUDED_USERS: '["Copilot", "coderabbitai[bot]"]'
+  EXCLUDED_USERS: '["Copilot", "coderabbitai[bot]", "cursor[bot]"]'
 
 jobs:
   check-review-comments:

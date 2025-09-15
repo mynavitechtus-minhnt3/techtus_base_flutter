@@ -13,41 +13,39 @@ class MockSettingViewModel extends StateNotifier<CommonState<SettingState>>
 }
 
 void main() {
-  group('SettingPage', () {
-    group('test', () {
-      void _baseTestGoldens({
-        required LanguageCode languageCode,
-        required bool isDarkMode,
-      }) {
-        testGoldens(
-          'when theme is ${isDarkMode ? 'dark' : 'light'} and language is ${languageCode.localeCode}',
-          (tester) async {
-            await tester.testWidget(
-              filename:
-                  'setting/when_theme_is_${isDarkMode ? 'dark' : 'light'}_and_language_is_$languageCode',
-              widget: const SettingPage(),
-              isDarkMode: isDarkMode,
-              locale: languageCode.locale,
-              overrides: [
-                settingViewModelProvider.overrideWith(
-                  (_) => MockSettingViewModel(
-                    const CommonState(
-                      data: SettingState(),
-                    ),
+  group('others', () {
+    void _baseTestGoldens({
+      required LanguageCode languageCode,
+      required bool isDarkMode,
+    }) {
+      testGoldens(
+        'when theme is ${isDarkMode ? 'dark' : 'light'} and language is ${languageCode.localeCode}',
+        (tester) async {
+          await tester.testWidget(
+            filename:
+                'setting/when_theme_is_${isDarkMode ? 'dark' : 'light'}_and_language_is_$languageCode',
+            widget: const SettingPage(),
+            isDarkMode: isDarkMode,
+            locale: languageCode.locale,
+            overrides: [
+              settingViewModelProvider.overrideWith(
+                (_) => MockSettingViewModel(
+                  const CommonState(
+                    data: SettingState(),
                   ),
                 ),
-                isDarkModeProvider.overrideWith((_) => isDarkMode),
-                languageCodeProvider.overrideWith((_) => languageCode),
-              ],
-            );
-          },
-        );
-      }
+              ),
+              isDarkModeProvider.overrideWith((_) => isDarkMode),
+              languageCodeProvider.overrideWith((_) => languageCode),
+            ],
+          );
+        },
+      );
+    }
 
-      _baseTestGoldens(languageCode: LanguageCode.en, isDarkMode: false);
-      _baseTestGoldens(languageCode: LanguageCode.ja, isDarkMode: false);
-      _baseTestGoldens(languageCode: LanguageCode.en, isDarkMode: true);
-      _baseTestGoldens(languageCode: LanguageCode.ja, isDarkMode: true);
-    });
+    _baseTestGoldens(languageCode: LanguageCode.en, isDarkMode: false);
+    _baseTestGoldens(languageCode: LanguageCode.ja, isDarkMode: false);
+    _baseTestGoldens(languageCode: LanguageCode.en, isDarkMode: true);
+    _baseTestGoldens(languageCode: LanguageCode.ja, isDarkMode: true);
   });
 }

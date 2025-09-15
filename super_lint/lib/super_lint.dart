@@ -40,6 +40,9 @@ class _SuperLintPlugin extends PluginBase {
       RequireMatchingFileAndClassName(configs),
       MissingGoldenTest(configs),
       AvoidUsingDateTimeNow(configs),
+      EmptyTestGroup(configs),
+      IncorrectGoldenImageName(configs),
+      InvalidTestGroupName(configs),
     ];
   }
 }

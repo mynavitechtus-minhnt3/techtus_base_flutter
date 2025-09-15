@@ -68,3 +68,17 @@ custom_lint:
       widget_folders:
         - "lib/missing_golden_test_test/lib"
       test_folder: "lib/missing_golden_test_test/test"
+    - invalid_test_group_name:
+      valid_group_names:
+        - "design"
+        - "others"
+      includes:
+        - "lib/invalid_test_group_name/**/*.dart"
+    - avoid_using_datetime_now:
+    - empty_test_group:
+    - incorrect_golden_image_name:
+      severity: error
+      excludes:
+        - "lib/excluded_test/**/*.dart"
+      includes:
+        - "**/*_test.dart"

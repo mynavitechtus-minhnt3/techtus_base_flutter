@@ -6,7 +6,7 @@ import '../../../../../../common/index.dart';
 
 void main() {
   group(
-    'CommonNoItemsFoundIndicator',
+    'others',
     () {
       testGoldens('basic', (tester) async {
         await tester.testWidget(
@@ -19,7 +19,7 @@ void main() {
 
       testGoldens('in sized box', (tester) async {
         await tester.testWidget(
-          filename: 'common_no_items_found_indicator/in_sized_box',
+          filename: 'common_no_items_found_indicator/in sized box',
           widget: const SizedBox(
             width: 50,
             height: 50,

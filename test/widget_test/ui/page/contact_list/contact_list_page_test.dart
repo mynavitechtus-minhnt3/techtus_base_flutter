@@ -14,12 +14,12 @@ class MockContactListViewModel extends StateNotifier<CommonState<ContactListStat
 }
 
 void main() {
-  group('ContactListPage', () {
+  group('others', () {
     testGoldens(
       'when conversationList is empty',
       (tester) async {
         await tester.testWidget(
-          filename: 'contact_list_page/when_conversationList_is_empty',
+          filename: 'contact_list_page/when conversationList is empty',
           widget: const ContactListPage(),
           overrides: [
             contactListViewModelProvider.overrideWith(
@@ -42,7 +42,7 @@ void main() {
       'when conversationList is not empty',
       (tester) async {
         await tester.testWidget(
-          filename: 'contact_list_page/when_conversationList_is_not_empty',
+          filename: 'contact_list_page/when conversationList is not empty',
           widget: const ContactListPage(),
           onCreate: (tester, key) async {
             final textFieldFinder = find.byType(TextField).isDescendantOfKeyIfAny(key);
@@ -77,7 +77,7 @@ void main() {
       'when current user is vip member',
       (tester) async {
         await tester.testWidget(
-          filename: 'contact_list_page/when_current_user_is_vip_member',
+          filename: 'contact_list_page/when current user is vip member',
           widget: const ContactListPage(),
           overrides: [
             contactListViewModelProvider.overrideWith(

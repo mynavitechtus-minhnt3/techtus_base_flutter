@@ -165,6 +165,21 @@ custom_lint:
       excludes:
         - "lib/ui/component/ui_kit/decoration/*.dart"
       test_folder: "test/widget_test"
+    - invalid_test_group_name:
+      severity: info
+      valid_group_names:
+        - "others"
+      includes:
+        - "test/widget_test/*.dart"
+        - "test/widget_test/**/*.dart"
+      excludes:
+        - "test/unit_test/*.dart"
+        - "test/unit_test/**/*.dart"
+    - empty_test_group:
+      includes:
+        - "test/**/*.dart"
+    - incorrect_golden_image_name:
+    - avoid_using_datetime_now:
 linter:
   rules:
     - always_declare_return_types

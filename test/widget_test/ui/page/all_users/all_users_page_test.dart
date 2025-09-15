@@ -14,7 +14,7 @@ class MockAllUsersViewModel extends StateNotifier<CommonState<AllUsersState>>
 }
 
 void main() {
-  group('AllUsersPage', () {
+  group('others', () {
     testGoldens(
       'when all users is not empty and members is empty and add button is enabled',
       (tester) async {
@@ -36,7 +36,7 @@ void main() {
 
         await tester.testWidget(
           filename:
-              'all_users_page/when_all_users_is_not_empty_and_members_is_empty_and_add_button_is_enabled',
+              'all_users_page/when all users is not empty and members is empty and add button is enabled',
           widget: const AllUsersPage(action: AllUsersPageAction.createNewConversation),
           overrides: [
             allUsersViewModelProvider.overrideWith(
@@ -58,7 +58,7 @@ void main() {
 
         await tester.testWidget(
           filename:
-              'all_users_page/when_all_users_is_empty_and_members_is_empty_and_add_button_is_disabled',
+              'all_users_page/when all users is empty and members is empty and add button is disabled',
           widget: const AllUsersPage(action: AllUsersPageAction.createNewConversation),
           overrides: [
             allUsersViewModelProvider.overrideWith(
@@ -99,7 +99,7 @@ void main() {
 
         await tester.testWidget(
           filename:
-              'all_users_page/when_members_is_not_empty_and_all_users_is_not_empty_and_add_button_is_enabled',
+              'all_users_page/when members is not empty and all users is not empty and add button is enabled',
           widget: const AllUsersPage(action: AllUsersPageAction.addMembers),
           overrides: [
             allUsersViewModelProvider.overrideWith(
@@ -134,7 +134,7 @@ void main() {
 
         await tester.testWidget(
           filename:
-              'all_users_page/when_members_is_not_empty_and_all_users_is_empty_and_add_button_is_disabled',
+              'all_users_page/when members is not empty and all users is empty and add button is disabled',
           widget: const AllUsersPage(action: AllUsersPageAction.addMembers),
           onCreate: (tester, key) async {
             final textFieldFinder = find.byType(TextField).isDescendantOfKeyIfAny(key);

@@ -16,13 +16,13 @@ class MockSplashViewModel extends StateNotifier<CommonState<SplashState>>
 
 void main() {
   group(
-    'SplashPage',
+    'others',
     () {
       testGoldens(
         'default state',
         (tester) async {
           await tester.testWidget(
-            filename: 'splash_page/default_state',
+            filename: 'splash_page/default state',
             widget: const SplashPage(),
             overrides: [
               splashViewModelProvider.overrideWith((ref) => MockSplashViewModel(

@@ -7,11 +7,11 @@ import '../../../../common/index.dart';
 
 void main() {
   group(
-    'CommonAppBar',
+    'others',
     () {
       testGoldens('when leadingIcon is none', (tester) async {
         await tester.testWidget(
-          filename: 'common_app_bar/leading_none',
+          filename: 'common_app_bar/when leadingIcon is none',
           widget: Scaffold(
             appBar: CommonAppBar(
               text: 'Title',
@@ -24,7 +24,7 @@ void main() {
 
       testGoldens('when leadingIcon is back', (tester) async {
         await tester.testWidget(
-          filename: 'common_app_bar/leading_back',
+          filename: 'common_app_bar/when leadingIcon is back',
           widget: Scaffold(
             appBar: CommonAppBar(
               text: 'Title',
@@ -36,7 +36,7 @@ void main() {
 
       testGoldens('when leadingIcon is close', (tester) async {
         await tester.testWidget(
-          filename: 'common_app_bar/leading_close',
+          filename: 'common_app_bar/when leadingIcon is close',
           widget: Scaffold(
             appBar: CommonAppBar(
               text: 'Title',
@@ -49,7 +49,7 @@ void main() {
 
       testGoldens('when titleType is logo', (tester) async {
         await tester.testWidget(
-          filename: 'common_app_bar/title_logo',
+          filename: 'common_app_bar/when titleType is logo',
           widget: Scaffold(
             appBar: CommonAppBar(
               titleType: AppBarTitle.logo,
@@ -62,7 +62,7 @@ void main() {
 
       testGoldens('long text', (tester) async {
         await tester.testWidget(
-          filename: 'common_app_bar/long_text',
+          filename: 'common_app_bar/long text',
           widget: Scaffold(
             appBar: CommonAppBar(
               titleType: AppBarTitle.text,

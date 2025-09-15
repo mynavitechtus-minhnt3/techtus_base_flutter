@@ -279,5 +279,7 @@ workflows:
       - *decode_dart_defines
       - *sync
       - *ci
+    artifacts:
+      - test/widget_test/**/failures/**/*.png
     publishing:
       <<: *email_release

@@ -7,11 +7,11 @@ import '../../../common/index.dart';
 
 void main() {
   group(
-    'PrimaryTextField',
+    'others',
     () {
       testGoldens('when text is empty', (tester) async {
         await tester.testWidget(
-          filename: 'primary_text_field/when_text_is_empty',
+          filename: 'primary_text_field/when text is empty',
           widget: PrimaryTextField(
             title: 'Email',
             hintText: 'Email',
@@ -22,7 +22,7 @@ void main() {
 
       testGoldens('when text is not empty', (tester) async {
         await tester.testWidget(
-          filename: 'primary_text_field/when_text_is_not_empty',
+          filename: 'primary_text_field/when text is not empty',
           widget: PrimaryTextField(
             title: 'Email',
             hintText: 'Email',
@@ -33,7 +33,7 @@ void main() {
 
       testGoldens('when it has suffixIcon', (tester) async {
         await tester.testWidget(
-          filename: 'primary_text_field/when_it_has_suffixIcon',
+          filename: 'primary_text_field/when it has suffixIcon',
           widget: PrimaryTextField(
             title: 'Password',
             hintText: 'Password',
@@ -50,7 +50,7 @@ void main() {
         'when keyboardType is TextInputType.visiblePassword',
         (tester) async {
           await tester.testWidget(
-            filename: 'primary_text_field/when_keyboardType_is_TextInputType.visiblePassword',
+            filename: 'primary_text_field/when keyboardType is TextInputType.visiblePassword',
             widget: PrimaryTextField(
               title: 'Password',
               hintText: 'Password',
@@ -65,7 +65,7 @@ void main() {
         'when tapping on the eye icon once',
         (tester) async {
           await tester.testWidget(
-            filename: 'primary_text_field/when_tapping_on_the_eye_icon_once',
+            filename: 'primary_text_field/when tapping on the eye icon once',
             widget: PrimaryTextField(
               title: 'Password',
               hintText: 'Password',

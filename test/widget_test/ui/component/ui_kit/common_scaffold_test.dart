@@ -8,7 +8,7 @@ import '../../../../common/index.dart';
 
 void main() {
   group(
-    'CommonScaffold',
+    'others',
     () {
       testGoldens('basic', (tester) async {
         await tester.testWidget(
@@ -26,7 +26,7 @@ void main() {
 
       testGoldens('with drawer and fab', (tester) async {
         await tester.testWidget(
-          filename: 'common_scaffold/with_drawer_and_fab',
+          filename: 'common_scaffold/with drawer and fab',
           widget: CommonScaffold(
             appBar: CommonAppBar(
               text: 'Title',

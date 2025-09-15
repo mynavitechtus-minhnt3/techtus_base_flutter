@@ -14,13 +14,13 @@ class MockLoginViewModel extends StateNotifier<CommonState<LoginState>>
 
 void main() {
   group(
-    'LoginPage',
+    'others',
     () {
       testGoldens(
         'when login button is disabled',
         (tester) async {
           await tester.testWidget(
-            filename: 'login_page/when_login_button_is_disabled',
+            filename: 'login_page/when login button is disabled',
             widget: const LoginPage(),
             overrides: [
               loginViewModelProvider.overrideWith((ref) => MockLoginViewModel(
@@ -37,7 +37,7 @@ void main() {
         'when login button is enabled',
         (tester) async {
           await tester.testWidget(
-            filename: 'login_page/when_login_button_is_enabled',
+            filename: 'login_page/when login button is enabled',
             widget: const LoginPage(),
             onCreate: (tester, key) async {
               final primaryTextFieldFinder =
@@ -71,7 +71,7 @@ void main() {
         'when error text is visible',
         (tester) async {
           await tester.testWidget(
-            filename: 'login_page/when_error_text_is_visible',
+            filename: 'login_page/when error text is visible',
             widget: const LoginPage(),
             overrides: [
               loginViewModelProvider.overrideWith(

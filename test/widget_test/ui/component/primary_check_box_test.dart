@@ -8,13 +8,13 @@ import '../../../common/index.dart';
 
 void main() {
   group(
-    'PrimaryCheckBox',
+    'others',
     () {
       testGoldens('when text is null and init value is false and isEnabled is false',
           (tester) async {
         await tester.testWidget(
           filename:
-              'primary_check_box/when_text_is_null_and_init_value_is_false_and_isEnabled_is_false',
+              'primary_check_box/when text is null and init value is false and isEnabled is false',
           widget: const PrimaryCheckBox(
             text: null,
             initValue: false,
@@ -27,7 +27,7 @@ void main() {
           (tester) async {
         await tester.testWidget(
           filename:
-              'primary_check_box/when_text_is_not_null_and_init_value_is_true_and_isEnabled_is_true',
+              'primary_check_box/when text is not null and init value is true and isEnabled is true',
           widget: PrimaryCheckBox(
             text: Text('long long long long text' * 10),
             initValue: true,
@@ -40,7 +40,7 @@ void main() {
           (tester) async {
         await tester.testWidget(
           filename:
-              'primary_check_box/when_text_is_not_null_and_init_value_is_true_and_isEnabled_is_false',
+              'primary_check_box/when text is not null and init value is true and isEnabled is false',
           widget: const PrimaryCheckBox(
             text: Text('Minh'),
             initValue: true,
