@@ -54,11 +54,11 @@ class _AvoidUsingDateTimeNowFix extends CommonQuickFix<_AvoidUsingDateTimeNowPar
       final name = node.constructorName.name?.name;
       if (type?.getDisplayString() == 'DateTime' && name == 'now') {
         final changeBuilder = reporter.createChangeBuilder(
-          message: "Replace with 'now'",
+          message: "Replace with 'DateTimeUtil.now'",
           priority: 70,
         );
         changeBuilder.addDartFileEdit((builder) {
-          builder.addSimpleReplacement(sourceRange, 'now');
+          builder.addSimpleReplacement(sourceRange, 'DateTimeUtil.now');
         });
       }
     });
@@ -67,8 +67,8 @@ class _AvoidUsingDateTimeNowFix extends CommonQuickFix<_AvoidUsingDateTimeNowPar
 
 class _AvoidUsingDateTimeNowParameter extends CommonLintParameter {
   const _AvoidUsingDateTimeNowParameter({
-    super.excludes = const [],
-    super.includes = const [],
+    super.excludes,
+    super.includes,
     super.severity,
   });
 

@@ -37,6 +37,7 @@
   - [missing_expanded_or_flexible](#missing_expanded_or_flexible)
   - [incorrect_parent_class](#incorrect_parent_class)
   - [avoid_hard_coded_strings](#avoid_hard_coded_strings)
+  - [avoid_using_datetime_now](#avoid_using_datetime_now)
 
 ## All lint rules
 
@@ -975,4 +976,24 @@ Text(AppStrings.welcomeMessage)
 
 ```dart
 Text('Welcome to the app!')
+```
+
+### avoid_using_datetime_now
+
+Use `now` instead of `DateTime.now()`.
+
+```yaml
+- avoid_using_datetime_now:
+```
+
+**Good**:
+
+```dart
+final current = now;
+```
+
+**Bad**:
+
+```dart
+final current = DateTime.now();
 ```

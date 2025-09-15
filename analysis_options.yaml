@@ -108,6 +108,7 @@ custom_lint:
         - "test/**/*.dart"
         - "integration_test/*.dart"
         - "integration_test/**/*.dart"
+    - avoid_using_datetime_now:
     - avoid_using_if_else_with_enums:
       include_conditional_expression: false
       excludes:
