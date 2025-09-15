@@ -23,7 +23,7 @@ void main() {
     ]);
   });
 
-  group('MainPage', () {
+  group('others', () {
     testGoldens('when current bottom navigation index is 0', (tester) async {
       await tester.runAsync(() async {
         await tester.pumpWidgetBuilder(

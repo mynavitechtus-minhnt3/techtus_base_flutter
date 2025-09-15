@@ -7,7 +7,7 @@ import '../../../common/index.dart';
 
 void main() {
   group(
-    'AvatarView',
+    'others',
     () {
       testGoldens('when text is empty', (tester) async {
         await tester.testWidget(

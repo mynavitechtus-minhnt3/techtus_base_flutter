@@ -7,7 +7,7 @@ import '../../../../common/index.dart';
 
 void main() {
   group(
-    'CommonText',
+    'others',
     () {
       testGoldens('basic', (tester) async {
         await tester.testWidget(

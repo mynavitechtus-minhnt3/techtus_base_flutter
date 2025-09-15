@@ -14,7 +14,7 @@ class MockLoginViewModel extends StateNotifier<CommonState<LoginState>>
 
 void main() {
   group(
-    'LoginPage',
+    'others',
     () {
       testGoldens(
         'when login button is disabled',

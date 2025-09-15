@@ -13,8 +13,8 @@ class MockSettingViewModel extends StateNotifier<CommonState<SettingState>>
 }
 
 void main() {
-  group('SettingPage', () {
-    group('test', () {
+  group('others', () {
+    group('others', () {
       void _baseTestGoldens({
         required LanguageCode languageCode,
         required bool isDarkMode,

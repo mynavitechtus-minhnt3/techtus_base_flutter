@@ -14,7 +14,7 @@ class MockContactListViewModel extends StateNotifier<CommonState<ContactListStat
 }
 
 void main() {
-  group('ContactListPage', () {
+  group('others', () {
     testGoldens(
       'when conversationList is empty',
       (tester) async {

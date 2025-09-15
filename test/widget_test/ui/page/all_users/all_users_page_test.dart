@@ -14,7 +14,7 @@ class MockAllUsersViewModel extends StateNotifier<CommonState<AllUsersState>>
 }
 
 void main() {
-  group('AllUsersPage', () {
+  group('others', () {
     testGoldens(
       'when all users is not empty and members is empty and add button is enabled',
       (tester) async {

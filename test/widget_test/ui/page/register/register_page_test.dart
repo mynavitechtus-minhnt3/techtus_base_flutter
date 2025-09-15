@@ -14,7 +14,7 @@ class MockRegisterViewModel extends StateNotifier<CommonState<RegisterState>>
 
 void main() {
   group(
-    'RegisterPage',
+    'others',
     () {
       testGoldens(
         'when register button is disabled',

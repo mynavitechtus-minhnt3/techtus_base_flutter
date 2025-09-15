@@ -7,7 +7,7 @@ import '../../../common/index.dart';
 
 void main() {
   group(
-    'SearchTextField',
+    'others',
     () {
       testGoldens('when text is empty', (tester) async {
         await tester.testWidget(

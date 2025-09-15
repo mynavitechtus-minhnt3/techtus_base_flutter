@@ -13,7 +13,7 @@ class MockRenameConversationViewModel extends StateNotifier<CommonState<RenameCo
 }
 
 void main() {
-  group('RenameConversationPage', () {
+  group('others', () {
     const conversation = FirebaseConversationData(id: '1');
 
     testGoldens(

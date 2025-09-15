@@ -16,7 +16,7 @@ class MockSplashViewModel extends StateNotifier<CommonState<SplashState>>
 
 void main() {
   group(
-    'SplashPage',
+    'others',
     () {
       testGoldens(
         'default state',

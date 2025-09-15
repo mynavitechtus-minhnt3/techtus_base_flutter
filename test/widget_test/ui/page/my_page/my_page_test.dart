@@ -13,7 +13,7 @@ class MockMyPageViewModel extends StateNotifier<CommonState<MyPageState>>
 }
 
 void main() {
-  group('MyPagePage', () {
+  group('others', () {
     testGoldens(
       'when current user is not vip member',
       (tester) async {

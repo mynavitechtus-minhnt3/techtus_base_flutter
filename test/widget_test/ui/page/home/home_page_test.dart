@@ -25,7 +25,7 @@ HomeViewModel _buildHomeViewModel(CommonState<HomeState> state) {
 }
 
 void main() {
-  group('HomePage', () {
+  group('others', () {
     testGoldens(
       'when fetching background image failed',
       (tester) async {

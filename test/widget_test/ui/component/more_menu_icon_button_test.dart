@@ -6,7 +6,7 @@ import '../../../common/index.dart';
 
 void main() {
   group(
-    'MoreMenuIconButton',
+    'others',
     () {
       testGoldens('when it is normal state', (tester) async {
         await tester.testWidget(

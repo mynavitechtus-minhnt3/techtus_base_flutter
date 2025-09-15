@@ -9,7 +9,7 @@ import '../../../../common/index.dart';
 
 void main() {
   group(
-    'CommonImage',
+    'others',
     () {
       testGoldens('icon_data', (tester) async {
         await tester.testWidget(

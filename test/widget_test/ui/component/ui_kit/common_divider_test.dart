@@ -6,7 +6,7 @@ import '../../../../common/index.dart';
 
 void main() {
   group(
-    'CommonDivider',
+    'others',
     () {
       testGoldens('horizontal', (tester) async {
         await tester.testWidget(

@@ -8,7 +8,7 @@ import '../../../../common/index.dart';
 
 void main() {
   group(
-    'CommonScaffold',
+    'others',
     () {
       testGoldens('basic', (tester) async {
         await tester.testWidget(

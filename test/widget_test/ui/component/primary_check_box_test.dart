@@ -8,7 +8,7 @@ import '../../../common/index.dart';
 
 void main() {
   group(
-    'PrimaryCheckBox',
+    'others',
     () {
       testGoldens('when text is null and init value is false and isEnabled is false',
           (tester) async {

@@ -15,7 +15,7 @@ class MockChatViewModel extends StateNotifier<CommonState<ChatState>>
 }
 
 void main() {
-  group('ChatPage', () {
+  group('others', () {
     testGoldens(
       'when `messages` is empty',
       (tester) async {

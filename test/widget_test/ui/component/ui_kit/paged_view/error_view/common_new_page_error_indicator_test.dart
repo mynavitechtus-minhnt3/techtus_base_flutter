@@ -6,7 +6,7 @@ import '../../../../../../common/index.dart';
 
 void main() {
   group(
-    'CommonNewPageErrorIndicator',
+    'others',
     () {
       testGoldens('basic', (tester) async {
         await tester.testWidget(

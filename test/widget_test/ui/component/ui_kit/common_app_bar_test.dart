@@ -7,7 +7,7 @@ import '../../../../common/index.dart';
 
 void main() {
   group(
-    'CommonAppBar',
+    'others',
     () {
       testGoldens('when leadingIcon is none', (tester) async {
         await tester.testWidget(
