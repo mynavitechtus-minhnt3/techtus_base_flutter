@@ -123,7 +123,7 @@ lint:
 	make analyze
 
 sl:
-	dart run $(DART_TOOLS_PATH)/super_lint.dart .
+	dart run $(DART_TOOLS_PATH)/super_lint.dart lib test
 
 analyze:
 	flutter analyze --no-pub --suppress-analytics

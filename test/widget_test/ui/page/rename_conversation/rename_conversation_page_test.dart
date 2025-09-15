@@ -20,7 +20,7 @@ void main() {
       'when members is empty',
       (tester) async {
         await tester.testWidget(
-          filename: 'rename_conversation_page/when_members_is_empty',
+          filename: 'rename_conversation_page/when members is empty',
           widget: const RenameConversationPage(conversation: conversation),
           overrides: [
             renameConversationViewModelProvider.overrideWith(
@@ -42,7 +42,7 @@ void main() {
       'when members is not empty',
       (tester) async {
         await tester.testWidget(
-          filename: 'rename_conversation_page/when_members_is_not_empty',
+          filename: 'rename_conversation_page/when members is not empty',
           widget: const RenameConversationPage(conversation: conversation),
           overrides: [
             renameConversationViewModelProvider.overrideWith(

@@ -42,7 +42,7 @@ void main() {
             };
 
             await tester.testWidget(
-              filename: 'home_page/when_fetching_background_image_failed',
+              filename: 'home_page/when fetching background image failed',
               widget: HomePage(cacheManager: MockInvalidCacheManager()),
               overrides: [
                 homeViewModelProvider.overrideWith(
@@ -65,7 +65,7 @@ void main() {
       'when `isShimmerLoading` is true',
       (tester) async {
         await tester.testWidget(
-          filename: 'home_page/when_isShimmerLoading_is_true',
+          filename: 'home_page/when `isShimmerLoading` is true',
           widget: HomePage(cacheManager: MockCacheManager()),
           overrides: [
             homeViewModelProvider.overrideWith(
@@ -87,7 +87,7 @@ void main() {
       'when `users` is empty',
       (tester) async {
         await tester.testWidget(
-          filename: 'home_page/when_users_is_empty',
+          filename: 'home_page/when `users` is empty',
           widget: HomePage(cacheManager: MockCacheManager()),
           overrides: [
             homeViewModelProvider.overrideWith(
@@ -107,7 +107,7 @@ void main() {
       'when `users` is not empty',
       (tester) async {
         await tester.testWidget(
-          filename: 'home_page/when_users_is_not_empty',
+          filename: 'home_page/when `users` is not empty',
           widget: HomePage(cacheManager: MockCacheManager()),
           overrides: [
             homeViewModelProvider.overrideWith(

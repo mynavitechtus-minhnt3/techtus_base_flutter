@@ -24,7 +24,7 @@ void main() {
 
       testGoldens('with border', (tester) async {
         await tester.testWidget(
-          filename: 'common_container/with_border',
+          filename: 'common_container/with border',
           widget: Center(
             child: CommonContainer(
               width: 100,
@@ -44,7 +44,7 @@ void main() {
 
       testGoldens('circle shape with gradient', (tester) async {
         await tester.testWidget(
-          filename: 'common_container/circle_shape_with_gradient',
+          filename: 'common_container/circle shape with gradient',
           widget: const Center(
             child: CommonContainer(
               width: 100,

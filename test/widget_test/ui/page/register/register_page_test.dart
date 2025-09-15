@@ -20,7 +20,7 @@ void main() {
         'when register button is disabled',
         (tester) async {
           await tester.testWidget(
-            filename: 'register_page/when_register_button_is_disabled',
+            filename: 'register_page/when register button is disabled',
             widget: const RegisterPage(),
             fullHeightDeviceCases: [AppTestDeviceType.smallPhone],
             overrides: [
@@ -40,7 +40,7 @@ void main() {
         'when register button is enabled',
         (tester) async {
           await tester.testWidget(
-            filename: 'register_page/when_register_button_is_enabled',
+            filename: 'register_page/when register button is enabled',
             widget: const RegisterPage(),
             fullHeightDeviceCases: [AppTestDeviceType.smallPhone],
             onCreate: (tester, key) async {
@@ -78,7 +78,7 @@ void main() {
         'when error text is visible',
         (tester) async {
           await tester.testWidget(
-            filename: 'register_page/when_error_text_is_visible',
+            filename: 'register_page/when error text is visible',
             widget: const RegisterPage(),
             fullHeightDeviceCases: [AppTestDeviceType.smallPhone],
             overrides: [

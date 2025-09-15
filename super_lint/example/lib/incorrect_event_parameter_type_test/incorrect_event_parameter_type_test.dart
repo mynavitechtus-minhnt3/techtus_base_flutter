@@ -17,6 +17,7 @@ class MyParameter extends AnalyticParameter {
         // expect_lint: incorrect_event_parameter_type
         'bool': true,
         // expect_lint: incorrect_event_parameter_type
+        // ignore: avoid_using_datetime_now
         'null': DateTime.now(),
       };
 }

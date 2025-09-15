@@ -23,7 +23,7 @@ void main() {
 
       testGoldens('with linkify', (tester) async {
         await tester.testWidget(
-          filename: 'common_text/with_linkify',
+          filename: 'common_text/with linkify',
           widget: const UnconstrainedBox(
             child: CommonText(
               'Visit https://example.com',
@@ -36,7 +36,7 @@ void main() {
 
       testGoldens('with max lines and overflow', (tester) async {
         await tester.testWidget(
-          filename: 'common_text/with_max_lines_and_overflow',
+          filename: 'common_text/with max lines and overflow',
           widget: const SizedBox(
             width: 100,
             child: CommonText(

@@ -11,14 +11,14 @@ void main() {
     () {
       testGoldens('when text is empty', (tester) async {
         await tester.testWidget(
-          filename: 'search_text_field/when_text_is_empty',
+          filename: 'search_text_field/when text is empty',
           widget: const SearchTextField(),
         );
       });
 
       testGoldens('when text is not empty', (tester) async {
         await tester.testWidget(
-          filename: 'search_text_field/when_text_is_not_empty',
+          filename: 'search_text_field/when text is not empty',
           widget: const SearchTextField(),
           onCreate: (tester, key) async {
             final textFieldFinder = find.byType(TextField).isDescendantOfKeyIfAny(key);

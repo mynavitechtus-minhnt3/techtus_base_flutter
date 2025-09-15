@@ -36,7 +36,7 @@ void main() {
 
       testGoldens('horizontal with indent', (tester) async {
         await tester.testWidget(
-          filename: 'common_divider/horizontal_with_indent',
+          filename: 'common_divider/horizontal with indent',
           widget: const CommonDivider(
             color: Colors.black,
             thickness: 2,

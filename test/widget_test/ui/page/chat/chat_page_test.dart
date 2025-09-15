@@ -38,7 +38,7 @@ void main() {
         );
 
         await tester.testWidget(
-          filename: 'chat_page/when_messages_is_empty',
+          filename: 'chat_page/when `messages` is empty',
           widget: const ChatPage(conversation: conversation),
           overrides: [
             chatViewModelProvider.overrideWith(
@@ -98,7 +98,7 @@ void main() {
         );
 
         await tester.testWidget(
-          filename: 'chat_page/when_messages_is_not_empty',
+          filename: 'chat_page/when `messages` is not empty',
           widget: const ChatPage(conversation: conversation),
           overrides: [
             chatViewModelProvider.overrideWith(
@@ -240,7 +240,7 @@ void main() {
         );
 
         await tester.testWidget(
-          filename: 'chat_page/when_user_is_typing',
+          filename: 'chat_page/when user is typing',
           widget: const ChatPage(conversation: conversation),
           onCreate: (tester, key) async {
             final textFieldFinder = find.byType(TextField).isDescendantOfKeyIfAny(key);
@@ -294,7 +294,7 @@ void main() {
         );
 
         await tester.testWidget(
-          filename: 'chat_page/when_users_are_replying_themselves',
+          filename: 'chat_page/when users are replying themselves',
           widget: const ChatPage(conversation: conversation),
           onCreate: (tester, key) async {
             await tester.pump(5.seconds);
@@ -365,7 +365,7 @@ void main() {
         );
 
         await tester.testWidget(
-          filename: 'chat_page/when_users_are_replying_to_other_users',
+          filename: 'chat_page/when users are replying to other users',
           widget: const ChatPage(conversation: conversation),
           onCreate: (tester, key) async {
             await tester.pump(5.seconds);
@@ -429,7 +429,7 @@ void main() {
       const message = 'Hello';
 
       await tester.testWidget(
-        filename: 'chat_page/when_displaying_the_menu',
+        filename: 'chat_page/when displaying the menu',
         widget: const ChatPage(conversation: conversation),
         onCreate: (tester, key) async {
           await tester.pump(5.seconds);
