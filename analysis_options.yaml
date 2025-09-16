@@ -180,6 +180,9 @@ custom_lint:
         - "test/**/*.dart"
     - incorrect_golden_image_name:
     - avoid_using_datetime_now:
+    - missing_test_group:
+      required_groups:
+        - "others"
 linter:
   rules:
     - always_declare_return_types

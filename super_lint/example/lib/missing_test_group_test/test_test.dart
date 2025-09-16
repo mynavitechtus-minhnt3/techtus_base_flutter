@@ -2,7 +2,7 @@
 // ~.~.~.~.~.~.~.~ THE FOLLOWING CASES SHOULD BE WARNED ~.~.~.~.~.~.~.~
 
 // Missing required groups
-// expect_lint: invalid_test_group_name
+// expect_lint: missing_test_group
 void main() {
   group('design', () {
     testGoldens('valid design test', () {});

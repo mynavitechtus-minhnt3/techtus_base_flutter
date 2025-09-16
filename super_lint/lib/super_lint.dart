@@ -43,6 +43,7 @@ class _SuperLintPlugin extends PluginBase {
       EmptyTestGroup(configs),
       IncorrectGoldenImageName(configs),
       InvalidTestGroupName(configs),
+      MissingTestGroup(configs),
     ];
   }
 }
