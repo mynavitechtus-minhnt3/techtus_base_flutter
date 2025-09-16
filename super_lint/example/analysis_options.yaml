@@ -73,7 +73,7 @@ custom_lint:
         - "design"
         - "others"
       includes:
-        - "lib/invalid_test_group_name/**/*.dart"
+        - "lib/invalid_test_group_name_test/**/*.dart"
     - avoid_using_datetime_now:
     - empty_test_group:
     - incorrect_golden_image_name:
@@ -82,3 +82,9 @@ custom_lint:
         - "lib/excluded_test/**/*.dart"
       includes:
         - "**/*_test.dart"
+    - missing_test_group:
+      required_groups:
+        - "design"
+        - "others"
+      includes:
+        - "lib/missing_test_group_test/test_test.dart"

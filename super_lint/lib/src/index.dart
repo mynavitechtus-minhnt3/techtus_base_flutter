@@ -51,6 +51,7 @@ export 'lints/incorrect_screen_name_parameter_value.dart';
 export 'lints/incorrect_todo_comment.dart';
 export 'lints/invalid_test_group_name.dart';
 export 'lints/missing_common_scrollbar.dart';
+export 'lints/missing_test_group.dart';
 export 'lints/missing_expanded_or_flexible.dart';
 export 'lints/missing_extension_method_for_events.dart';
 export 'lints/missing_golden_test.dart';

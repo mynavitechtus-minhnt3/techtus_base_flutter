@@ -68,9 +68,6 @@ class EmptyTestGroup extends CommonLintRule<_EmptyTestGroupOption> {
         source.contains('testGoldens(') ||
         source.contains('stateNotifierTest(');
   }
-
-  @override
-  List<Fix> getFixes() => [];
 }
 
 class _EmptyTestGroupOption extends CommonLintParameter {
