@@ -183,6 +183,8 @@ custom_lint:
     - missing_test_group:
       required_groups:
         - "others"
+      includes:
+        - "test/widget_test/**/*.dart"
 linter:
   rules:
     - always_declare_return_types

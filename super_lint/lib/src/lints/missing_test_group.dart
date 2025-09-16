@@ -71,9 +71,76 @@ class MissingTestGroup extends CommonLintRule<_MissingTestGroupOption> {
 
   @override
   List<Fix> getFixes() => [
-        // Could implement fixes to add missing groups, but that's complex
-        // For now, we'll just warn without providing fixes
+        _MissingTestGroupFix(config),
       ];
+}
+
+class _MissingTestGroupFix extends CommonQuickFix<_MissingTestGroupOption> {
+  _MissingTestGroupFix(super.config);
+
+  @override
+  void run(
+    CustomLintResolver resolver,
+    ChangeReporter reporter,
+    CustomLintContext context,
+    AnalysisError analysisError,
+    List<AnalysisError> others,
+  ) {
+    // Extract missing groups from error message
+    final errorMessage = analysisError.message;
+    final missingGroupsMatch = RegExp(r'Missing required groups: (.+)').firstMatch(errorMessage);
+    if (missingGroupsMatch == null) return;
+
+    final missingGroupsString = missingGroupsMatch.group(1);
+    if (missingGroupsString == null) return;
+
+    final missingGroups = missingGroupsString.split(', ').map((s) => s.trim()).toList();
+    if (missingGroups.isEmpty) return;
+
+    context.registry.addFunctionDeclaration((node) {
+      if (node.name.lexeme != 'main') return;
+      if (!analysisError.sourceRange.intersects(node.sourceRange)) return;
+
+      final changeBuilder = reporter.createChangeBuilder(
+        message: 'Add missing test groups',
+        priority: 80,
+      );
+
+      if (missingGroups.isNotEmpty) {
+        changeBuilder.addDartFileEdit((builder) {
+          // Find the main function body
+          final body = node.functionExpression.body;
+          if (body is BlockFunctionBody) {
+            final block = body.block;
+            final statements = block.statements;
+
+            // Find the position to insert new groups
+            int insertOffset;
+            if (statements.isNotEmpty) {
+              // Insert before the closing brace
+              insertOffset = block.rightBracket.offset;
+            } else {
+              // Empty main function - insert after opening brace
+              insertOffset = block.leftBracket.offset + 1;
+            }
+
+            // Build the missing groups code
+            final missingGroupsCode = missingGroups.map((groupName) {
+              return '''
+  group('$groupName', () {
+    
+  });''';
+            }).join('\n\n');
+
+            final insertText =
+                statements.isNotEmpty ? '\n\n$missingGroupsCode\n' : '\n$missingGroupsCode\n';
+
+            builder.addSimpleInsertion(insertOffset, insertText);
+          }
+        });
+      }
+    });
+  }
 }
 
 class _MissingTestGroupOption extends CommonLintParameter {
