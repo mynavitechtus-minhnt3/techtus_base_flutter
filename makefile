@@ -143,6 +143,9 @@ rm_spl:
 gen_env:
 	dart run $(DART_TOOLS_PATH)/gen_env.dart .
 
+build_first_project:
+	dart run tools/dart_tools/lib/update_readme_from_input.dart
+
 build_dev_apk:
 	flutter build apk --flavor develop -t lib/main.dart --dart-define-from-file=dart_defines/develop.json --verbose
 
