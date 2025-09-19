@@ -50,6 +50,7 @@ class HomePage extends BasePage<HomeState,
       shimmerEnabled: true,
       appBar: CommonAppBar.back(text: l10n.home),
       body: SafeArea(
+        bottom: false,
         child: Stack(
           fit: StackFit.expand,
           children: [
