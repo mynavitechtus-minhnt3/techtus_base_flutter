@@ -56,9 +56,9 @@ dependencies:
   injectable: 2.5.0
   intl: 0.20.2
   isar_community: 
-    version: ^3.3.0-dev.1
+    version: 3.3.0-dev.1
   isar_community_flutter_libs: # contains Isar Core
-    version: ^3.3.0-dev.1
+    version: 3.3.0-dev.1
   json_annotation: 4.9.0
   mime: 2.0.0
   package_info_plus: 8.3.0
@@ -84,7 +84,7 @@ dev_dependencies:
     sdk: flutter
   intl_utils: 2.8.10
   isar_community_generator: 
-    version: ^3.3.0-dev.1
+    version: 3.3.0-dev.1
   json_serializable: 6.9.5
   mocktail: 1.0.4
   mocktail_image_network: 1.2.0
