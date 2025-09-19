@@ -8,6 +8,7 @@ The simple Flutter project
 
 - Flutter SDK: 3.35.1
 - CocoaPods: 1.16.2
+- JVM: 17+
 
 ### How to run app
 
@@ -44,6 +45,10 @@ The simple Flutter project
         - [Qa](ios/config/qa)
         - [Staging](ios/config/staging)
         - [Production](ios/config/production)
+
+- Enable Sign-in methods (Email/Password) in Firebase Console > Authentication > Sign-in method 
+
+- Create a Firestore Database in Firebase Console > Firestore > Database > Create database
 
 ### 2. Secrets configuration
 
