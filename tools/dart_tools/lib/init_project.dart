@@ -907,41 +907,57 @@ Future<void> _updateMainActivityPackage(String root, Map<String, dynamic> config
   final newMainActivityPath = pathOf(
       root, 'android/app/src/main/kotlin/${productionAppId.replaceAll('.', '/')}/MainActivity.kt');
 
+  // Create new directory structure first
+  final newDir = Directory(
+      pathOf(root, 'android/app/src/main/kotlin/${productionAppId.replaceAll('.', '/')}'));
+  await newDir.create(recursive: true);
+
   final oldMainActivityFile = File(oldMainActivityPath);
+  final newMainActivityFile = File(newMainActivityPath);
+
   if (await oldMainActivityFile.exists()) {
+    // Read content from old file
     var content = await oldMainActivityFile.readAsString();
 
-    // Update package declaration
-    content = content.replaceAllMapped(
-      RegExp(r'package [^;]+;'),
-      (match) => 'package $productionAppId;',
-    );
-
-    // Create new directory structure
-    final newDir = Directory(
-        pathOf(root, 'android/app/src/main/kotlin/${productionAppId.replaceAll('.', '/')}'));
-    await newDir.create(recursive: true);
-
-    // Write to new location
-    final newMainActivityFile = File(newMainActivityPath);
+    // Write to new location first (without updating package yet)
     await newMainActivityFile.writeAsString(content);
 
     // Delete old file
     await oldMainActivityFile.delete();
-  } else {
-    // If old file doesn't exist, check if new file exists and update it
-    final newMainActivityFile = File(newMainActivityPath);
-    if (await newMainActivityFile.exists()) {
-      var content = await newMainActivityFile.readAsString();
+  }
 
-      // Update package declaration using more specific regex
+  // Now update the package in the new file
+  if (await newMainActivityFile.exists()) {
+    var content = await newMainActivityFile.readAsString();
+
+    // Update package declaration - handle both jp.flutter.app and any other package
+    if (content.contains('package jp.flutter.app')) {
+      content = content.replaceAll('package jp.flutter.app', 'package $productionAppId');
+    } else {
+      // Generic regex for any package
       content = content.replaceAllMapped(
-        RegExp(r'package [^;]+;'),
-        (match) => 'package $productionAppId;',
+        RegExp(r'package [a-zA-Z0-9_.]+'),
+        (match) => 'package $productionAppId',
       );
-
-      await newMainActivityFile.writeAsString(content);
     }
+
+    await newMainActivityFile.writeAsString(content);
+  } else {
+    // If neither file exists, create new one with correct package
+    final content = '''package $productionAppId
+
+import android.os.Bundle
+import io.flutter.embedding.android.FlutterActivity
+
+class MainActivity : FlutterActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+//        println(BuildConfig.API_KEY)
+//        println(BuildConfig.API_SECRET)
+    }
+}''';
+
+    await newMainActivityFile.writeAsString(content);
   }
 }
 
