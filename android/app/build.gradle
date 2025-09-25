@@ -68,21 +68,21 @@ android {
     productFlavors {
         develop {
             dimension "flavor-type"
-            applicationId "jp.flutter.app.dev"
+            applicationId "jp.flutter.app"
             manifestPlaceholders["host"] = "dev.chatwork.com"
             manifestPlaceholders["applicationName"] = "Develop"
         }
 
         qa {
             dimension "flavor-type"
-            applicationId "jp.flutter.app.qa"
+            applicationId "jp.flutter.app"
             manifestPlaceholders["host"] = "dev.chatwork.com"
             manifestPlaceholders["applicationName"] = "Qa"
         }
 
         staging {
             dimension "flavor-type"
-            applicationId "jp.flutter.app.stg"
+            applicationId "jp.flutter.app"
             manifestPlaceholders["host"] = "stg.facebook.com"
             manifestPlaceholders["applicationName"] = "Staging"
         }

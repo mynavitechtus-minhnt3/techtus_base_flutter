@@ -54,9 +54,9 @@ const String _initProjectTemplate = '''Điền giá trị vào JSON bên dưới
     "designDeviceHeight": 812.0
   },
   "applicationIds": {
-    "develop": "jp.flutter.app.dev",
-    "qa": "jp.flutter.app.qa",
-    "staging": "jp.flutter.app.stg",
+    "develop": "jp.flutter.app",
+    "qa": "jp.flutter.app",
+    "staging": "jp.flutter.app",
     "production": "jp.flutter.app"
   },
   // nếu để trống thì sẽ lấy giá trị giống với applicationIds
@@ -69,34 +69,6 @@ const String _initProjectTemplate = '''Điền giá trị vào JSON bên dưới
 }
 ```
 ''';
-
-Future<String?> _readVersionFromFile(String filePath, RegExp pattern) async {
-  final file = File(filePath);
-  if (!await file.exists()) return null;
-  final content = await file.readAsString();
-  final match = pattern.firstMatch(content);
-  return match?.group(1);
-}
-
-Future<String?> _readFlutterVersionFromWorkflows(String root) async {
-  final dir = Directory(pathOf(root, '.github/workflows'));
-  if (!await dir.exists()) return null;
-  await for (final e in dir.list()) {
-    if (e is! File) continue;
-    final content = await e.readAsString();
-    final m =
-        RegExp(r'^\s*FLUTTER_VERSION:\s*"(\d+\.\d+\.\d+)"', multiLine: true).firstMatch(content);
-    if (m != null) return m.group(1);
-  }
-  return null;
-}
-
-Future<String?> _readFlutterVersionFromCodemagic(String root) async {
-  return _readVersionFromFile(
-    pathOf(root, 'codemagic.yaml'),
-    RegExp(r'^\s*flutter:\s*(\d+\.\d+\.\d+)', multiLine: true),
-  );
-}
 
 Future<bool> _updateVersionInFile(
     String filePath, RegExp pattern, String newVersion, String replacement) async {
@@ -421,10 +393,10 @@ Future<void> main(List<String> args) async {
   await _updateWithErrorHandling(
       'GitHub workflows', () => _updateGithubWorkflows(projectRoot, config));
 
-  // Read current project state back and update init_project.md JSON
-  final backfill = await _readProjectState(projectRoot, config);
-  final merged = _deepMerge(config, backfill);
-  await _writeInputJson(projectRoot, merged);
+  // Skip reading project state back to avoid overwriting user's JSON config
+  // final backfill = await _readProjectState(projectRoot, config);
+  // final merged = _deepMerge(config, backfill);
+  // await _writeInputJson(projectRoot, merged);
 
   if (exitCode == 0) {
     print('✅ Project updated successfully.');
@@ -823,151 +795,6 @@ String _removeConfigJsonBlock(String readme) {
     return readme.replaceFirst(pattern, '');
   }
   return readme;
-}
-
-Future<Map<String, dynamic>> _readProjectState(String root, Map<String, dynamic>? config) async {
-  final result = <String, dynamic>{};
-
-  // Flutter version from workflows & codemagic
-  final flutterVer =
-      await _readFlutterVersionFromWorkflows(root) ?? await _readFlutterVersionFromCodemagic(root);
-  if (flutterVer != null) {
-    result['flutter'] = {'sdkVersion': flutterVer};
-  }
-
-  // Android build.gradle
-  final android = await _readAndroidGradle(root);
-  if (android.isNotEmpty) result['android'] = android;
-
-  // iOS xcconfig
-  final ios = await _readIosXcconfig(root);
-  if (ios.isNotEmpty) result['ios'] = ios;
-
-  // Auto-detect flavors from config sources
-  final detectedFlavors = config != null ? _detectFlavorsFromConfig(config) : _defaultFlavors;
-  result['flavors'] = detectedFlavors;
-
-  // lefthook projectCode from bitbucket rules if found
-  final code = await _readProjectCodeFromPipelines(root);
-  if (code != null) result['lefthook'] = {'projectCode': code};
-
-  return result;
-}
-
-Future<void> _writeInputJson(String root, Map<String, dynamic> data) async {
-  final inputFile = File(pathOf(root, 'init_project.md'));
-  if (!await inputFile.exists()) return;
-  final content = await inputFile.readAsString();
-  final jsonRaw = const JsonEncoder.withIndent('  ').convert(data);
-  final newBlock = '```json\n$jsonRaw\n```';
-  final newContent = content.replaceFirst(RegExp(r'```json[\s\S]*?```', multiLine: true), newBlock);
-  await inputFile.writeAsString(newContent);
-}
-
-Map<String, dynamic> _deepMerge(Map<String, dynamic> base, Map<String, dynamic> next) {
-  final out = <String, dynamic>{}..addAll(base);
-  next.forEach((k, v) {
-    if (v is Map && base[k] is Map) {
-      out[k] = _deepMerge(base[k] as Map<String, dynamic>, v as Map<String, dynamic>);
-    } else {
-      out[k] = v;
-    }
-  });
-  return out;
-}
-
-Future<Map<String, dynamic>> _readAndroidGradle(String root) async {
-  final file = File(pathOf(root, 'android/app/build.gradle'));
-  if (!await file.exists()) return {};
-  final c = await file.readAsString();
-  final appId = RegExp(r'^\s*applicationId\s+"([^"]+)"', multiLine: true).firstMatch(c)?.group(1);
-  final namespace =
-      RegExp(r'^\s*namespace\s*=\s*"([^"]+)"', multiLine: true).firstMatch(c)?.group(1);
-  final versionName =
-      RegExp(r'^\s*versionName\s*(=\s*|)"([^"]+)"', multiLine: true).firstMatch(c)?.group(2);
-  final versionCode =
-      RegExp(r'^\s*versionCode\s*(=\s*|)(\d+)', multiLine: true).firstMatch(c)?.group(2);
-  final flavors =
-      RegExp(r'productFlavors\s*\{([\s\S]*?)\}', multiLine: true).firstMatch(c)?.group(1);
-  final flavorNames = <String>[];
-  if (flavors != null) {
-    final it = RegExp(r'^(\s*)([a-zA-Z0-9_]+)\s*\{', multiLine: true).allMatches(flavors);
-    for (final m in it) {
-      final name = m.group(2)!;
-      if (!['dimension'].contains(name)) flavorNames.add(name);
-    }
-  }
-  // Read applicationIds and app names for each flavor
-  final applicationIds = <String, String>{};
-  final appNames = <String, String>{};
-  if (flavors != null) {
-    for (final flavorName in flavorNames) {
-      final flavorPattern = RegExp('$flavorName\\s*\\{[\\s\\S]*?\\}');
-      final match = flavorPattern.firstMatch(c);
-      if (match != null) {
-        final flavorContent = match.group(0)!;
-
-        // Extract applicationId
-        final appIdMatch = RegExp(r'applicationId\s+"([^"]+)"').firstMatch(flavorContent);
-        if (appIdMatch != null) {
-          applicationIds[flavorName] = appIdMatch.group(1)!;
-        }
-
-        // Extract app name
-        final appNameMatch = RegExp(r'manifestPlaceholders\["applicationName"\]\s*=\s*"([^"]+)"')
-            .firstMatch(flavorContent);
-        if (appNameMatch != null) {
-          appNames[flavorName] = appNameMatch.group(1)!;
-        }
-      }
-    }
-  }
-
-  final map = <String, dynamic>{};
-  if (appId != null) map['applicationId'] = appId;
-  if (namespace != null) map['namespace'] = namespace;
-  if (versionName != null) map['versionName'] = versionName;
-  if (versionCode != null) map['versionCode'] = int.tryParse(versionCode) ?? versionCode;
-  if (flavorNames.isNotEmpty) map['flavors'] = flavorNames;
-  if (applicationIds.isNotEmpty) map['applicationIds'] = applicationIds;
-  if (appNames.isNotEmpty) map['appNames'] = appNames;
-  return map;
-}
-
-Future<Map<String, dynamic>> _readIosXcconfig(String root) async {
-  final bundleIds = <String, String>{};
-  final displayNames = <String, String>{};
-
-  for (final f in _iosFlavors) {
-    final file = File(pathOf(root, 'ios/Flutter/$f.xcconfig'));
-    if (!await file.exists()) continue;
-    final c = await file.readAsString();
-
-    final flavorKey = f.toLowerCase();
-    final bundleId = RegExp(r'^PRODUCT_BUNDLE_IDENTIFIER=(.*)$', multiLine: true)
-        .firstMatch(c)
-        ?.group(1)
-        ?.trim();
-    final displayName =
-        RegExp(r'^APP_DISPLAY_NAME=(.*)$', multiLine: true).firstMatch(c)?.group(1)?.trim();
-
-    if (bundleId != null) bundleIds[flavorKey] = bundleId;
-    if (displayName != null) displayNames[flavorKey] = displayName;
-  }
-
-  final map = <String, dynamic>{};
-  if (bundleIds.isNotEmpty) map['bundleIds'] = bundleIds;
-  if (displayNames.isNotEmpty) map['displayNames'] = displayNames;
-  return map;
-}
-
-Future<String?> _readProjectCodeFromPipelines(String root) async {
-  final file = File(pathOf(root, 'bitbucket-pipelines.yml'));
-  if (!await file.exists()) return null;
-  final c = await file.readAsString();
-  final m =
-      RegExp(r"'(feature|bugfix|hotfix|release)/([A-Z0-9]+)-\*'", multiLine: true).firstMatch(c);
-  return m?.group(2);
 }
 
 // Fix JSON parsing for files with comments
