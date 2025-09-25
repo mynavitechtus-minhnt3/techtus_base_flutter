@@ -31,10 +31,12 @@ void _createInitProjectFile(String folder) {
     "firebaseToken": "1//0000000000000000000000000000000000000000",
     "mentions": "@minhnt3",
     "firebaseAppIds": {
-      "qa": "1:123456789012:android:your-qa-app-id"
+      // trước mắt chỉ cần setup CD cho môi trường QA
+      "qa": "1:598926766937:android:9592c6941fa17be8aed248"
     },
     "appStoreIds": {
-      "qa": "1234567891"
+      // trước mắt chỉ cần setup CD cho môi trường QA
+      "qa": "6478853077"
     }
   },
   "figma": {
@@ -47,6 +49,7 @@ void _createInitProjectFile(String folder) {
     "staging": "jp.flutter.app",
     "production": "jp.flutter.app"
   },
+  // nếu để trống thì sẽ lấy giá trị giống với applicationIds
   "bundleIds": {
     "develop": "",
     "qa": "",

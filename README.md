@@ -13,7 +13,7 @@
 - Run app via IDE
 - Enjoy!
 
-## Starting new project
+## How to init project
 
 ### 1. Init Project
 - Run `make gen_env`
@@ -43,17 +43,8 @@
 ### 4. Config Fastlane (optional)
 - Install Fastlane
 - Run `make fastlane_update_plugins`
-- Create a single file `.env.default` at the project root
-- Paste this into the file
-```
-SLACK_HOOKS_URL=https://hooks.slack.com/services/xxx
-ISSUER_ID=xxx
-FIREBASE_TOKEN=1//xxx
-MENTIONS=@minhnt3
-MESSAGE=Xin các anh chị tester nhẹ tay giúp!
-DEV_FLAVOR=develop
-QA_FLAVOR=qa
-STG_FLAVOR=staging
-```
 - Put the .p8 file in folder [ios](ios)
-- Update config values in [ios/Fastfile](ios/fastlane/Fastfile) and [android/Fastfile](android/fastlane/Fastfile)
+- Update config values in:
+  - [ios/Fastfile](ios/fastlane/Fastfile)
+  - [android/Fastfile](android/fastlane/Fastfile)
+  - [.env.default](.env.default)

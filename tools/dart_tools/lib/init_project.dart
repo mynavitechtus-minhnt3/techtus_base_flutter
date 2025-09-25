@@ -327,6 +327,16 @@ Future<void> main(List<String> args) async {
       'GitHub workflows', () => _updateGithubWorkflows(projectRoot, config));
   await _updateWithErrorHandling(
       'Lefthook scripts', () => _updateLefthookScripts(projectRoot, config));
+  await _updateWithErrorHandling(
+      'Environment config', () => _updateEnvDefault(projectRoot, config));
+  await _updateWithErrorHandling('Fastlane files', () => _updateFastlaneFiles(projectRoot, config));
+  await _updateWithErrorHandling(
+      'Android Manifest', () => _updateAndroidManifest(projectRoot, config));
+  await _updateWithErrorHandling(
+      'Local Push Notification', () => _updateLocalPushNotification(projectRoot, config));
+  await _updateWithErrorHandling(
+      'MainActivity package', () => _updateMainActivityPackage(projectRoot, config));
+  await _updateWithErrorHandling('Export Options', () => _updateExportOptions(projectRoot, config));
 
   // Skip reading project state back to avoid overwriting user's JSON config
   // final backfill = await _readProjectState(projectRoot, config);
@@ -609,6 +619,23 @@ Future<void> _updateCodemagicYaml(String root, Map<String, dynamic> config) asyn
       '{indent}flutter: {version}',
     );
   }
+
+  // Update Google Play package name with staging applicationId
+  final applicationIds = config['applicationIds'] as Map<String, dynamic>?;
+  if (applicationIds != null && applicationIds['staging'] != null) {
+    var content = await file.readAsString();
+    final stagingAppId = applicationIds['staging'].toString();
+
+    // Update the Google Play build number command
+    content = content.replaceAllMapped(
+      RegExp(
+          r"LATEST_GOOGLE_PLAY_BUILD_NUMBER=\$\(google-play get-latest-build-number --package-name '[^']+'\)"),
+      (match) =>
+          "LATEST_GOOGLE_PLAY_BUILD_NUMBER=\$(google-play get-latest-build-number --package-name '$stagingAppId')",
+    );
+
+    await file.writeAsString(content);
+  }
 }
 
 Future<void> _updateJenkinsfile(String root, Map<String, dynamic> config) async {
@@ -688,6 +715,253 @@ Future<void> _updateLefthookScripts(String root, Map<String, dynamic> config) as
 
     await preCommitFile.writeAsString(content);
   }
+}
+
+Future<void> _updateEnvDefault(String root, Map<String, dynamic> config) async {
+  // Get fastlane section
+  final fastlane = config['fastlane'] as Map<String, dynamic>?;
+  if (fastlane == null) return;
+
+  final envFile = File(pathOf(root, '.env.default'));
+
+  // Create the file content with fastlane variables
+  final envContent = <String>[];
+
+  // Add header comment
+  envContent.add('# Environment variables for Fastlane');
+  envContent.add('# This file contains default values for CI/CD configuration');
+  envContent.add('');
+
+  // Add fastlane variables
+  if (fastlane['slackWebhook'] != null) {
+    envContent.add('SLACK_WEBHOOK=${fastlane['slackWebhook']}');
+  }
+
+  if (fastlane['issuerId'] != null) {
+    envContent.add('ISSUER_ID=${fastlane['issuerId']}');
+  }
+
+  if (fastlane['firebaseToken'] != null) {
+    envContent.add('FIREBASE_TOKEN=${fastlane['firebaseToken']}');
+  }
+
+  if (fastlane['mentions'] != null) {
+    envContent.add('MENTIONS=${fastlane['mentions']}');
+  }
+
+  envContent.add('MESSAGE=Xin các anh chị tester nhẹ tay giúp!');
+  envContent.add('DEV_FLAVOR=develop');
+  envContent.add('QA_FLAVOR=qa');
+  envContent.add('STG_FLAVOR=staging');
+
+  // Write to file
+  await envFile.writeAsString(envContent.join('\n') + '\n');
+}
+
+Future<void> _updateFastlaneFiles(String root, Map<String, dynamic> config) async {
+  // Get fastlane section
+  final fastlane = config['fastlane'] as Map<String, dynamic>?;
+  if (fastlane == null) return;
+
+  // Update Android Fastfile
+  await _updateAndroidFastfile(root, fastlane);
+
+  // Update iOS Fastfile
+  await _updateIosFastfile(root, fastlane);
+}
+
+Future<void> _updateAndroidFastfile(String root, Map<String, dynamic> fastlane) async {
+  final fastfileAndroid = File(pathOf(root, 'android/fastlane/Fastfile'));
+  if (!await fastfileAndroid.exists()) return;
+
+  var content = await fastfileAndroid.readAsString();
+
+  // Update Firebase App IDs from firebaseAppIds
+  final firebaseAppIds = fastlane['firebaseAppIds'] as Map?;
+  if (firebaseAppIds != null) {
+    firebaseAppIds.forEach((flavor, appId) {
+      if (appId != null) {
+        // Map flavor names to variable names used in Fastfile
+        String varName;
+        switch (flavor.toString().toLowerCase()) {
+          case 'develop':
+            varName = 'DEV_APP_ID';
+            break;
+          case 'qa':
+            varName = 'QA_APP_ID';
+            break;
+          case 'staging':
+            varName = 'STG_APP_ID';
+            break;
+          default:
+            varName = '${flavor.toString().toUpperCase()}_APP_ID';
+        }
+
+        // Update variable assignment: DEV_APP_ID = "value"
+        content = content.replaceAllMapped(
+          RegExp('$varName\\s*=\\s*"[^"]*"'),
+          (match) => '$varName = "$appId"',
+        );
+      }
+    });
+  }
+
+  await fastfileAndroid.writeAsString(content);
+}
+
+Future<void> _updateIosFastfile(String root, Map<String, dynamic> fastlane) async {
+  final fastfileIos = File(pathOf(root, 'ios/fastlane/Fastfile'));
+  if (!await fastfileIos.exists()) return;
+
+  var content = await fastfileIos.readAsString();
+
+  // Update App Store IDs from appStoreIds
+  final appStoreIds = fastlane['appStoreIds'] as Map?;
+  if (appStoreIds != null) {
+    appStoreIds.forEach((flavor, appId) {
+      if (appId != null) {
+        // Map flavor names to variable names used in Fastfile
+        String varName;
+        switch (flavor.toString().toLowerCase()) {
+          case 'develop':
+            varName = 'DEV_APP_STORE_ID';
+            break;
+          case 'qa':
+            varName = 'QA_APP_STORE_ID';
+            break;
+          case 'staging':
+            varName = 'STG_APP_STORE_ID';
+            break;
+          default:
+            varName = '${flavor.toString().toUpperCase()}_APP_STORE_ID';
+        }
+
+        // Update variable assignment: DEV_APP_STORE_ID = "value"
+        content = content.replaceAllMapped(
+          RegExp('$varName\\s*=\\s*"[^"]*"'),
+          (match) => '$varName = "$appId"',
+        );
+      }
+    });
+  }
+
+  await fastfileIos.writeAsString(content);
+}
+
+Future<void> _updateAndroidManifest(String root, Map<String, dynamic> config) async {
+  final manifestFile = File(pathOf(root, 'android/app/src/main/AndroidManifest.xml'));
+  if (!await manifestFile.exists()) return;
+
+  final applicationIds = config['applicationIds'] as Map<String, dynamic>?;
+  if (applicationIds == null || applicationIds['production'] == null) return;
+
+  final productionAppId = applicationIds['production'].toString();
+  var content = await manifestFile.readAsString();
+
+  // Update package attribute in manifest tag
+  content = content.replaceAllMapped(
+    RegExp(r'package="[^"]*"'),
+    (match) => 'package="$productionAppId"',
+  );
+
+  // Update notification channel ID
+  content = content.replaceAllMapped(
+    RegExp(
+        r'android:name="com\.google\.firebase\.messaging\.default_notification_channel_id"\s*android:value="[^"]*"'),
+    (match) =>
+        'android:name="com.google.firebase.messaging.default_notification_channel_id"\n            android:value="$productionAppId"',
+  );
+
+  await manifestFile.writeAsString(content);
+}
+
+Future<void> _updateLocalPushNotification(String root, Map<String, dynamic> config) async {
+  final notificationFile =
+      File(pathOf(root, 'lib/common/helper/local_push_notification_helper.dart'));
+  if (!await notificationFile.exists()) return;
+
+  final applicationIds = config['applicationIds'] as Map<String, dynamic>?;
+  if (applicationIds == null || applicationIds['production'] == null) return;
+
+  final productionAppId = applicationIds['production'].toString();
+  var content = await notificationFile.readAsString();
+
+  // Update _channelId constant
+  content = content.replaceAllMapped(
+    RegExp(r"static const _channelId = '[^']*';"),
+    (match) => "static const _channelId = '$productionAppId';",
+  );
+
+  await notificationFile.writeAsString(content);
+}
+
+Future<void> _updateMainActivityPackage(String root, Map<String, dynamic> config) async {
+  final applicationIds = config['applicationIds'] as Map<String, dynamic>?;
+  if (applicationIds == null || applicationIds['production'] == null) return;
+
+  final productionAppId = applicationIds['production'].toString();
+
+  // Update MainActivity.kt package and file path
+  final oldMainActivityPath =
+      pathOf(root, 'android/app/src/main/kotlin/jp/flutter/app/MainActivity.kt');
+  final newMainActivityPath = pathOf(
+      root, 'android/app/src/main/kotlin/${productionAppId.replaceAll('.', '/')}/MainActivity.kt');
+
+  final oldMainActivityFile = File(oldMainActivityPath);
+  if (await oldMainActivityFile.exists()) {
+    var content = await oldMainActivityFile.readAsString();
+
+    // Update package declaration
+    content = content.replaceAllMapped(
+      RegExp(r'package [^;]+;'),
+      (match) => 'package $productionAppId;',
+    );
+
+    // Create new directory structure
+    final newDir = Directory(
+        pathOf(root, 'android/app/src/main/kotlin/${productionAppId.replaceAll('.', '/')}'));
+    await newDir.create(recursive: true);
+
+    // Write to new location
+    final newMainActivityFile = File(newMainActivityPath);
+    await newMainActivityFile.writeAsString(content);
+
+    // Delete old file
+    await oldMainActivityFile.delete();
+  } else {
+    // If old file doesn't exist, check if new file exists and update it
+    final newMainActivityFile = File(newMainActivityPath);
+    if (await newMainActivityFile.exists()) {
+      var content = await newMainActivityFile.readAsString();
+
+      // Update package declaration using more specific regex
+      content = content.replaceAllMapped(
+        RegExp(r'package [^;]+;'),
+        (match) => 'package $productionAppId;',
+      );
+
+      await newMainActivityFile.writeAsString(content);
+    }
+  }
+}
+
+Future<void> _updateExportOptions(String root, Map<String, dynamic> config) async {
+  final exportOptionsFile = File(pathOf(root, 'ios/exportOptions.plist'));
+  if (!await exportOptionsFile.exists()) return;
+
+  final bundleIds = config['bundleIds'] as Map<String, dynamic>?;
+  if (bundleIds == null || bundleIds['production'] == null) return;
+
+  final productionBundleId = bundleIds['production'].toString();
+  var content = await exportOptionsFile.readAsString();
+
+  // Update bundle identifier in provisioningProfiles
+  content = content.replaceAllMapped(
+    RegExp(r'<key>[^<]*</key>\s*<string>[^<]*</string>(?=\s*</dict>)'),
+    (match) => '<key>$productionBundleId</key>\n\t\t<string>distribution_flutter_codebase</string>',
+  );
+
+  await exportOptionsFile.writeAsString(content);
 }
 
 String? _extractJsonBlock(String content) {
