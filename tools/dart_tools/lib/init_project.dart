@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
-/// Update project files based on JSON config in init_project.md
+/// Update project files based on JSON config in setting_initial_config.md
 /// Usage: dart run tools/dart_tools/lib/init_project.dart
 
 // Constants
@@ -26,7 +26,7 @@ String? _extractFlutterSdkVersion(Map<String, dynamic> config) {
   return null;
 }
 
-// Template for init_project.md
+// Template for setting_initial_config.md
 const String _initProjectTemplate = '''Điền giá trị vào JSON bên dưới, sau đó chạy lệnh `make init`
 
 ```json
@@ -99,16 +99,16 @@ String _updateProjectCodeInContent(String content, String projectCode) {
   return content;
 }
 
-// Create init_project.md if it doesn't exist
+// Create setting_initial_config.md if it doesn't exist
 Future<bool> _createInitProjectFileIfNotExists(String projectRoot) async {
-  final initPath = pathOf(projectRoot, 'init_project.md');
+  final initPath = pathOf(projectRoot, 'setting_initial_config.md');
   final initFile = File(initPath);
 
   if (!await initFile.exists()) {
     await initFile.writeAsString(_initProjectTemplate);
-    print('✅ Đã tạo file init_project.md');
+    print('✅ Đã tạo file setting_initial_config.md');
     print(
-        '🔗 Vui lòng cấu hình dự án tại: \x1b]8;;file://$initPath\x1b\\init_project.md\x1b]8;;\x1b\\');
+        '🔗 Vui lòng cấu hình dự án tại: \x1b]8;;file://$initPath\x1b\\setting_initial_config.md\x1b]8;;\x1b\\');
     return true;
   }
   return false;
@@ -213,60 +213,6 @@ List<String> _validateConfig(Map<String, dynamic> config) {
     }
   }
 
-  // Android section validation
-  final android = config['android'] as Map?;
-  if (android != null) {
-    // Validate android.applicationIds if exists
-    final androidAppIds = android['applicationIds'] as Map?;
-    if (androidAppIds != null) {
-      for (final entry in androidAppIds.entries) {
-        if (entry.value == null || entry.value.toString().isEmpty) {
-          errors.add('android.applicationIds.${entry.key} cannot be empty');
-        }
-      }
-    }
-
-    // Validate android.flavors if exists
-    final androidFlavors = android['flavors'] as List?;
-    if (androidFlavors != null && androidFlavors.isEmpty) {
-      errors.add('android.flavors cannot be empty if specified');
-    }
-  }
-
-  // iOS section validation
-  final ios = config['ios'] as Map?;
-  if (ios != null) {
-    // Validate ios.bundleIds if exists
-    final iosBundleIds = ios['bundleIds'] as Map?;
-    if (iosBundleIds != null) {
-      for (final entry in iosBundleIds.entries) {
-        if (entry.value != null && entry.value.toString().isNotEmpty) {
-          // Only validate non-empty bundleIds
-          continue;
-        }
-      }
-    }
-  }
-
-  // Flutter section validation
-  final flutter = config['flutter'] as Map?;
-  if (flutter != null) {
-    final sdkVersion = flutter['sdkVersion'];
-    if (sdkVersion != null && sdkVersion.toString().isNotEmpty) {
-      // Basic version format check
-      final versionPattern = RegExp(r'^\d+\.\d+\.\d+$');
-      if (!versionPattern.hasMatch(sdkVersion.toString())) {
-        errors.add('flutter.sdkVersion must be in format x.y.z (e.g., 3.35.1)');
-      }
-    }
-  }
-
-  // Flavors validation at root level
-  final flavors = config['flavors'] as List?;
-  if (flavors != null && flavors.isEmpty) {
-    errors.add('flavors cannot be empty if specified');
-  }
-
   // Fastlane validation
   final fastlane = config['fastlane'] as Map?;
   if (fastlane != null) {
@@ -291,19 +237,6 @@ List<String> _validateConfig(Map<String, dynamic> config) {
     }
   }
 
-  // Lefthook validation
-  final lefthook = config['lefthook'] as Map?;
-  if (lefthook != null) {
-    final projectCode = lefthook['projectCode'];
-    if (projectCode != null && projectCode.toString().isNotEmpty) {
-      // Basic project code format check (should be uppercase letters/numbers)
-      final codePattern = RegExp(r'^[A-Z0-9]+$');
-      if (!codePattern.hasMatch(projectCode.toString())) {
-        errors.add('lefthook.projectCode should contain only uppercase letters and numbers');
-      }
-    }
-  }
-
   return errors;
 }
 
@@ -321,10 +254,10 @@ Future<void> _updateWithErrorHandling(String component, Future<void> Function() 
 
 Future<void> main(List<String> args) async {
   final projectRoot = Directory.current.path;
-  final inputPath = pathOf(projectRoot, 'init_project.md');
+  final inputPath = pathOf(projectRoot, 'setting_initial_config.md');
   final readmePath = pathOf(projectRoot, 'README.md');
 
-  // Create init_project.md if it doesn't exist
+  // Create setting_initial_config.md if it doesn't exist
   final wasCreated = await _createInitProjectFileIfNotExists(projectRoot);
   if (wasCreated) {
     // If file was just created, exit to let user configure it first
@@ -336,7 +269,7 @@ Future<void> main(List<String> args) async {
   final readmeFile = File(readmePath);
 
   if (!await inputFile.exists()) {
-    stderr.writeln('init_project.md not found at $inputPath');
+    stderr.writeln('setting_initial_config.md not found at $inputPath');
     exitCode = 1;
     return;
   }
@@ -349,7 +282,7 @@ Future<void> main(List<String> args) async {
   final inputContent = await inputFile.readAsString();
   final jsonConfigRaw = _extractJsonBlock(inputContent);
   if (jsonConfigRaw == null) {
-    stderr.writeln('Could not find valid JSON block in init_project.md');
+    stderr.writeln('Could not find valid JSON block in setting_initial_config.md');
     exitCode = 1;
     return;
   }
@@ -358,7 +291,7 @@ Future<void> main(List<String> args) async {
   try {
     config = json.decode(jsonConfigRaw) as Map<String, dynamic>;
   } catch (e) {
-    stderr.writeln('❌ Invalid JSON in init_project.md: $e');
+    stderr.writeln('❌ Invalid JSON in setting_initial_config.md: $e');
     stderr.writeln('💡 Please check your JSON syntax');
     exitCode = 1;
     return;
@@ -375,7 +308,7 @@ Future<void> main(List<String> args) async {
     return;
   }
 
-  print('📖 Config loaded and validated from init_project.md');
+  print('📖 Config loaded and validated from setting_initial_config.md');
 
   // Apply changes with error handling - only essential updates
   await _updateWithErrorHandling('README.md', () => _updateReadme(projectRoot, config));
@@ -392,6 +325,8 @@ Future<void> main(List<String> args) async {
   await _updateWithErrorHandling('Jenkinsfile', () => _updateJenkinsfile(projectRoot, config));
   await _updateWithErrorHandling(
       'GitHub workflows', () => _updateGithubWorkflows(projectRoot, config));
+  await _updateWithErrorHandling(
+      'Lefthook scripts', () => _updateLefthookScripts(projectRoot, config));
 
   // Skip reading project state back to avoid overwriting user's JSON config
   // final backfill = await _readProjectState(projectRoot, config);
@@ -448,6 +383,11 @@ Future<void> _updateAndroidBuildGradle(String root, Map<String, dynamic> config)
     if (productionAppId != null && productionAppId.isNotEmpty) {
       content = content.replaceAllMapped(RegExp(r'^(\s*)namespace\s*=\s*"[^"]+"', multiLine: true),
           (m) => '${m.group(1)}namespace = "$productionAppId"');
+
+      // Also update defaultConfig applicationId with production applicationId
+      content = content.replaceAllMapped(
+          RegExp(r'^(\s*)applicationId\s*=\s*"[^"]+"', multiLine: true),
+          (m) => '${m.group(1)}applicationId = "$productionAppId"');
     }
 
     // Update applicationIds for each flavor
@@ -646,11 +586,6 @@ Future<void> _updateBitbucketPipelines(String root, Map<String, dynamic> config)
   final common = config['common'] as Map<String, dynamic>?;
   if (common != null && common['projectCode'] != null) {
     projectCode = common['projectCode'].toString();
-  } else {
-    final lefthook = config['lefthook'] as Map<String, dynamic>?;
-    if (lefthook != null && lefthook['projectCode'] != null) {
-      projectCode = lefthook['projectCode'].toString();
-    }
   }
 
   if (projectCode.isNotEmpty) {
@@ -713,6 +648,45 @@ Future<void> _updateGithubWorkflows(String root, Map<String, dynamic> config) as
     if (updated) {
       // File already updated by _updateVersionInFile
     }
+  }
+}
+
+Future<void> _updateLefthookScripts(String root, Map<String, dynamic> config) async {
+  // Get project code from common section
+  final common = config['common'] as Map<String, dynamic>?;
+  if (common == null || common['projectCode'] == null) return;
+
+  final projectCode = common['projectCode'].toString();
+  if (projectCode.isEmpty) return;
+
+  // Update commit-msg script
+  final commitMsgFile = File(pathOf(root, '.lefthook/commit-msg/commit-msg.sh'));
+  if (await commitMsgFile.exists()) {
+    var content = await commitMsgFile.readAsString();
+
+    // Replace any existing project code with new one
+    // Pattern: [PROJECTCODE-digits] - matches any uppercase letters/numbers before dash
+    content = content.replaceAllMapped(
+      RegExp(r'([A-Z0-9]+)(-\\d\+|\-\d+|\-\[0\-9\]\+)'),
+      (match) => '$projectCode${match.group(2)}',
+    );
+
+    await commitMsgFile.writeAsString(content);
+  }
+
+  // Update pre-commit script
+  final preCommitFile = File(pathOf(root, '.lefthook/pre-commit/pre-commit.sh'));
+  if (await preCommitFile.exists()) {
+    var content = await preCommitFile.readAsString();
+
+    // Replace any existing project code with new one
+    // Pattern: [PROJECTCODE-digits] - matches any uppercase letters/numbers before dash
+    content = content.replaceAllMapped(
+      RegExp(r'([A-Z0-9]+)(-\\d\+|\-\d+|\-\[0\-9\]\+)'),
+      (match) => '$projectCode${match.group(2)}',
+    );
+
+    await preCommitFile.writeAsString(content);
   }
 }
 

@@ -3,10 +3,63 @@
 import 'dart:io';
 
 void main(List<String> args) {
+  // Create setting_initial_config.md if it doesn't exist
+  _createInitProjectFile(args[0]);
+
+  // Create dart_defines files
   _createJsonFile(args[0], 'develop');
   _createJsonFile(args[0], 'qa');
   _createJsonFile(args[0], 'staging');
   _createJsonFile(args[0], 'production');
+}
+
+void _createInitProjectFile(String folder) {
+  File file = File('$folder/setting_initial_config.md');
+  if (!file.existsSync()) {
+    file.createSync(recursive: true);
+    file.writeAsStringSync('''Điền giá trị vào JSON bên dưới, sau đó chạy lệnh `make init`
+
+```json
+{
+  "common": {
+    "flutterVersion": "3.35.1",
+    "projectCode": "NFT"
+  },
+  "fastlane": {
+    "slackWebhook": "https://hooks.slack.com/services/YOUR/SLACK/WEBHOOK",
+    "issuerId": "69a6de12-xxxx-xxxx-xxxx-12ef3456c789",
+    "firebaseToken": "1//0000000000000000000000000000000000000000",
+    "mentions": "@minhnt3",
+    "firebaseAppIds": {
+      "qa": "1:123456789012:android:your-qa-app-id"
+    },
+    "appStoreIds": {
+      "qa": "1234567891"
+    }
+  },
+  "figma": {
+    "designDeviceWidth": 375.0,
+    "designDeviceHeight": 812.0
+  },
+  "applicationIds": {
+    "develop": "jp.flutter.app",
+    "qa": "jp.flutter.app",
+    "staging": "jp.flutter.app",
+    "production": "jp.flutter.app"
+  },
+  "bundleIds": {
+    "develop": "",
+    "qa": "",
+    "staging": "",
+    "production": ""
+  }
+}
+```
+''');
+    print('✅ File setting_initial_config.md created');
+  } else {
+    print('!!! File setting_initial_config.md already exists !!!');
+  }
 }
 
 void _createJsonFile(String folder, String filename) {
@@ -17,7 +70,7 @@ void _createJsonFile(String folder, String filename) {
   "FLAVOR": "$filename"
 }
 ''');
-    print('File $filename.json created');
+    print('✅ File $filename.json created');
   } else {
     print('!!! File $filename.json already exists !!!');
   }

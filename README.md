@@ -15,7 +15,12 @@
 
 ## Starting new project
 
-### 1. Config Firebase
+### 1. Init Project
+- Run `make gen_env`
+- Fill the JSON values in the [setting_initial_config.md](setting_initial_config.md) file
+- Run `make init`
+
+### 2. Config Firebase
 
 - Android: Paste your google services files to:
     - [Develop](android/app/src/develop)
@@ -28,14 +33,14 @@
     - [Staging](ios/config/staging)
     - [Production](ios/config/production)
 
-### 2. Config Lefthook (optional)
+### 3. Config Lefthook (optional)
 
 - Install lefthook
 - Run `lefthook install`
 - Update commit message rule: [commit-msg.sh](.lefthook/commit-msg/commit-msg.sh) and [check_commit_message.sh](tools/check_commit_message.sh)
 - Update branch name rule: [pre-commit.sh](.lefthook/pre-commit/pre-commit.sh) and [bitbucket-pipelines/pull-requests](bitbucket-pipelines.yml)
 
-### 3. Config Fastlane (optional)
+### 4. Config Fastlane (optional)
 - Install Fastlane
 - Run `make fastlane_update_plugins`
 - Create a single file `.env.default` at the project root
