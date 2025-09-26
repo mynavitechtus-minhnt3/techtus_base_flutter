@@ -15,7 +15,8 @@ void main(List<String> args) {
     print(
         'Usage: dart tools/dart_tools/lib/generate_api_from_openapi.dart [--input_path=path] [--apis=method_path,method_path] [--replace=true/false] [--output_path=path]');
     print('Examples:');
-    print('  dart tools/dart_tools/lib/generate_api_from_openapi.dart --input_path=api_doc');
+    print(
+        '  dart tools/dart_tools/lib/generate_api_from_openapi.dart --input_path=api_doc');
     print(
         '  dart tools/dart_tools/lib/generate_api_from_openapi.dart --input_path=api_doc --apis=get_v1/search,post_v2/city');
     print(
@@ -64,7 +65,8 @@ void main(List<String> args) {
 }
 
 class ApiGenerator {
-  static const String appApiServicePath = 'lib/data_source/api/app_api_service.dart';
+  static const String appApiServicePath =
+      'lib/data_source/api/app_api_service.dart';
   static const String modelApiPath = 'lib/model/api';
   static const String generatedMethodsMarker =
       '// GENERATED CODE - DO NOT MODIFY OR DELETE THIS COMMENT';
@@ -137,7 +139,8 @@ class ApiGenerator {
     if (_allowedApis.isEmpty) return true;
 
     // Create key in format: method_path (e.g., "get_v1/search", "post_v2/city")
-    final key = '${endpoint.method.toLowerCase()}_${endpoint.path}'.toLowerCase();
+    final key =
+        '${endpoint.method.toLowerCase()}_${endpoint.path}'.toLowerCase();
     return _allowedApis.contains(key);
   }
 
@@ -227,32 +230,38 @@ class ApiGenerator {
     return details.containsKey('requestBody');
   }
 
-  dynamic _generateBodyExample(Map<String, dynamic> details, Map<String, dynamic> components) {
+  dynamic _generateBodyExample(
+      Map<String, dynamic> details, Map<String, dynamic> components) {
     final requestBody = details['requestBody'] as Map<String, dynamic>?;
     if (requestBody == null) return null;
 
     final content = requestBody['content'] as Map<String, dynamic>? ?? {};
-    final jsonContent = content['application/json'] as Map<String, dynamic>? ?? {};
+    final jsonContent =
+        content['application/json'] as Map<String, dynamic>? ?? {};
     final schema = jsonContent['schema'] as Map<String, dynamic>? ?? {};
 
     return _generateExampleFromSchema(schema, components);
   }
 
-  dynamic _generateResponseExample(Map<String, dynamic> details, Map<String, dynamic> components) {
+  dynamic _generateResponseExample(
+      Map<String, dynamic> details, Map<String, dynamic> components) {
     final responses = details['responses'] as Map<String, dynamic>? ?? {};
-    final successResponse = responses['200'] ?? responses['201'] ?? responses['202'];
+    final successResponse =
+        responses['200'] ?? responses['201'] ?? responses['202'];
 
     if (successResponse == null) return null;
 
     final successMap = successResponse as Map<String, dynamic>;
     final content = successMap['content'] as Map<String, dynamic>? ?? {};
-    final jsonContent = content['application/json'] as Map<String, dynamic>? ?? {};
+    final jsonContent =
+        content['application/json'] as Map<String, dynamic>? ?? {};
     final schema = jsonContent['schema'] as Map<String, dynamic>? ?? {};
 
     return _generateExampleFromSchema(schema, components);
   }
 
-  dynamic _generateExampleFromSchema(Map<String, dynamic> schema, Map<String, dynamic> components,
+  dynamic _generateExampleFromSchema(
+      Map<String, dynamic> schema, Map<String, dynamic> components,
       [Set<String>? visited]) {
     visited ??= <String>{};
 
@@ -274,14 +283,16 @@ class ApiGenerator {
 
         for (final prop in properties.entries) {
           final propSchema = prop.value as Map<String, dynamic>;
-          example[prop.key] = _generateExampleFromSchema(propSchema, components, visited);
+          example[prop.key] =
+              _generateExampleFromSchema(propSchema, components, visited);
         }
 
         return example;
 
       case 'array':
         final items = schema['items'] as Map<String, dynamic>? ?? {};
-        final itemExample = _generateExampleFromSchema(items, components, visited);
+        final itemExample =
+            _generateExampleFromSchema(items, components, visited);
         return itemExample != null ? [itemExample] : [];
 
       case 'string':
@@ -305,7 +316,8 @@ class ApiGenerator {
     }
   }
 
-  Map<String, dynamic> _resolveRef(String ref, Map<String, dynamic> components) {
+  Map<String, dynamic> _resolveRef(
+      String ref, Map<String, dynamic> components) {
     if (ref.startsWith('#/components/schemas/')) {
       final schemaName = ref.split('/').last;
       final schemas = components['schemas'] as Map<String, dynamic>? ?? {};
@@ -318,7 +330,10 @@ class ApiGenerator {
     final methods = <String>[];
 
     // Build a set of all v1 paths for v2 comparison
-    final v1Paths = endpoints.where((e) => !e.path.startsWith('/v2/')).map((e) => e.path).toSet();
+    final v1Paths = endpoints
+        .where((e) => !e.path.startsWith('/v2/'))
+        .map((e) => e.path)
+        .toSet();
 
     for (final endpoint in endpoints) {
       if (endpoint.responseExample == null) continue;
@@ -332,7 +347,8 @@ class ApiGenerator {
   }
 
   String _generateSingleApiMethod(EndpointInfo endpoint, Set<String> v1Paths) {
-    final methodName = _generateMethodName(endpoint.path, endpoint.method, v1Paths);
+    final methodName =
+        _generateMethodName(endpoint.path, endpoint.method, v1Paths);
     final modelName = _generateModelName(endpoint.path);
     // Always use _authAppServerApiClient for consistency
     final client = '_authAppServerApiClient';
@@ -342,8 +358,10 @@ class ApiGenerator {
     final queryLines = <String>[];
 
     // Required params first
-    final requiredParams = endpoint.queryParams.where((p) => p.required).toList();
-    final optionalParams = endpoint.queryParams.where((p) => !p.required).toList();
+    final requiredParams =
+        endpoint.queryParams.where((p) => p.required).toList();
+    final optionalParams =
+        endpoint.queryParams.where((p) => !p.required).toList();
 
     for (final param in requiredParams) {
       final dartType = param.type == 'integer' ? 'int' : 'String';
@@ -367,7 +385,8 @@ class ApiGenerator {
         if (param.required) {
           queryLines.add("        '${param.name}': $camelName,");
         } else {
-          queryLines.add("        if ($camelName != null) '${param.name}': $camelName,");
+          queryLines.add(
+              "        if ($camelName != null) '${param.name}': $camelName,");
         }
       }
       queryLines.add('      },');
@@ -476,16 +495,19 @@ class ApiGenerator {
       if (_appApiServicePath != appApiServicePath) {
         final sourceFile = File(appApiServicePath);
         if (sourceFile.existsSync()) {
-          print('📋 Copying app_api_service.dart from ${sourceFile.path} to $_appApiServicePath');
+          print(
+              '📋 Copying app_api_service.dart from ${sourceFile.path} to $_appApiServicePath');
           // Create directory if it doesn't exist
           file.parent.createSync(recursive: true);
           // Copy file content
           file.writeAsStringSync(sourceFile.readAsStringSync());
         } else {
-          throw Exception('Source app_api_service.dart file does not exist: ${sourceFile.path}');
+          throw Exception(
+              'Source app_api_service.dart file does not exist: ${sourceFile.path}');
         }
       } else {
-        throw Exception('app_api_service.dart file does not exist: $_appApiServicePath');
+        throw Exception(
+            'app_api_service.dart file does not exist: $_appApiServicePath');
       }
     }
 
@@ -520,7 +542,8 @@ class ApiGenerator {
 
     if (_replace) {
       // Replace mode: Remove all methods after marker
-      final beforeMarker = content.substring(0, markerIndex + generatedMethodsMarker.length);
+      final beforeMarker =
+          content.substring(0, markerIndex + generatedMethodsMarker.length);
       final afterClass = content.substring(classEndIndex);
       newContent = '$beforeMarker\n\n$newMethods\n$afterClass';
     } else {
@@ -534,7 +557,8 @@ class ApiGenerator {
     file.writeAsStringSync(newContent);
 
     final mode = _replace ? 'replaced' : 'appended';
-    print('📝 ${mode.toUpperCase()} ${apiMethods.length} API methods in $_appApiServicePath');
+    print(
+        '📝 ${mode.toUpperCase()} ${apiMethods.length} API methods in $_appApiServicePath');
   }
 
   List<String> _generateModelClasses(List<EndpointInfo> endpoints) {
@@ -553,7 +577,8 @@ class ApiGenerator {
       processedModels.add(modelName);
 
       // Generate model file with nested classes
-      final result = _generateModelFileWithNested(modelName, endpoint.responseExample);
+      final result =
+          _generateModelFileWithNested(modelName, endpoint.responseExample);
       final fileName = _modelNameToFileName(modelName);
 
       // Store nested classes
@@ -580,10 +605,16 @@ class ApiGenerator {
     return generatedModels;
   }
 
-  ModelGenerationResult _generateModelFileWithNested(String modelName, dynamic responseExample) {
+  ModelGenerationResult _generateModelFileWithNested(
+      String modelName, dynamic responseExample) {
     final fileName = _modelNameToFileName(modelName);
     final imports = _generateImports(fileName);
     final result = _generateModelClassWithNested(modelName, responseExample);
+
+    // Skip generating file if main class is empty (no fields)
+    if (result.mainClass.trim().isEmpty) {
+      return ModelGenerationResult(mainContent: '', nestedClasses: {});
+    }
 
     final mainContent = '''$imports
 
@@ -595,7 +626,8 @@ ${result.mainClass}''';
     );
   }
 
-  ModelClassResult _generateModelClassWithNested(String modelName, dynamic responseExample,
+  ModelClassResult _generateModelClassWithNested(
+      String modelName, dynamic responseExample,
       [String? prefix]) {
     if (responseExample == null) {
       return ModelClassResult(mainClass: '', nestedClasses: {});
@@ -607,8 +639,13 @@ ${result.mainClass}''';
     final nestedClasses = <String, String>{};
 
     if (responseExample is Map<String, dynamic>) {
-      final fieldsResult = _generateFieldsWithNested(responseExample, className);
+      final fieldsResult =
+          _generateFieldsWithNested(responseExample, className);
       nestedClasses.addAll(fieldsResult.nestedClasses);
+      // If no fields found, do not generate class
+      if (fieldsResult.fields.isEmpty) {
+        return ModelClassResult(mainClass: '', nestedClasses: nestedClasses);
+      }
 
       final mainClass = '''@freezed
 sealed class $className with $privateClassName {
@@ -649,8 +686,9 @@ part '$fileName.g.dart';''';
       final fieldValue = entry.value;
       final dartFieldName = _toCamelCase(fieldName);
 
-      String fieldType;
-      String defaultValue;
+      String fieldType = '';
+      String defaultValue = '';
+      bool shouldAddField = true;
 
       if (fieldValue == null) {
         fieldType = 'String?';
@@ -672,37 +710,49 @@ part '$fileName.g.dart';''';
           fieldType = 'List<dynamic>';
           defaultValue = '@Default([])';
         } else {
-          final itemResult =
-              _getListItemTypeWithNested(fieldValue.first, parentClassName, fieldName);
+          final itemResult = _getListItemTypeWithNested(
+              fieldValue.first, parentClassName, fieldName);
           fieldType = 'List<${itemResult.type}>';
           defaultValue = '@Default([])';
           nestedClasses.addAll(itemResult.nestedClasses);
         }
       } else if (fieldValue is Map<String, dynamic>) {
-        final nestedClassName = '${parentClassName}${_toPascalCase(dartFieldName)}';
-        fieldType = '$nestedClassName?';
-        defaultValue = '';
-
-        // Generate nested class content
-        final nestedResult = _generateModelClassWithNested(nestedClassName, fieldValue);
-        final nestedImports = _generateImports(_modelNameToFileName(nestedClassName));
-        final nestedContent = '''$nestedImports
+        // If the nested object has no fields OR nested class ends up empty -> skip this field entirely
+        if (fieldValue.isEmpty) {
+          shouldAddField = false;
+        } else {
+          final nestedClassName =
+              '${parentClassName}${_toPascalCase(dartFieldName)}';
+          final nestedResult =
+              _generateModelClassWithNested(nestedClassName, fieldValue);
+          if (nestedResult.mainClass.trim().isEmpty) {
+            shouldAddField = false;
+          } else {
+            fieldType = '$nestedClassName?';
+            // Generate nested class content
+            final nestedImports =
+                _generateImports(_modelNameToFileName(nestedClassName));
+            final nestedContent = '''$nestedImports
 
 ${nestedResult.mainClass}''';
 
-        nestedClasses[nestedClassName] = nestedContent;
-        nestedClasses.addAll(nestedResult.nestedClasses);
+            nestedClasses[nestedClassName] = nestedContent;
+            nestedClasses.addAll(nestedResult.nestedClasses);
+          }
+        }
       } else {
         fieldType = 'dynamic';
         defaultValue = '';
       }
 
-      final jsonKey = "@JsonKey(name: '$fieldName')";
-      final field = fieldType.endsWith('?')
-          ? '$jsonKey $fieldType $dartFieldName'
-          : '$defaultValue $jsonKey $fieldType $dartFieldName';
+      if (shouldAddField && fieldType.isNotEmpty) {
+        final jsonKey = "@JsonKey(name: '$fieldName')";
+        final field = fieldType.endsWith('?')
+            ? '$jsonKey $fieldType $dartFieldName'
+            : '$defaultValue $jsonKey $fieldType $dartFieldName';
 
-      fields.add(field);
+        fields.add(field);
+      }
     }
 
     return FieldGenerationResult(fields: fields, nestedClasses: nestedClasses);
@@ -710,14 +760,21 @@ ${nestedResult.mainClass}''';
 
   ListItemResult _getListItemTypeWithNested(
       dynamic item, String parentClassName, String fieldName) {
-    if (item is String) return ListItemResult(type: 'String', nestedClasses: {});
+    if (item is String)
+      return ListItemResult(type: 'String', nestedClasses: {});
     if (item is int) return ListItemResult(type: 'int', nestedClasses: {});
-    if (item is double) return ListItemResult(type: 'double', nestedClasses: {});
+    if (item is double)
+      return ListItemResult(type: 'double', nestedClasses: {});
     if (item is bool) return ListItemResult(type: 'bool', nestedClasses: {});
 
     if (item is Map<String, dynamic>) {
       final itemClassName = '${parentClassName}${_toPascalCase(fieldName)}Item';
       final itemResult = _generateModelClassWithNested(itemClassName, item);
+      // If nested item class is empty, fallback to Map<String, dynamic>
+      if (itemResult.mainClass.trim().isEmpty) {
+        return ListItemResult(type: 'Map<String, dynamic>', nestedClasses: {});
+      }
+
       final itemImports = _generateImports(_modelNameToFileName(itemClassName));
       final itemContent = '''$itemImports
 
@@ -737,7 +794,8 @@ ${itemResult.mainClass}''';
 
     // Convert PascalCase to snake_case
     var fileName = modelName
-        .replaceAllMapped(RegExp(r'([a-z])([A-Z])'), (match) => '${match[1]}_${match[2]}')
+        .replaceAllMapped(
+            RegExp(r'([a-z])([A-Z])'), (match) => '${match[1]}_${match[2]}')
         .toLowerCase();
 
     return fileName;
@@ -750,11 +808,15 @@ ${itemResult.mainClass}''';
     // Create directory if it doesn't exist
     file.parent.createSync(recursive: true);
 
+    // If content is empty, skip writing file
+    if (content.trim().isEmpty) return;
+
     // Update imports in the content
     final updatedContent = content
-        .replaceFirst(
-            "part '${_modelNameToFileName('')}.freezed.dart';", "part '$fileName.freezed.dart';")
-        .replaceFirst("part '${_modelNameToFileName('')}.g.dart';", "part '$fileName.g.dart';");
+        .replaceFirst("part '${_modelNameToFileName('')}.freezed.dart';",
+            "part '$fileName.freezed.dart';")
+        .replaceFirst("part '${_modelNameToFileName('')}.g.dart';",
+            "part '$fileName.g.dart';");
 
     file.writeAsStringSync(updatedContent);
   }
@@ -788,7 +850,8 @@ ${itemResult.mainClass}''';
       final result = parts.first.toLowerCase() +
           parts
               .skip(1)
-              .map((word) => word[0].toUpperCase() + word.substring(1).toLowerCase())
+              .map((word) =>
+                  word[0].toUpperCase() + word.substring(1).toLowerCase())
               .join('');
       return result;
     } else {
