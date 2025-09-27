@@ -39,7 +39,7 @@ void main(List<String> args) async {
       'flutter_driver',
       'integration_test',
       'async',
-      'isar_flutter_libs',
+      'isar_community_flutter_libs',
       'super_lint',
       'shared',
       'rxdart',

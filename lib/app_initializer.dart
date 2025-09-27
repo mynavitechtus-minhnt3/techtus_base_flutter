@@ -14,6 +14,7 @@ class AppInitializer {
           ? Constant.mobileOrientation
           : Constant.tabletOrientation,
     );
-    SystemChrome.setSystemUIOverlayStyle(Constant.systemUiOverlay);
+    // Edge to Edge
+    await SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
   }
 }

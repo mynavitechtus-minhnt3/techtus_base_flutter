@@ -4,6 +4,7 @@
 
 - Flutter SDK: 3.35.1
 - CocoaPods: 1.16.2
+- JVM: 17+
 
 ### How to run app
 

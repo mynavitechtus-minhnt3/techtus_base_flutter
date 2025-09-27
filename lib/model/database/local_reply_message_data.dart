@@ -1,5 +1,5 @@
 import 'package:chatview/chatview.dart' as cv;
-import 'package:isar/isar.dart';
+import 'package:isar_community/isar.dart';
 
 import '../../index.dart';
 
