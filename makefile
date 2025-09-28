@@ -9,6 +9,9 @@ ln:
 	flutter gen-l10n
 	make sort_arb
 
+check_page_routes:
+	dart run $(DART_TOOLS_PATH)/check_page_routes.dart
+
 sort_arb:
 	dart run $(DART_TOOLS_PATH)/sort_arb_files.dart lib/resource/l10n
 
@@ -47,6 +50,7 @@ pu:
 ci:
 	cd tools/dart_tools && flutter pub get
 	make check_pubs
+	make check_page_routes
 	make ep
 	make rup
 	make rua
