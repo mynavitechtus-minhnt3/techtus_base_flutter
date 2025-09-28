@@ -19,7 +19,7 @@ class MyApp extends HookConsumerWidget {
       ref.listenManual(
         isDarkModeProvider,
         (previous, next) {
-          AppTheme.currentAppThemeType = next ? AppThemeType.dark : AppThemeType.light;
+          AppThemes.currentAppThemeType = next ? AppThemeType.dark : AppThemeType.light;
         },
         fireImmediately: true,
       );

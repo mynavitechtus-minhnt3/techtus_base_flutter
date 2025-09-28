@@ -22,7 +22,7 @@ void _createInitProjectFile(String folder) {
 ```json
 {
   "common": {
-    "flutterVersion": "3.35.1",
+    "flutterVersion": "3.35.4",
     "projectCode": "NFT"
   },
   "fastlane": {

@@ -136,7 +136,7 @@ class CommonAppBar extends ConsumerWidget implements PreferredSizeWidget {
   }
 
   Widget _buildIcon(String iconPath) {
-    if (iconPath.endsWith('.svg')) {
+    if (iconPath.endsWith('.svg'.hardcoded)) {
       return iconPath.toSvgGenImage.svg(
         colorFilter: leadingIconColor?.let((it) => ColorFilter.mode(it, BlendMode.srcIn)),
         width: 24.rps,

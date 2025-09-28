@@ -1,3 +1,4 @@
+// ignore_for_file: test_folder_must_mirror_lib_folder
 import 'dart:io';
 
 import 'package:auto_route/auto_route.dart';
@@ -17,7 +18,7 @@ import 'index.dart';
 Future<void> main() async {
   l10n = await AppString.delegate.load(TestConfig.defaultLocale);
   AppColors.current = AppColors.defaultAppColor;
-  AppTheme.currentAppThemeType = AppThemeType.light;
+  AppThemes.currentAppThemeType = AppThemeType.light;
   AppDimen.current = AppDimen.init();
 
   setUpAll(() async {

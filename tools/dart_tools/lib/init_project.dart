@@ -32,7 +32,7 @@ const String _initProjectTemplate = '''Fill in the values below, then run `make 
 ```json
 {
   "common": {
-    "flutterVersion": "3.35.1",
+    "flutterVersion": "3.35.4",
     "projectCode": "NFT"
   },
   "fastlane": {

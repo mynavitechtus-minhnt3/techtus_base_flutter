@@ -23,7 +23,7 @@ definitions:
         - $HOME/.pub-cache
         - $HOME/Library/Caches/CocoaPods
   env_config: &env_config
-    flutter: 3.35.1
+    flutter: 3.35.4
     xcode: 16.0
     cocoapods: 1.16.2
     groups:

@@ -2,7 +2,7 @@
 
 ### Requirements
 
-- Flutter SDK: 3.35.1
+- Flutter SDK: 3.35.4
 - CocoaPods: 1.16.2
 - JVM: 17+
 

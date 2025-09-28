@@ -1,5 +1,5 @@
-class FontFamily {
-  FontFamily._();
+class AppFonts {
+  AppFonts._();
 
   /// Font family: Cupertino
   static const String cupertino = 'Cupertino';
