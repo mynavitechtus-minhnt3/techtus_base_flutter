@@ -31,10 +31,21 @@ Fetch the data from the [FIGMA_LINK], then based on the codebase and existing pa
       - 'CustomScrollView'
       - 'CommonPagedGridView'
       - 'CommonPagedListView'
-    - When using PrimaryTextField, use initialValue instead of controller
+    - Prioritize using flutter_hooks: useScrollController() for scroll controllers, useTextEditingController() for text editing controllers,...
     - Prioritize using the common widgets available in lib/ui/component/ folder
+      - CommonAppBar instead of AppBar
+      - CommonDivider instead of Divider
+      - CommonImage instead of Image, Icon or SvgPicture
+      - CommonScaffold instead of Scaffold
+      - CommonText instead of Text
+      - CommonProgressIndicator instead of CircularProgressIndicator
+    - Avoid duplicated code, create reusable widgets in lib/ui/component/ folder
+    - Follow the spec in the *_spec.md file in [snake_case_screen_name] folder
+    - For input components like TextField, prioritize creating fields in the state and managing them in the ViewModel instead of using controllers directly in the Page
   - For {PascalCaseScreenName}State, prefer using @Default() to set default values for all properties
-  - For {PascalCaseScreenName}ViewModel, follow the 'Business Logic' section in the *_spec.md file in [snake_case_screen_name] folder
+  - For {PascalCaseScreenName}ViewModel, follow the spec in the *_spec.md file in [snake_case_screen_name] folder
+
+5. Write golden tests and generate snapshots based on the instructions in .prompt_templates/golden_test/generate_golden_tests.md file with PAGE_FILE_PATH: lib/ui/page/[snake_case_screen_name]/[snake_case_screen_name]_page.dart
 
 ## Notes:
 
