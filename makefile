@@ -46,6 +46,7 @@ pu:
 ci:
 	cd tools/dart_tools && flutter pub get
 	make check_pubs
+	make ep
 	make rup
 	make rua
 	make fds
@@ -87,6 +88,14 @@ ga:
 
 gap:
 	dart run $(DART_TOOLS_PATH)/gen_all_pages.dart
+	make ep check=false
+
+ep:
+	@if [ "$(check)" = "false" ]; then \
+		dart run $(DART_TOOLS_PATH)/export_all_files.dart lib; \
+	else \
+		dart run $(DART_TOOLS_PATH)/export_all_files.dart lib --check; \
+	fi
 
 gen_api:
 	@if [ -z "$(input_path)" ]; then \
@@ -105,7 +114,8 @@ gen_api:
 		CMD="$$CMD --apis=$(apis)"; \
 	fi; \
 	echo "🚀 Running: $$CMD"; \
-	$$CMD
+	$$CMD; \
+	make ep check=false
 
 fm:
 	find . -name "*.dart" ! -name "*.g.dart" ! -name "*.freezed.dart" ! -name "*.gr.dart" ! -name "*.config.dart" ! -name "*.mocks.dart" ! -path '*/generated/*' ! -path '*/.dart_tool/*' | tr '\n' ' ' | xargs dart format --set-exit-if-changed -l 100
