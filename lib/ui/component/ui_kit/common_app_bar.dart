@@ -127,7 +127,7 @@ class CommonAppBar extends ConsumerWidget implements PreferredSizeWidget {
         child: titleType == AppBarTitle.text
             ? CommonText(text, style: titleTextStyle)
             : titleType == AppBarTitle.logo
-                ? _buildIcon(image.appIcon)
+                ? _buildIcon(image.imageAppIcon)
                 : null,
       ),
       actions: actions,
@@ -135,23 +135,19 @@ class CommonAppBar extends ConsumerWidget implements PreferredSizeWidget {
     );
   }
 
-  Widget _buildIcon(Object iconPath) {
-    if (iconPath is SvgGenImage) {
-      return iconPath.svg(
+  Widget _buildIcon(String iconPath) {
+    if (iconPath.endsWith('.svg')) {
+      return iconPath.toSvgGenImage.svg(
         colorFilter: leadingIconColor?.let((it) => ColorFilter.mode(it, BlendMode.srcIn)),
         width: 24.rps,
         height: 24.rps,
       );
     }
 
-    if (iconPath is AssetGenImage) {
-      return iconPath.image(
-        width: 24.rps,
-        height: 24.rps,
-      );
-    }
-
-    return const SizedBox.shrink();
+    return iconPath.toAssetGenImage.image(
+      width: 24.rps,
+      height: 24.rps,
+    );
   }
 }
 

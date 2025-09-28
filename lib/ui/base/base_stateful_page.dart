@@ -5,9 +5,9 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../index.dart';
 
 abstract class BaseStatefulPageState<
-    S extends BaseState,
-    VM extends BaseViewModel<S>,
-    P extends ProviderListenable<CommonState<S>>,
+    ST extends BaseState,
+    VM extends BaseViewModel<ST>,
+    P extends ProviderListenable<CommonState<ST>>,
     W extends StatefulHookConsumerWidget> extends ConsumerState<W> {
   P get provider;
   ScreenViewEvent get screenViewEvent;

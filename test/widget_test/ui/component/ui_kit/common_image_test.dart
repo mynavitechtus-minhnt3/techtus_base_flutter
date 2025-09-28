@@ -29,9 +29,9 @@ void main() {
           filename: 'common_image/asset',
           widget: UnconstrainedBox(
             child: CommonImage.asset(
-              path: image.appIcon,
-              width: 48,
-              height: 48,
+              path: image.imageBackground,
+              width: 234,
+              height: 506,
             ),
           ),
           includeTextScalingCase: false,
