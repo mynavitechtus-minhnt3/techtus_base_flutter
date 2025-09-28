@@ -9,8 +9,4 @@
 
 ## Screenshots (capture both the golden image and the design in a single screenshot)
 
-| Screenshot                 	| Note 	|
-|----------------------------	|------	|
-| <img src="" width="300" /> 	|      	|
-
 ## Note

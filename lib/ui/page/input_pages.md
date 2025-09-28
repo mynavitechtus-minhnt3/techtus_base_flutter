@@ -1,5 +1,4 @@
-login
+contact_list
 home
 main
-my_page 
 

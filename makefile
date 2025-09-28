@@ -35,6 +35,7 @@ sync:
 
 ref:
 	make cl
+	make delete_empty_folders
 	make sync
 
 pod:
@@ -147,6 +148,13 @@ analyze:
 
 dart_fix:
 	dart fix --apply
+
+delete_empty_folders:
+	@if [ "$(dry_run)" = "true" ]; then \
+		dart run $(DART_TOOLS_PATH)/cleanup_empty_page_folders.dart $(if $(path),$(path),lib/ui/page) --dry-run; \
+	else \
+		dart run $(DART_TOOLS_PATH)/cleanup_empty_page_folders.dart $(if $(path),$(path),lib/ui/page); \
+	fi
 
 gen_ai:
 	dart run flutter_launcher_icons:main -f app_icon/app-icon.yaml
