@@ -17,7 +17,7 @@ void _createInitProjectFile(String folder) {
   File file = File('$folder/setting_initial_config.md');
   if (!file.existsSync()) {
     file.createSync(recursive: true);
-    file.writeAsStringSync('''Điền giá trị vào JSON bên dưới, sau đó chạy lệnh `make init`
+    file.writeAsStringSync('''Fill in the values below, then run `make init` command
 
 ```json
 {
@@ -31,11 +31,11 @@ void _createInitProjectFile(String folder) {
     "firebaseToken": "1//0000000000000000000000000000000000000000",
     "mentions": "@minhnt3",
     "firebaseAppIds": {
-      // trước mắt chỉ cần setup CD cho môi trường QA
+      // for now only setup CD for QA environment
       "qa": "1:598926766937:android:9592c6941fa17be8aed248"
     },
     "appStoreIds": {
-      // trước mắt chỉ cần setup CD cho môi trường QA
+      // for now only setup CD for QA environment
       "qa": "6478853077"
     }
   },
@@ -49,7 +49,7 @@ void _createInitProjectFile(String folder) {
     "staging": "jp.flutter.app",
     "production": "jp.flutter.app"
   },
-  // nếu để trống thì sẽ lấy giá trị giống với applicationIds
+  // if empty, will use the same values as applicationIds
   "bundleIds": {
     "develop": "",
     "qa": "",

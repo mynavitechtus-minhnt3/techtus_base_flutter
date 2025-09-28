@@ -27,7 +27,7 @@ String? _extractFlutterSdkVersion(Map<String, dynamic> config) {
 }
 
 // Template for setting_initial_config.md
-const String _initProjectTemplate = '''Điền giá trị vào JSON bên dưới, sau đó chạy lệnh `make init`
+const String _initProjectTemplate = '''Fill in the values below, then run `make init` command
 
 ```json
 {
@@ -41,11 +41,11 @@ const String _initProjectTemplate = '''Điền giá trị vào JSON bên dưới
     "firebaseToken": "1//0000000000000000000000000000000000000000",
     "mentions": "@minhnt3",
     "firebaseAppIds": {
-      // trước mắt chỉ cần setup CD cho môi trường QA
+      // for now only setup CD for QA environment
       "qa": "1:598926766937:android:9592c6941fa17be8aed248"
     },
     "appStoreIds": {
-      // trước mắt chỉ cần setup CD cho môi trường QA
+      // for now only setup CD for QA environment
       "qa": "6478853077"
     }
   },
@@ -59,7 +59,7 @@ const String _initProjectTemplate = '''Điền giá trị vào JSON bên dưới
     "staging": "jp.flutter.app",
     "production": "jp.flutter.app"
   },
-  // nếu để trống thì sẽ lấy giá trị giống với applicationIds
+  // if empty, will use the same values as applicationIds
   "bundleIds": {
     "develop": "",
     "qa": "",
@@ -106,9 +106,9 @@ Future<bool> _createInitProjectFileIfNotExists(String projectRoot) async {
 
   if (!await initFile.exists()) {
     await initFile.writeAsString(_initProjectTemplate);
-    print('✅ Đã tạo file setting_initial_config.md');
+    print('✅ Created setting_initial_config.md file');
     print(
-        '🔗 Vui lòng cấu hình dự án tại: \x1b]8;;file://$initPath\x1b\\setting_initial_config.md\x1b]8;;\x1b\\');
+        '🔗 Please configure project at: \x1b]8;;file://$initPath\x1b\\setting_initial_config.md\x1b]8;;\x1b\\');
     return true;
   }
   return false;
@@ -261,7 +261,7 @@ Future<void> main(List<String> args) async {
   final wasCreated = await _createInitProjectFileIfNotExists(projectRoot);
   if (wasCreated) {
     // If file was just created, exit to let user configure it first
-    print('📝 Vui lòng điền thông tin cấu hình và chạy lại lệnh.');
+    print('📝 Please fill in the configuration information and run the command again.');
     return;
   }
 
@@ -1055,7 +1055,7 @@ String _removeConfigJsonBlock(String readme) {
   const endMarker = '<!-- CONFIG_INPUT_END -->';
   if (readme.contains(startMarker) && readme.contains(endMarker)) {
     final pattern = RegExp('$startMarker[\\s\\S]*?$endMarker', multiLine: true);
-    // Chỉ loại bỏ block cấu hình, KHÔNG trim hoặc chỉnh sửa dòng trống xung quanh
+    // Only remove config block, DON'T trim or modify surrounding blank lines
     return readme.replaceFirst(pattern, '');
   }
   return readme;
