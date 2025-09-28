@@ -1,0 +1,8 @@
+#!/bin/bash
+read -p "Enter Figma define colors link: " url
+if [[ -z "$url" ]]; then
+  echo "No link"
+  exit 1
+fi
+cd ../..
+claude -p --dangerously-skip-permissions "$url Use get_code to copy all color from this design to class AppColors, without comment, do not modify any existing colors"

@@ -2,6 +2,6 @@ import '../index.dart';
 
 late AppString l10n;
 
-AppColor get color => AppColor.current;
+AppColors get color => AppColors.current;
 
 $AssetsImagesGen get image => Assets.images;

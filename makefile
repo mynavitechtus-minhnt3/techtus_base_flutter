@@ -35,6 +35,7 @@ sync:
 
 ref:
 	make cl
+	make delete_empty_folders
 	make sync
 
 pod:
@@ -46,6 +47,7 @@ pu:
 ci:
 	cd tools/dart_tools && flutter pub get
 	make check_pubs
+	make ep
 	make rup
 	make rua
 	make fds
@@ -81,13 +83,28 @@ rdl:
 clc:
 	dart run $(DART_TOOLS_PATH)/check_l10n_convention.dart lib/resource/l10n
 
+ga:
+	dart run $(DART_TOOLS_PATH)/gen_assets.dart .
+	find lib/resource -name "*.dart" ! -name "*.g.dart" ! -name "*.freezed.dart" ! -name "*.gr.dart" ! -name "*.config.dart" ! -name "*.mocks.dart" ! -path '*/generated/*' ! -path '*/.dart_tool/*' | tr '\n' ' ' | xargs dart format -l 100
+
+gap:
+	dart run $(DART_TOOLS_PATH)/gen_all_pages.dart
+	make ep check=false
+
+ep:
+	@if [ "$(check)" = "false" ]; then \
+		dart run $(DART_TOOLS_PATH)/export_all_files.dart lib; \
+	else \
+		dart run $(DART_TOOLS_PATH)/export_all_files.dart lib --check; \
+	fi
+
 gen_api:
 	@if [ -z "$(input_path)" ]; then \
 		echo "❌ Error: input_path is required"; \
 		echo "Usage: make gen_api input_path=<path> [output_path=<path>] [replace=<true/false>] [apis=<api_list>]"; \
 		exit 1; \
 	fi
-	@CMD="dart run $(DART_TOOLS_PATH)/generate_api_from_swagger.dart --input_path=$(input_path)"; \
+	@CMD="dart run $(DART_TOOLS_PATH)/gen_api_from_swagger.dart --input_path=$(input_path)"; \
 	if [ ! -z "$(output_path)" ]; then \
 		CMD="$$CMD --output_path=$(output_path)"; \
 	fi; \
@@ -98,7 +115,8 @@ gen_api:
 		CMD="$$CMD --apis=$(apis)"; \
 	fi; \
 	echo "🚀 Running: $$CMD"; \
-	$$CMD
+	$$CMD; \
+	make ep check=false
 
 fm:
 	find . -name "*.dart" ! -name "*.g.dart" ! -name "*.freezed.dart" ! -name "*.gr.dart" ! -name "*.config.dart" ! -name "*.mocks.dart" ! -path '*/generated/*' ! -path '*/.dart_tool/*' | tr '\n' ' ' | xargs dart format --set-exit-if-changed -l 100
@@ -131,6 +149,13 @@ analyze:
 dart_fix:
 	dart fix --apply
 
+delete_empty_folders:
+	@if [ "$(dry_run)" = "true" ]; then \
+		dart run $(DART_TOOLS_PATH)/cleanup_empty_page_folders.dart $(if $(path),$(path),lib/ui/page) --dry-run; \
+	else \
+		dart run $(DART_TOOLS_PATH)/cleanup_empty_page_folders.dart $(if $(path),$(path),lib/ui/page); \
+	fi
+
 gen_ai:
 	dart run flutter_launcher_icons:main -f app_icon/app-icon.yaml
 
@@ -142,6 +167,9 @@ rm_spl:
 
 gen_env:
 	dart run $(DART_TOOLS_PATH)/gen_env.dart .
+
+init:
+	dart run tools/dart_tools/lib/init_project.dart
 
 build_dev_apk:
 	flutter build apk --flavor develop -t lib/main.dart --dart-define-from-file=dart_defines/develop.json --verbose

@@ -55,10 +55,8 @@ dependencies:
   infinite_scroll_pagination: 5.0.0
   injectable: 2.5.0
   intl: 0.20.2
-  isar_community: 
-    version: 3.3.0-dev.1
-  isar_community_flutter_libs: # contains Isar Core
-    version: 3.3.0-dev.1
+  isar_community: 3.3.0-dev.1
+  isar_community_flutter_libs: 3.3.0-dev.1
   json_annotation: 4.9.0
   mime: 2.0.0
   package_info_plus: 8.3.0
@@ -72,7 +70,6 @@ dev_dependencies:
   # dart_code_metrics: 5.7.6
   flutter_driver:
     sdk: flutter
-  flutter_gen_runner: 5.10.0
   flutter_launcher_icons: 0.14.4
   flutter_lints: 6.0.0
   flutter_test:
@@ -83,8 +80,7 @@ dev_dependencies:
   integration_test:
     sdk: flutter
   intl_utils: 2.8.10
-  isar_community_generator: 
-    version: 3.3.0-dev.1
+  isar_community_generator: 3.3.0-dev.1
   json_serializable: 6.9.5
   mocktail: 1.0.4
   mocktail_image_network: 1.2.0
@@ -93,19 +89,6 @@ dev_dependencies:
   super_lint:
     path: super_lint
 
-flutter_gen:
-  output: lib/generated
-  line_length: 160
-
-  integrations:
-    flutter_svg: true
-    # flare_flutter: true
-
-  assets:
-    enabled: true
-
-  fonts:
-    enabled: true
 flutter:
   uses-material-design: true
   generate: true

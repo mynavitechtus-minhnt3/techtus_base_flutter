@@ -585,6 +585,11 @@ class ApiGenerator {
     final imports = _generateImports(fileName);
     final result = _generateModelClassWithNested(modelName, responseExample);
 
+    // Skip generating file if main class is empty (no fields)
+    if (result.mainClass.trim().isEmpty) {
+      return ModelGenerationResult(mainContent: '', nestedClasses: {});
+    }
+
     final mainContent = '''$imports
 
 ${result.mainClass}''';
@@ -609,6 +614,10 @@ ${result.mainClass}''';
     if (responseExample is Map<String, dynamic>) {
       final fieldsResult = _generateFieldsWithNested(responseExample, className);
       nestedClasses.addAll(fieldsResult.nestedClasses);
+      // If no fields found, do not generate class
+      if (fieldsResult.fields.isEmpty) {
+        return ModelClassResult(mainClass: '', nestedClasses: nestedClasses);
+      }
 
       final mainClass = '''@freezed
 sealed class $className with $privateClassName {
@@ -649,8 +658,9 @@ part '$fileName.g.dart';''';
       final fieldValue = entry.value;
       final dartFieldName = _toCamelCase(fieldName);
 
-      String fieldType;
-      String defaultValue;
+      String fieldType = '';
+      String defaultValue = '';
+      bool shouldAddField = true;
 
       if (fieldValue == null) {
         fieldType = 'String?';
@@ -679,30 +689,39 @@ part '$fileName.g.dart';''';
           nestedClasses.addAll(itemResult.nestedClasses);
         }
       } else if (fieldValue is Map<String, dynamic>) {
-        final nestedClassName = '${parentClassName}${_toPascalCase(dartFieldName)}';
-        fieldType = '$nestedClassName?';
-        defaultValue = '';
-
-        // Generate nested class content
-        final nestedResult = _generateModelClassWithNested(nestedClassName, fieldValue);
-        final nestedImports = _generateImports(_modelNameToFileName(nestedClassName));
-        final nestedContent = '''$nestedImports
+        // If the nested object has no fields OR nested class ends up empty -> skip this field entirely
+        if (fieldValue.isEmpty) {
+          shouldAddField = false;
+        } else {
+          final nestedClassName = '${parentClassName}${_toPascalCase(dartFieldName)}';
+          final nestedResult = _generateModelClassWithNested(nestedClassName, fieldValue);
+          if (nestedResult.mainClass.trim().isEmpty) {
+            shouldAddField = false;
+          } else {
+            fieldType = '$nestedClassName?';
+            // Generate nested class content
+            final nestedImports = _generateImports(_modelNameToFileName(nestedClassName));
+            final nestedContent = '''$nestedImports
 
 ${nestedResult.mainClass}''';
 
-        nestedClasses[nestedClassName] = nestedContent;
-        nestedClasses.addAll(nestedResult.nestedClasses);
+            nestedClasses[nestedClassName] = nestedContent;
+            nestedClasses.addAll(nestedResult.nestedClasses);
+          }
+        }
       } else {
         fieldType = 'dynamic';
         defaultValue = '';
       }
 
-      final jsonKey = "@JsonKey(name: '$fieldName')";
-      final field = fieldType.endsWith('?')
-          ? '$jsonKey $fieldType $dartFieldName'
-          : '$defaultValue $jsonKey $fieldType $dartFieldName';
+      if (shouldAddField && fieldType.isNotEmpty) {
+        final jsonKey = "@JsonKey(name: '$fieldName')";
+        final field = fieldType.endsWith('?')
+            ? '$jsonKey $fieldType $dartFieldName'
+            : '$defaultValue $jsonKey $fieldType $dartFieldName';
 
-      fields.add(field);
+        fields.add(field);
+      }
     }
 
     return FieldGenerationResult(fields: fields, nestedClasses: nestedClasses);
@@ -718,6 +737,11 @@ ${nestedResult.mainClass}''';
     if (item is Map<String, dynamic>) {
       final itemClassName = '${parentClassName}${_toPascalCase(fieldName)}Item';
       final itemResult = _generateModelClassWithNested(itemClassName, item);
+      // If nested item class is empty, fallback to Map<String, dynamic>
+      if (itemResult.mainClass.trim().isEmpty) {
+        return ListItemResult(type: 'Map<String, dynamic>', nestedClasses: {});
+      }
+
       final itemImports = _generateImports(_modelNameToFileName(itemClassName));
       final itemContent = '''$itemImports
 
@@ -749,6 +773,9 @@ ${itemResult.mainClass}''';
 
     // Create directory if it doesn't exist
     file.parent.createSync(recursive: true);
+
+    // If content is empty, skip writing file
+    if (content.trim().isEmpty) return;
 
     // Update imports in the content
     final updatedContent = content

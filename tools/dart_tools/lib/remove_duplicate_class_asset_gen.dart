@@ -2,7 +2,7 @@ import 'dart:io';
 
 void main(List<String> args) async {
   if (args.isEmpty) {
-    print('❗ Vui lòng truyền đường dẫn module (VD: apps/salon_app)');
+    print('❗ Please provide module path (Example: apps/user_app)');
     exit(1);
   }
 

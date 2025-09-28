@@ -74,3 +74,4 @@ ios/fastlane/report.xml
 pubspec_overrides.yaml
 **/failures/*.png
 android/.kotlin/
+setting_initial_config.md

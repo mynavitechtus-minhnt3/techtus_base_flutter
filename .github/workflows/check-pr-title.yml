@@ -24,11 +24,15 @@ jobs:
             exit 1
           fi
 
-          if [[ "$TITLE" != "$TICKET:"* ]]; then
-            echo "❌ PR title must start with '$TICKET: '"
-            echo "🔁 Example: '$TICKET: your feature description'"
+          if [[ "$TITLE" != "$TICKET:"* ]] && [[ "$TITLE" != "[WIP]"*"$TICKET:"* ]]; then
+            echo "❌ PR title must start with '$TICKET: ' or '[WIP]'"
+            echo "🔁 Example: '$TICKET: your feature description' or '[WIP] $TICKET: your work in progress'"
             exit 1
           fi
 
-          echo "✅ PR title starts with ticket number '$TICKET'"
+          if [[ "$TITLE" == "[WIP]"* ]]; then
+            echo "✅ PR title starts with '[WIP]' - work in progress"
+          else
+            echo "✅ PR title starts with ticket number '$TICKET'"
+          fi
           echo "✅ PR title is valid."

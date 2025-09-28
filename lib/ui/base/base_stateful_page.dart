@@ -5,9 +5,9 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../index.dart';
 
 abstract class BaseStatefulPageState<
-    S extends BaseState,
-    VM extends BaseViewModel<S>,
-    P extends ProviderListenable<CommonState<S>>,
+    ST extends BaseState,
+    VM extends BaseViewModel<ST>,
+    P extends ProviderListenable<CommonState<ST>>,
     W extends StatefulHookConsumerWidget> extends ConsumerState<W> {
   P get provider;
   ScreenViewEvent get screenViewEvent;
@@ -21,7 +21,7 @@ abstract class BaseStatefulPageState<
   @override
   Widget build(BuildContext context) {
     AppDimen.init();
-    AppColor.of(context);
+    AppColors.of(context);
     l10n = AppString.of(context)!;
 
     ref.listen(

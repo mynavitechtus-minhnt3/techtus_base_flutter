@@ -4,15 +4,15 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../index.dart';
 
-abstract class BaseViewModel<S extends BaseState> extends StateNotifier<CommonState<S>> {
-  BaseViewModel(CommonState<S> initialState) : super(initialState) {
+abstract class BaseViewModel<ST extends BaseState> extends StateNotifier<CommonState<ST>> {
+  BaseViewModel(CommonState<ST> initialState) : super(initialState) {
     this.initialState = initialState;
   }
 
-  late final CommonState<S> initialState;
+  late final CommonState<ST> initialState;
 
   @override
-  set state(CommonState<S> value) {
+  set state(CommonState<ST> value) {
     if (mounted) {
       super.state = value;
     } else {
@@ -21,7 +21,7 @@ abstract class BaseViewModel<S extends BaseState> extends StateNotifier<CommonSt
   }
 
   @override
-  CommonState<S> get state {
+  CommonState<ST> get state {
     if (mounted) {
       return super.state;
     } else {
@@ -31,7 +31,7 @@ abstract class BaseViewModel<S extends BaseState> extends StateNotifier<CommonSt
     }
   }
 
-  set data(S data) {
+  set data(ST data) {
     if (mounted) {
       state = state.copyWith(data: data);
     } else {
@@ -39,7 +39,7 @@ abstract class BaseViewModel<S extends BaseState> extends StateNotifier<CommonSt
     }
   }
 
-  S get data => state.data;
+  ST get data => state.data;
 
   int _loadingCount = 0;
   bool firstLoadingShown = false;

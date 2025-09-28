@@ -16,7 +16,7 @@ import 'index.dart';
 
 Future<void> main() async {
   l10n = await AppString.delegate.load(TestConfig.defaultLocale);
-  AppColor.current = AppColor.defaultAppColor;
+  AppColors.current = AppColors.defaultAppColor;
   AppTheme.currentAppThemeType = AppThemeType.light;
   AppDimen.current = AppDimen.init();
 

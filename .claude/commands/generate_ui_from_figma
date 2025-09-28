@@ -1,0 +1,73 @@
+#!/bin/bash
+
+pascal_case() {
+  echo "$*" | awk '{
+  gsub(/[-_]/," ");
+    for (i=1;i<=NF;i++) {
+      $i = toupper(substr($i,1,1)) substr($i,2)
+    }
+    gsub(/ /,"",$0)
+    print
+  }'
+}
+
+snake_case() {
+  echo "$*" \
+    | tr '[:upper:]' '[:lower:]' \
+    | sed -E 's/[^a-z0-9]+/_/g' \
+    | sed -E 's/^_+|_+$//g'
+}
+
+read -p "Enter screen name (ex: forgot password): " name
+if [[ -z "$name" ]]; then exit 1
+fi
+read -p "Enter $name screen Figma link: " url
+if [[ -z "$url" ]]; then exit 1
+fi
+read -p "Enter business md file name: " bd_name
+read -p "Enter other special components: " components
+notes=()
+while true; do
+  read -p "Additional note: " note
+  if [[ -z "$note" ]]; then break
+  fi
+  notes+=("$note")
+done
+
+pc_name=$(pascal_case "$name")
+prompt="$url
+Fetch the data from the Figma link above, then based on the codebase and existing pages, write the code for the lib/ui/page/$(snake_case "$name") screen.
+Steps:
+1. Create 3 dart files for 3 classes: ${pc_name}Page extends BasePage<${pc_name}State, AutoDisposeStateNotifierProvider<${pc_name}ViewModel, CommonState<${pc_name}State>>>, ${pc_name}ViewModel extends BaseViewModel<${pc_name}State>, ${pc_name}State extends BaseState with _\$${pc_name}State
+2. Export all 3 files to lib/index.dart, note to sort alphabetically
+3. Add ${pc_name}Route to AppRouter
+4. Use get_code to fetch all data of the screen in the above design
+5. Search all strings in the design and add the appropriate strings to lib/resource/l10n/intl_ja.arb (no need to translate to other languages and do not add strings that can be dynamic data), later when coding UI use l10n.<key>
+6. Search all images in the design and create empty image files with corresponding names in the assets/images/ folder (do not create images in the status bar, files do not need to have content, name format: ic_$(snake_case "$name")_<name>)
+7. Based on the data from the get_code command above, recode the ${pc_name}Page, ${pc_name}ViewModel, ${pc_name}State classes to complete the UI for the ${pc_name}Page screen"
+if [[ -n "$bd_name" ]];
+ then prompt+="
+8. Based on the business from the hck-healthcheckup-management-documents/output/business/02-functional-groups/screens/${bd_name} file, complete the logic processing for the newly created screen"
+fi
+prompt+="
+Note:
+- Do not comment
+- Do not modify any existing strings, colors or images
+- Use make_fb instead of dart run build_runner build
+- Do not code the status bar UI
+- Use CommonImage with path image.<image_name>, do not use Icon widget
+- When using PrimaryTextField, use initialValue instead of controller
+- Prioritize using the common widgets available in lib/ui/component/"
+if [[ -n "$components" ]]; then
+  prompt+="
+- Other special components will be used in this screen: $components"
+fi
+for note in "${notes[@]}"; do
+  prompt+="
+- $note"
+done
+echo "${prompt}
+
+Please wait until generate complete..."
+cd ../..
+claude -p --dangerously-skip-permissions "$prompt"

@@ -4,7 +4,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../index.dart';
 
-abstract class BasePage<S extends BaseState, P extends ProviderListenable<CommonState<S>>>
+abstract class BasePage<ST extends BaseState, P extends ProviderListenable<CommonState<ST>>>
     extends HookConsumerWidget {
   const BasePage({super.key});
 
@@ -14,7 +14,7 @@ abstract class BasePage<S extends BaseState, P extends ProviderListenable<Common
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     AppDimen.init();
-    AppColor.of(context);
+    AppColors.of(context);
     l10n = AppString.of(context)!;
 
     ref.listen(

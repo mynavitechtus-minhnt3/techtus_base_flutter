@@ -155,7 +155,7 @@ class CommonPopup {
               Align(
                 alignment: Alignment.topCenter,
                 child: CommonImage.asset(
-                  path: image.appIcon,
+                  path: image.imageAppIcon,
                   width: 128.rps,
                   height: 128.rps,
                 ),

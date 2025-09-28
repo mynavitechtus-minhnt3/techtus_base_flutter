@@ -29,9 +29,9 @@ void main() {
           filename: 'common_image/asset',
           widget: UnconstrainedBox(
             child: CommonImage.asset(
-              path: image.appIcon,
-              width: 48,
-              height: 48,
+              path: image.imageBackground,
+              width: 234,
+              height: 506,
             ),
           ),
           includeTextScalingCase: false,
@@ -53,7 +53,7 @@ void main() {
       });
 
       testGoldens('memory', (tester) async {
-        final bytes = File('assets/images/app_icon.png').readAsBytesSync();
+        final bytes = File('assets/images/image_app_icon.png').readAsBytesSync();
         await tester.testWidget(
           filename: 'common_image/memory',
           widget: UnconstrainedBox(

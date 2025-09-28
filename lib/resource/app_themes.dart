@@ -2,7 +2,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-import '../../index.dart';
+import '../index.dart';
 
 /// define custom themes here
 final lightTheme = ThemeData(
@@ -11,7 +11,7 @@ final lightTheme = ThemeData(
   fontFamily: defaultTargetPlatform == TargetPlatform.android ? FontFamily.notoSansJP : null,
 )..addAppColor(
     type: AppThemeType.light,
-    appColor: AppColor.defaultAppColor,
+    appColor: AppColors.defaultAppColor,
   );
 
 final darkTheme = ThemeData(
@@ -20,23 +20,23 @@ final darkTheme = ThemeData(
   fontFamily: defaultTargetPlatform == TargetPlatform.android ? FontFamily.notoSansJP : null,
 )..addAppColor(
     type: AppThemeType.dark,
-    appColor: AppColor.darkThemeColor,
+    appColor: AppColors.darkThemeColor,
   );
 
 enum AppThemeType { light, dark }
 
 extension ThemeDataExtensions on ThemeData {
-  static final Map<AppThemeType, AppColor> _appColorMap = {};
+  static final Map<AppThemeType, AppColors> _appColorMap = {};
 
   void addAppColor({
     required AppThemeType type,
-    required AppColor appColor,
+    required AppColors appColor,
   }) {
     _appColorMap[type] = appColor;
   }
 
-  AppColor get appColor {
-    return _appColorMap[AppTheme.currentAppThemeType] ?? AppColor.defaultAppColor;
+  AppColors get appColor {
+    return _appColorMap[AppTheme.currentAppThemeType] ?? AppColors.defaultAppColor;
   }
 }
 
