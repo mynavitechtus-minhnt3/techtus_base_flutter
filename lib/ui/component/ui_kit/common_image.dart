@@ -21,7 +21,7 @@ class CommonImage extends StatelessWidget {
   });
 
   CommonImage.svg({
-    required SvgGenImage path,
+    required String path,
     Key? key,
     double? width,
     double? height,
@@ -66,7 +66,7 @@ class CommonImage extends StatelessWidget {
         );
 
   CommonImage.asset({
-    required AssetGenImage path,
+    required String path,
     Key? key,
     double? width,
     double? height,
@@ -388,40 +388,40 @@ class CommonImage extends StatelessWidget {
         image = SizedBox(
           width: _style.width,
           height: _style.height,
-          child: (source as SvgGenImage).svg(
-            width: _style.width,
-            height: _style.height,
-            colorFilter: _style.foregroundColor
-                ?.let((it) => ColorFilter.mode(it, _style.colorBlendMode ?? BlendMode.srcIn)),
-            fit: _style.fit ?? BoxFit.contain,
-            alignment: _style.alignment ?? Alignment.center,
-            matchTextDirection: _style.matchTextDirection ?? false,
-            clipBehavior: _style.clipBehavior ?? Clip.hardEdge,
-            allowDrawingOutsideViewBox: _style.allowDrawingOutsideViewBox ?? false,
-            placeholderBuilder: _style.placeholderBuilder,
-          ),
+          child: (source as String).toSvgGenImage.svg(
+                width: _style.width,
+                height: _style.height,
+                colorFilter: _style.foregroundColor
+                    ?.let((it) => ColorFilter.mode(it, _style.colorBlendMode ?? BlendMode.srcIn)),
+                fit: _style.fit ?? BoxFit.contain,
+                alignment: _style.alignment ?? Alignment.center,
+                matchTextDirection: _style.matchTextDirection ?? false,
+                clipBehavior: _style.clipBehavior ?? Clip.hardEdge,
+                allowDrawingOutsideViewBox: _style.allowDrawingOutsideViewBox ?? false,
+                placeholderBuilder: _style.placeholderBuilder,
+              ),
         );
         break;
       case ImageInputType.asset:
         final _style = style as _CommonAssetImageStyle;
-        image = (source as AssetGenImage).image(
-          width: _style.width,
-          height: _style.height,
-          color: _style.foregroundColor,
-          frameBuilder: _style.frameBuilder,
-          errorBuilder: _style.errorBuilder != null
-              ? (context, error, _) => _style.errorBuilder!.call(context, error)
-              : null,
-          colorBlendMode: _style.colorBlendMode,
-          fit: _style.fit,
-          alignment: _style.alignment ?? Alignment.center,
-          repeat: _style.repeat ?? ImageRepeat.noRepeat,
-          centerSlice: _style.centerSlice,
-          matchTextDirection: _style.matchTextDirection ?? false,
-          gaplessPlayback: _style.gaplessPlayback ?? false,
-          isAntiAlias: _style.isAntiAlias ?? false,
-          filterQuality: _style.filterQuality ?? FilterQuality.low,
-        );
+        image = (source as String).toAssetGenImage.image(
+              width: _style.width,
+              height: _style.height,
+              color: _style.foregroundColor,
+              frameBuilder: _style.frameBuilder,
+              errorBuilder: _style.errorBuilder != null
+                  ? (context, error, _) => _style.errorBuilder!.call(context, error)
+                  : null,
+              colorBlendMode: _style.colorBlendMode,
+              fit: _style.fit,
+              alignment: _style.alignment ?? Alignment.center,
+              repeat: _style.repeat ?? ImageRepeat.noRepeat,
+              centerSlice: _style.centerSlice,
+              matchTextDirection: _style.matchTextDirection ?? false,
+              gaplessPlayback: _style.gaplessPlayback ?? false,
+              isAntiAlias: _style.isAntiAlias ?? false,
+              filterQuality: _style.filterQuality ?? FilterQuality.low,
+            );
         break;
       case ImageInputType.network:
         final _style = style as _CommonNetworkImageStyle;

@@ -14,7 +14,7 @@ abstract class BasePage<S extends BaseState, P extends ProviderListenable<Common
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     AppDimen.init();
-    AppColor.of(context);
+    AppColors.of(context);
     l10n = AppString.of(context)!;
 
     ref.listen(

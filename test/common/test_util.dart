@@ -46,7 +46,7 @@ class TestUtil {
       child: Builder(
         builder: (context) {
           AppDimen.current = AppDimen.init();
-          AppColor.current = AppColor.of(context);
+          AppColors.current = AppColors.of(context);
 
           return MaterialApp.router(
             builder: (context, child) {
@@ -114,7 +114,7 @@ class TestUtil {
         child: Builder(
           builder: (context) {
             AppDimen.current = AppDimen.init();
-            AppColor.current = AppColor.of(context);
+            AppColors.current = AppColors.of(context);
 
             return wrapper;
           },

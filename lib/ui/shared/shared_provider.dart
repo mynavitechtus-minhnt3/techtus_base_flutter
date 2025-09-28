@@ -5,11 +5,11 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../index.dart';
 
-final backgroundProvider = Provider.autoDispose<AssetGenImage>(
+final backgroundProvider = Provider.autoDispose<String>(
   (ref) {
     final isDarkMode = ref.watch(isDarkModeProvider);
 
-    return isDarkMode ? image.darkBackground : image.background;
+    return isDarkMode ? image.imageDarkBackground : image.imageBackground;
   },
 );
 

@@ -53,7 +53,7 @@ void main() {
       });
 
       testGoldens('memory', (tester) async {
-        final bytes = File('assets/images/app_icon.png').readAsBytesSync();
+        final bytes = File('assets/images/image_app_icon.png').readAsBytesSync();
         await tester.testWidget(
           filename: 'common_image/memory',
           widget: UnconstrainedBox(

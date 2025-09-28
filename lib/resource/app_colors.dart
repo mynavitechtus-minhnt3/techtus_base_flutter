@@ -1,10 +1,10 @@
 // ignore_for_file: avoid_hard_coded_colors
 import 'package:flutter/material.dart';
 
-import '../../index.dart';
+import '../index.dart';
 
-class AppColor {
-  const AppColor({
+class AppColors {
+  const AppColors({
     required this.white,
     required this.black,
     required this.black2,
@@ -15,7 +15,7 @@ class AppColor {
     required this.green1,
   });
 
-  static late AppColor current;
+  static late AppColors current;
 
   final Color white;
   final Color black;
@@ -26,7 +26,7 @@ class AppColor {
   final Color grey2;
   final Color green1;
 
-  static const defaultAppColor = AppColor(
+  static const defaultAppColor = AppColors(
     white: Colors.white,
     black: Colors.black,
     black2: Colors.black54,
@@ -37,7 +37,7 @@ class AppColor {
     green1: Colors.green,
   );
 
-  static const darkThemeColor = AppColor(
+  static const darkThemeColor = AppColors(
     white: Colors.black,
     black: Colors.white,
     black2: Colors.white54,
@@ -48,7 +48,7 @@ class AppColor {
     green1: Colors.green,
   );
 
-  static AppColor of(BuildContext context) {
+  static AppColors of(BuildContext context) {
     final appColor = Theme.of(context).appColor;
 
     current = appColor;

@@ -5,8 +5,13 @@ void main(List<String> args) async {
   final imageDir = Directory('${args[0]}/assets/images');
   final imageRefRegex = RegExp(r'\b(?:sImage|image)\.([a-zA-Z0-9_]+)\b');
   final excludes = <String>[
-    './assets/images/app_icon.png',
+    './assets/images/image_app_icon.png',
+    '*',
   ];
+  if (excludes.contains('*')) {
+    print('⚠️ Exiting because excludes contains "*"');
+    exit(0);
+  }
   if (!imageDir.existsSync()) {
     print('❌ assets/images does not exist');
     exit(1);
