@@ -6,5 +6,4 @@ class FontFamily {
 
   /// Font family: Noto_Sans_JP
   static const String notoSansJP = 'Noto_Sans_JP';
-
 }

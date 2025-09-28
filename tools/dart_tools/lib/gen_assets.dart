@@ -158,12 +158,7 @@ String _generateAssetsContent(List<String> imageFiles, String appPath, String? p
   final valuesList = imageFiles.map((file) => _getGetterName(file)).join(',\n        ');
 
   // Generate for package format (assetsgen.dart)
-  return '''/// GENERATED CODE - DO NOT MODIFY BY HAND
-// coverage:ignore-file
-// ignore_for_file: type=lint
-// ignore_for_file: directives_ordering,unnecessary_import,implicit_dynamic_list_literal,deprecated_member_use
-
-class \$AssetsImagesGen {
+  return '''class \$AssetsImagesGen {
   const \$AssetsImagesGen();
 
 $getterMethods

@@ -83,6 +83,7 @@ clc:
 
 ga:
 	dart run $(DART_TOOLS_PATH)/gen_assets.dart .
+	find lib/resource -name "*.dart" ! -name "*.g.dart" ! -name "*.freezed.dart" ! -name "*.gr.dart" ! -name "*.config.dart" ! -name "*.mocks.dart" ! -path '*/generated/*' ! -path '*/.dart_tool/*' | tr '\n' ' ' | xargs dart format -l 100
 
 gap:
 	dart run $(DART_TOOLS_PATH)/gen_all_pages.dart

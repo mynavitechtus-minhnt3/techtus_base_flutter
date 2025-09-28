@@ -26,7 +26,7 @@ jobs:
 
           if [[ "$TITLE" != "$TICKET:"* ]] && [[ "$TITLE" != "[WIP]"*"$TICKET:"* ]]; then
             echo "❌ PR title must start with '$TICKET: ' or '[WIP]'"
-            echo "🔁 Example: '$TICKET: your feature description' or '[WIP] your work in progress'"
+            echo "🔁 Example: '$TICKET: your feature description' or '[WIP] $TICKET: your work in progress'"
             exit 1
           fi
 

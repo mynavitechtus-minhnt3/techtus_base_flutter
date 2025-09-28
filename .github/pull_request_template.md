@@ -7,7 +7,7 @@
 - [ ] Self review is done
    - No impact on existing functionality
 
-## Screenshots (compare actual with design)
+## Screenshots (capture both the golden image and the design in a single screenshot)
 
 | Screenshot                 	| Note 	|
 |----------------------------	|------	|
