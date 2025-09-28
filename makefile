@@ -145,7 +145,7 @@ lint:
 	make analyze
 
 sl:
-	dart run $(DART_TOOLS_PATH)/super_lint.dart lib test
+	tools/bash/super_lint.sh
 
 analyze:
 	flutter analyze --no-pub --suppress-analytics
