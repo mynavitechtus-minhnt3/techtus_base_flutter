@@ -66,6 +66,69 @@ void main() {
           includeTextScalingCase: false,
         );
       });
+
+      testGoldens(
+        'with solid border',
+        (tester) async {
+          await tester.testWidget(
+            filename: 'common_image/with solid border',
+            includeTextScalingCase: false,
+            widget: UnconstrainedBox(
+              child: CommonImage.asset(
+                path: image.imageBackground,
+                width: 234,
+                height: 506,
+                fit: BoxFit.cover,
+                border: SolidBorder.allRadius(radius: 12, borderColor: Colors.red, borderWidth: 4),
+              ),
+            ),
+          );
+        },
+      );
+
+      testGoldens(
+        'with dash border',
+        (tester) async {
+          await tester.testWidget(
+            filename: 'common_image/with dash border',
+            includeTextScalingCase: false,
+            widget: UnconstrainedBox(
+              child: CommonImage.asset(
+                path: image.imageBackground,
+                width: 234,
+                height: 506,
+                fit: BoxFit.cover,
+                border: DashBorder.allRadius(
+                  radius: 12,
+                  borderColor: Colors.red,
+                  borderWidth: 4,
+                  dash: [6, 3],
+                ),
+              ),
+            ),
+          );
+        },
+      );
+
+      testGoldens(
+        'circle image',
+        (tester) async {
+          await tester.testWidget(
+            filename: 'common_image/circle image',
+            includeTextScalingCase: false,
+            widget: UnconstrainedBox(
+              child: CommonImage.asset(
+                path: image.imageBackground,
+                width: 234,
+                height: 234,
+                fit: BoxFit.cover,
+                border: SolidBorder.allRadius(radius: 12, borderColor: Colors.red, borderWidth: 4),
+                shape: CommonShape.circle,
+              ),
+            ),
+          );
+        },
+      );
     },
   );
 }

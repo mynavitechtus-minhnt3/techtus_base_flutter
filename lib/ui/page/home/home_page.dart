@@ -58,7 +58,7 @@ class HomePage extends BasePage<HomeState,
               url: Constant.contactListBg,
               fit: BoxFit.cover,
               cacheManager: cacheManager,
-              errorBuilder: (context, error) => CommonContainer(color: color.red1),
+              errorBuilder: (context, error) => Container(color: color.red1),
             ),
             Consumer(
               builder: (context, ref, child) {
@@ -74,6 +74,7 @@ class HomePage extends BasePage<HomeState,
                           pagingController: pagingController,
                           animateTransitions: false,
                           itemBuilder: (context, user, index) {
+                            final cardBorder = SolidBorder.allRadius(radius: 8.rps);
                             return Padding(
                               padding: EdgeInsets.symmetric(
                                 horizontal: 8.rps,
@@ -86,11 +87,14 @@ class HomePage extends BasePage<HomeState,
                                   onTap: () async {
                                     await ref.read(appNavigatorProvider).push(HomeRoute());
                                   },
-                                  child: CommonContainer(
+                                  child: Container(
                                     padding: EdgeInsets.all(8.rps),
-                                    color: color.green1,
-                                    border: SolidBorder.allRadius(radius: 8.rps),
                                     width: double.infinity,
+                                    decoration: BoxDecoration(
+                                      color: color.green1,
+                                      borderRadius: cardBorder.borderRadius,
+                                      border: cardBorder.boxBorder,
+                                    ),
                                     child: CommonText(
                                       '${user.email}\n${user.gender}\n${user.birthday?.toIso8601String()}'
                                           .hardcoded,

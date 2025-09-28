@@ -51,6 +51,7 @@ ci:
 	cd tools/dart_tools && flutter pub get
 	make check_pubs
 	make check_page_routes
+	make check_component_usage
 	make ep
 	make rup
 	make rua
@@ -101,6 +102,9 @@ ep:
 	else \
 		dart run $(DART_TOOLS_PATH)/export_all_files.dart lib --check; \
 	fi
+
+check_component_usage:
+	dart run $(DART_TOOLS_PATH)/check_component_usage.dart
 
 gen_api:
 	@if [ -z "$(input_path)" ]; then \

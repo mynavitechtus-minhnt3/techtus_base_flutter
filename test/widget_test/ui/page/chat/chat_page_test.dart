@@ -298,7 +298,7 @@ void main() {
           widget: const ChatPage(conversation: conversation),
           onCreate: (tester, key) async {
             await tester.pump(5.seconds);
-            final moreMenuIconFinder = find.byType(MoreMenuIconButton).isDescendantOfKeyIfAny(key);
+            final moreMenuIconFinder = find.byIcon(Icons.more_horiz).isDescendantOfKeyIfAny(key);
             expect(moreMenuIconFinder, findsOneWidget);
             await tester.tap(moreMenuIconFinder);
             await tester.pump();
@@ -369,7 +369,7 @@ void main() {
           widget: const ChatPage(conversation: conversation),
           onCreate: (tester, key) async {
             await tester.pump(5.seconds);
-            final moreMenuIconFinder = find.byType(MoreMenuIconButton).isDescendantOfKeyIfAny(key);
+            final moreMenuIconFinder = find.byIcon(Icons.more_horiz).isDescendantOfKeyIfAny(key);
             expect(moreMenuIconFinder, findsOneWidget);
             await tester.tap(moreMenuIconFinder);
             await tester.pump();

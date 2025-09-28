@@ -579,14 +579,14 @@ class CommonImage extends StatelessWidget {
             : image;
 
     final container = wrapContainer
-        ? CommonContainer(
+        ? _buildContainerWrapper(
+            child: shapeImage,
             border: style.border,
             shape: style.shape,
-            color: style.backgroundColor,
+            backgroundColor: style.backgroundColor,
             padding: style.padding,
             margin: style.margin,
             boxShadow: style.boxShadow,
-            child: shapeImage,
           )
         : shapeImage;
 
@@ -598,6 +598,52 @@ class CommonImage extends StatelessWidget {
           )
         : container;
   }
+}
+
+Widget _buildContainerWrapper({
+  required Widget child,
+  CommonBorder? border,
+  EdgeInsetsGeometry? padding,
+  EdgeInsetsGeometry? margin,
+  Color? backgroundColor,
+  List<BoxShadow>? boxShadow,
+  CommonShape shape = CommonShape.rectangle,
+}) {
+  final decorated = Container(
+    padding: padding,
+    margin: margin,
+    decoration: _buildDecoration(
+      border: border,
+      backgroundColor: backgroundColor,
+      boxShadow: boxShadow,
+      shape: shape,
+    ),
+    child: child,
+  );
+
+  return shape == CommonShape.circle ? ClipOval(child: decorated) : decorated;
+}
+
+Decoration? _buildDecoration({
+  CommonBorder? border,
+  Color? backgroundColor,
+  List<BoxShadow>? boxShadow,
+  CommonShape shape = CommonShape.rectangle,
+}) {
+  if (border is DashBorder) {
+    return DashBorderDecoration(
+      dashBorder: border,
+      shape: shape,
+    );
+  }
+
+  return BoxDecoration(
+    color: backgroundColor,
+    borderRadius: shape == CommonShape.circle ? null : border?.borderRadius,
+    border: border?.boxBorder,
+    boxShadow: boxShadow,
+    shape: shape == CommonShape.circle ? BoxShape.circle : BoxShape.rectangle,
+  );
 }
 
 enum ImageInputType {
