@@ -7,7 +7,7 @@ import 'dart:io';
 
 /// - input_path: path to the folder containing the OpenAPI JSON file
 /// - apis: filter specific APIs by method and path (e.g., apis=get_v1/search,post_v2/city)
-/// - replace: true to replace all code below marker, false to append (default: true)
+/// - replace: true to replace all code below marker, false to append (default: false)
 /// - output_path: custom output directory (default: lib/data_source/api and lib/model/api)
 void main(List<String> args) {
   if (args.isEmpty) {
@@ -27,7 +27,7 @@ void main(List<String> args) {
 
   // Parse additional arguments
   String? apisFilter;
-  bool replace = true;
+  bool replace = false;
   String? outputPath;
   String? inputPath;
 
@@ -77,7 +77,7 @@ class ApiGenerator {
   void generateFromFolder(
     String folderPath, {
     String? apisFilter,
-    bool replace = true,
+    bool replace = false,
     String? outputPath,
   }) {
     // Initialize configuration

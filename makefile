@@ -107,12 +107,8 @@ check_component_usage:
 	dart run $(DART_TOOLS_PATH)/check_component_usage.dart
 
 gen_api:
-	@if [ -z "$(input_path)" ]; then \
-		echo "❌ Error: input_path is required"; \
-		echo "Usage: make gen_api input_path=<path> [output_path=<path>] [replace=<true/false>] [apis=<api_list>]"; \
-		exit 1; \
-	fi
-	@CMD="dart run $(DART_TOOLS_PATH)/gen_api_from_swagger.dart --input_path=$(input_path)"; \
+	@INPUT_PATH=$${input_path:-docs/api_doc}; \
+	CMD="dart run $(DART_TOOLS_PATH)/gen_api_from_swagger.dart --input_path=$$INPUT_PATH"; \
 	if [ ! -z "$(output_path)" ]; then \
 		CMD="$$CMD --output_path=$(output_path)"; \
 	fi; \
