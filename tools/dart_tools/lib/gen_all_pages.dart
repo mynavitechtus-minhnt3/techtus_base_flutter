@@ -121,6 +121,18 @@ class _AllPagesGenerator {
     File('${viewModelDir.path}/${page.slug}_state.freezed.dart')
         .writeAsStringSync(_generateFreezedContent(page));
 
+    final specFile = File('${pageDir.path}/${page.slug}_spec.md');
+    if (!specFile.existsSync()) {
+      specFile.writeAsStringSync(_generateSpecContent(page));
+    }
+
+    final testDir = _directory('test/widget_test/ui/page/${page.slug}');
+    testDir.createSync(recursive: true);
+    final testFile = File('${testDir.path}/${page.slug}_page_test.dart');
+    if (!testFile.existsSync()) {
+      testFile.writeAsStringSync(_generateTestContent(page));
+    }
+
     return true;
   }
 
@@ -396,6 +408,74 @@ sealed class ${page.pascalName}State extends BaseState with _\$${page.pascalName
     buffer.writeln();
     buffer.writeln('// dart format on');
     return buffer.toString();
+  }
+
+  String _generateSpecContent(_PageDefinition page) {
+    return '''''';
+  }
+
+  String _generateTestContent(_PageDefinition page) {
+    final pascal = page.pascalName;
+    final camel = page.camelCase;
+    final slug = page.slug;
+    return '''import 'package:flutter_test/flutter_test.dart';
+import 'package:golden_toolkit/golden_toolkit.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:mocktail/mocktail.dart';
+import 'package:nalsflutter/index.dart';
+
+import '../../../../common/index.dart';
+
+class Mock${pascal}ViewModel extends StateNotifier<CommonState<${pascal}State>>
+    with Mock
+    implements ${pascal}ViewModel {
+  Mock${pascal}ViewModel(super.state);
+}
+
+${pascal}ViewModel _build${pascal}ViewModel([
+  CommonState<${pascal}State>? state,
+]) {
+  return Mock${pascal}ViewModel(state ?? const CommonState(data: ${pascal}State()));
+}
+
+void main() {
+  group('design', () {
+    testGoldens(
+      'placeholder',
+      (tester) async {
+        await tester.testWidget(
+          filename: '${slug}_page/placeholder',
+          widget: const ${pascal}Page(),
+          overrides: [
+            ${camel}ViewModelProvider.overrideWith(
+              (_) => _build${pascal}ViewModel(),
+            ),
+          ],
+        );
+      },
+      skip: true,
+    );
+  });
+
+  group('others', () {
+    testGoldens(
+      'default state',
+      (tester) async {
+        await tester.testWidget(
+          filename: '${slug}_page/default state',
+          widget: const ${pascal}Page(),
+          overrides: [
+            ${camel}ViewModelProvider.overrideWith(
+              (_) => _build${pascal}ViewModel(),
+            ),
+          ],
+        );
+      },
+      skip: true,
+    );
+  });
+}
+''';
   }
 
   String _buildScreenNameEntry(_PageDefinition page) {

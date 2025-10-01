@@ -15,13 +15,13 @@ void main(List<String> args) {
     print(
         'Usage: dart tools/dart_tools/lib/generate_api_from_openapi.dart [--input_path=path] [--apis=method_path,method_path] [--replace=true/false] [--output_path=path]');
     print('Examples:');
-    print('  dart tools/dart_tools/lib/generate_api_from_openapi.dart --input_path=api_doc');
+    print('  dart tools/dart_tools/lib/generate_api_from_openapi.dart --input_path=docs/api_doc');
     print(
-        '  dart tools/dart_tools/lib/generate_api_from_openapi.dart --input_path=api_doc --apis=get_v1/search,post_v2/city');
+        '  dart tools/dart_tools/lib/generate_api_from_openapi.dart --input_path=docs/api_doc --apis=get_v1/search,post_v2/city');
     print(
-        '  dart tools/dart_tools/lib/generate_api_from_openapi.dart --input_path=api_doc --replace=false');
+        '  dart tools/dart_tools/lib/generate_api_from_openapi.dart --input_path=docs/api_doc --replace=false');
     print(
-        '  dart tools/dart_tools/lib/generate_api_from_openapi.dart --input_path=api_doc --output_path=api_doc');
+        '  dart tools/dart_tools/lib/generate_api_from_openapi.dart --input_path=docs/api_doc --output_path=docs/api_doc');
     exit(1);
   }
 
