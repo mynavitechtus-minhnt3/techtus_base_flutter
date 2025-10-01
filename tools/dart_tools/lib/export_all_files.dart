@@ -81,6 +81,7 @@ void main(List<String> args) {
     }
 
     if (existingContent.trim() != newContent.trim()) {
+      print('Content of index.dart: $newContent');
       print('❌ File $outputFile was outdated - updated with ${dartFiles.length} export statements');
       exit(1);
     }
