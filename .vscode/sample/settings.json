@@ -14,16 +14,13 @@
     "editor.rulers": [100]
   },
   // VSCode Extension
-  "mynavimobiletool.riverpodPageTemplate": "singleModule",
-  "mynavimobiletool.autoExportBarrier": "// GENERATED CODE - DO NOT MODIFY BY HAND",
-  "mynavimobiletool.autoExportOnSave": false,
   "mynavimobiletool.dataModelPath": "lib/model/api",
   "mynavimobiletool.uiFolderPath": "lib/ui/page",
-  "mynavimobiletool.excludeFilesWhenAutoExport": [
-    "g.dart",
-    "config.dart",
-    "freezed.dart",
-    "mapper.dart"
+  "mynavimobiletool.riverpodPageTemplate": "singleModule",
+  "mynavimobiletool.widgetTestGlobPatterns": [
+    "**/ui/page/**",
+    "**/ui/popup/**",
+    "**/ui/component/**"
   ],
   // fvm (optional)
   "dart.flutterSdkPath": ".fvm/flutter_sdk",

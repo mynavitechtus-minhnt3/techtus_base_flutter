@@ -40,6 +40,8 @@ ref:
 	make cl
 	make delete_empty_folders
 	make sync
+	make pu
+	make pod
 
 pod:
 	cd ios && rm -rf Pods && rm -f Podfile.lock && pod install --repo-update
@@ -67,8 +69,11 @@ check_pubs:
 rup:
 	dart run $(DART_TOOLS_PATH)/remove_unused_pub.dart . comment
 
-fcl:
+check_sorted_arb_keys:
 	dart run $(DART_TOOLS_PATH)/check_sorted_arb_keys.dart lib/resource/l10n
+
+fcl:
+	make check_sorted_arb_keys
 	make clc
 	make rul
 	make rdl

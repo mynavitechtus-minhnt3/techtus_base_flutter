@@ -38,8 +38,7 @@ field
       - Error cases if any. Don't mock `appException` in `CommonState`
    - Don't cover loading states cases. Only use `data` property in `CommonState`.
 
-6. Generate golden images and verify all tests pass by running `flutter test [test_path]
---update-goldens --tags=golden`.
+6. Generate golden images and verify all tests pass by running `flutter test [test_path] --update-goldens --tags=golden`.
 
 7. Compare generated golden image with design image in folder design/ to ensure they match
 exactly. Their resolutions will be different so we will only compare the contents inside

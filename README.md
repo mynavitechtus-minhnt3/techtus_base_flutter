@@ -112,3 +112,6 @@ make gen_api input_path=swagger/docs replace=true apis=get_v1/search,post_v2/cit
  - [YOUR_FIGMA_LINK] replaced by your Figma link to generate
  - [SNAKE_CASE_SCREEN_NAME] replaced by your screen name in snake_case
  - Attach the image (.png) of design from Figma to the prompt
+
+### 9. Other tools
+- [TOOLS.md](TOOLS.md)
