@@ -76,7 +76,6 @@ export 'exception/validation_exception.dart';
 export 'generated/app_string.dart';
 export 'generated/app_string_en.dart';
 export 'generated/app_string_ja.dart';
-export 'generated/l10n.dart';
 export 'main.dart';
 export 'model/api/api_refresh_token_data.dart';
 export 'model/api/api_user_data.dart';
