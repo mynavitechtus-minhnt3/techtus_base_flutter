@@ -12,7 +12,7 @@ class TestFolderMustMirrorLibFolder
             configs: configs,
             paramsParser: _TestFolderMustMirrorLibFolderParameter.fromMap,
             problemMessage: (_) =>
-                'Test files must have names ending with \'$_testFileSuffix\', and their paths must mirror the structure of the \'lib\' folder.',
+                'Test files must be placed in allowed test folder paths and mirror the structure of the \'lib\' folder.',
           ),
         );
 
@@ -27,16 +27,18 @@ class TestFolderMustMirrorLibFolder
   ) async {
     final relatedPath = relativePath(resolver.path, rootPath);
 
+    final fileName = getFileNameFromPath(resolver.path);
+
+    // Check if this is a test file
+    if (!fileName.endsWith(_testFileSuffix)) {
+      return;
+    }
+
+    // Check if file is in allowed test folder paths
     final testFolderPath =
         parameters.testFolderPaths.firstWhereOrNull((element) => relatedPath.startsWith(element));
 
     if (testFolderPath == null) {
-      return;
-    }
-
-    final fileName = getFileNameFromPath(resolver.path);
-
-    if (!fileName.endsWith(_testFileSuffix)) {
       reporter.atOffset(
         offset: 0,
         length: resolver.documentLength,
@@ -49,7 +51,9 @@ class TestFolderMustMirrorLibFolder
         .replaceFirst(testFolderPath, parameters.libFolderPath)
         .replaceLast(pattern: _testFileSuffix, replacement: '');
 
-    if (!File('$rootPath/$libFilePath').existsSync()) {
+    // Check if the corresponding lib file exists
+    final libFile = File('$rootPath/$libFilePath');
+    if (!libFile.existsSync()) {
       reporter.atOffset(
         offset: 0,
         length: resolver.documentLength,

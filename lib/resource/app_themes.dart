@@ -8,7 +8,7 @@ import '../index.dart';
 final lightTheme = ThemeData(
   brightness: Brightness.light,
   splashColor: Colors.transparent,
-  fontFamily: defaultTargetPlatform == TargetPlatform.android ? FontFamily.notoSansJP : null,
+  fontFamily: defaultTargetPlatform == TargetPlatform.android ? AppFonts.notoSansJP : null,
 )..addAppColor(
     type: AppThemeType.light,
     appColor: AppColors.defaultAppColor,
@@ -17,7 +17,7 @@ final lightTheme = ThemeData(
 final darkTheme = ThemeData(
   brightness: Brightness.dark,
   splashColor: Colors.transparent,
-  fontFamily: defaultTargetPlatform == TargetPlatform.android ? FontFamily.notoSansJP : null,
+  fontFamily: defaultTargetPlatform == TargetPlatform.android ? AppFonts.notoSansJP : null,
 )..addAppColor(
     type: AppThemeType.dark,
     appColor: AppColors.darkThemeColor,
@@ -36,11 +36,11 @@ extension ThemeDataExtensions on ThemeData {
   }
 
   AppColors get appColor {
-    return _appColorMap[AppTheme.currentAppThemeType] ?? AppColors.defaultAppColor;
+    return _appColorMap[AppThemes.currentAppThemeType] ?? AppColors.defaultAppColor;
   }
 }
 
-class AppTheme {
-  const AppTheme._();
+class AppThemes {
+  const AppThemes._();
   static late AppThemeType currentAppThemeType = AppThemeType.light;
 }

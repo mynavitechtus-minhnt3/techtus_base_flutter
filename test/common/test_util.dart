@@ -37,7 +37,7 @@ class TestUtil {
     bool isDarkMode = false,
     Locale locale = TestConfig.defaultLocale,
   }) {
-    AppTheme.currentAppThemeType = isDarkMode ? AppThemeType.dark : AppThemeType.light;
+    AppThemes.currentAppThemeType = isDarkMode ? AppThemeType.dark : AppThemeType.light;
 
     return MediaQuery(
       data: const MediaQueryData(
@@ -93,7 +93,7 @@ class TestUtil {
     bool isDarkMode = false,
     Locale locale = TestConfig.defaultLocale,
   }) {
-    AppTheme.currentAppThemeType = isDarkMode ? AppThemeType.dark : AppThemeType.light;
+    AppThemes.currentAppThemeType = isDarkMode ? AppThemeType.dark : AppThemeType.light;
 
     return materialAppWrapper(
       platform: TestConfig.targetPlatform,

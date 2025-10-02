@@ -14,12 +14,59 @@ void main(List<String> args) {
   final devDependencies = yaml['dev_dependencies'] as YamlMap? ?? {};
   final dependencyOverrides = yaml['dependency_overrides'] as YamlMap? ?? {};
 
-  final invalidDependencies =
-      dependencies.filter((entry) => isInvalidPub(entry.value) && !excludes.contains(entry.key));
-  final invalidDevDependencies =
-      devDependencies.filter((entry) => isInvalidPub(entry.value) && !excludes.contains(entry.key));
+  bool hasChanges = false;
+  String updatedContent = pubspecContent;
+
+  for (final entry in dependencies.entries) {
+    if (entry.value is String && entry.value.startsWith('^') && !excludes.contains(entry.key)) {
+      final oldVersion = entry.value as String;
+      final newVersion = oldVersion.substring(1);
+      updatedContent = updatedContent.replaceAll(
+        '${entry.key}: $oldVersion',
+        '${entry.key}: $newVersion',
+      );
+      hasChanges = true;
+      print('Fixed dependency ${entry.key}: $oldVersion -> $newVersion');
+    }
+  }
+
+  for (final entry in devDependencies.entries) {
+    if (entry.value is String && entry.value.startsWith('^') && !excludes.contains(entry.key)) {
+      final oldVersion = entry.value as String;
+      final newVersion = oldVersion.substring(1);
+      updatedContent = updatedContent.replaceAll(
+        '${entry.key}: $oldVersion',
+        '${entry.key}: $newVersion',
+      );
+      hasChanges = true;
+      print('Fixed dev dependency ${entry.key}: $oldVersion -> $newVersion');
+    }
+  }
+
+  for (final entry in dependencyOverrides.entries) {
+    if (entry.value is String && entry.value.startsWith('^') && !excludes.contains(entry.key)) {
+      final oldVersion = entry.value as String;
+      final newVersion = oldVersion.substring(1);
+      updatedContent = updatedContent.replaceAll(
+        '${entry.key}: $oldVersion',
+        '${entry.key}: $newVersion',
+      );
+      hasChanges = true;
+      print('Fixed dependency override ${entry.key}: $oldVersion -> $newVersion');
+    }
+  }
+
+  if (hasChanges) {
+    File(pubspecPath).writeAsStringSync(updatedContent);
+    print('Updated pubspec.yaml file');
+  }
+
+  final invalidDependencies = dependencies
+      .filter((entry) => isInvalidPubExceptCaret(entry.value) && !excludes.contains(entry.key));
+  final invalidDevDependencies = devDependencies
+      .filter((entry) => isInvalidPubExceptCaret(entry.value) && !excludes.contains(entry.key));
   final invalidDependencyOverrides = dependencyOverrides
-      .filter((entry) => isInvalidPub(entry.value) && !excludes.contains(entry.key));
+      .filter((entry) => isInvalidPubExceptCaret(entry.value) && !excludes.contains(entry.key));
 
   if (invalidDependencies.isNotEmpty) {
     print('Invalid dependencies: ${invalidDependencies.keys}');
@@ -33,13 +80,21 @@ void main(List<String> args) {
     print('Invalid dependency overrides: ${invalidDependencyOverrides.keys}');
   }
 
-  final exitCode = invalidDependencies.isNotEmpty ||
+  final exitCode = hasChanges ||
+          invalidDependencies.isNotEmpty ||
           invalidDevDependencies.isNotEmpty ||
           invalidDependencyOverrides.isNotEmpty
       ? 1
       : 0;
-  print('Exit code: $exitCode');
 
+  if (hasChanges &&
+      invalidDependencies.isEmpty &&
+      invalidDevDependencies.isEmpty &&
+      invalidDependencyOverrides.isEmpty) {
+    print('All dependencies fixed successfully!');
+  }
+
+  print('Exit code: $exitCode');
   exit(exitCode);
 }
 
@@ -47,4 +102,9 @@ bool isInvalidPub(dynamic pubVersion) {
   return pubVersion == null ||
       pubVersion is String &&
           (pubVersion.trim() == 'any' || pubVersion.isBlank || pubVersion.startsWith('^'));
+}
+
+bool isInvalidPubExceptCaret(dynamic pubVersion) {
+  return pubVersion == null ||
+      pubVersion is String && (pubVersion.trim() == 'any' || pubVersion.isBlank);
 }

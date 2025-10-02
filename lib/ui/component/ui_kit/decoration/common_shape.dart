@@ -1,4 +1,0 @@
-enum CommonShape {
-  rectangle,
-  circle,
-}

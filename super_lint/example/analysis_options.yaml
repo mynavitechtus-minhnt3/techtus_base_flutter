@@ -23,6 +23,8 @@ custom_lint:
       test_folder_paths:
         - "lib/test_folder_must_mirror_lib_folder_test/test/ut"
         - "lib/test_folder_must_mirror_lib_folder_test/it"
+      includes:
+        - "lib/test_folder_must_mirror_lib_folder_test/**/*.dart"
     - incorrect_parent_class:
       class_post_fixes:
         - "Page"

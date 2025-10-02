@@ -143,87 +143,97 @@ class CommonPopup {
     return CommonPopup._(
       id: 'maintenanceModeDialog_$message'.hardcoded,
       // ignore: prefer_common_widgets
-      builder: (context, navigator) => Scaffold(
-        body: CommonContainer(
-          color: color.white,
-          padding: EdgeInsets.all(24.rps),
-          // ignore: missing_expanded_or_flexible
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Align(
-                alignment: Alignment.topCenter,
-                child: CommonImage.asset(
-                  path: image.imageAppIcon,
-                  width: 128.rps,
-                  height: 128.rps,
-                ),
-              ),
-              SizedBox(height: 32.rps),
-              CommonText(
-                l10n.maintenanceTitle,
-                style: style(
-                  height: 1.18,
-                  color: color.black,
-                  fontSize: 16.rps,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              SizedBox(height: 8.rps),
-              CommonContainer(
-                color: color.white,
-                border: SolidBorder.allRadius(radius: 10.rps, borderColor: color.grey1),
-                padding: EdgeInsets.all(12.rps),
-                child: CommonText(
-                  message,
-                  style: style(
-                    height: 1.5,
-                    color: color.black,
-                    fontSize: 14.rps,
-                    fontWeight: FontWeight.w400,
+      builder: (context, navigator) {
+        final infoBorder = SolidBorder.allRadius(radius: 10.rps, borderColor: color.grey1);
+
+        return CommonScaffold(
+          body: Container(
+            color: color.white,
+            padding: EdgeInsets.all(24.rps),
+            // ignore: missing_expanded_or_flexible
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Align(
+                  alignment: Alignment.topCenter,
+                  child: CommonImage.asset(
+                    path: image.imageAppIcon,
+                    width: 128.rps,
+                    height: 128.rps,
                   ),
                 ),
-              ),
-              Visibility(
-                visible: time.isNotEmpty,
-                // ignore: missing_expanded_or_flexible
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    SizedBox(height: 16.rps),
-                    CommonText(
-                      l10n.maintenanceTimeTitle,
-                      style: style(
-                        height: 1.18,
-                        color: color.black,
-                        fontSize: 16.rps,
-                        fontWeight: FontWeight.w600,
-                      ),
+                SizedBox(height: 32.rps),
+                CommonText(
+                  l10n.maintenanceTitle,
+                  style: style(
+                    height: 1.18,
+                    color: color.black,
+                    fontSize: 16.rps,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                SizedBox(height: 8.rps),
+                Container(
+                  padding: EdgeInsets.all(12.rps),
+                  decoration: BoxDecoration(
+                    color: color.white,
+                    borderRadius: infoBorder.borderRadius,
+                    border: infoBorder.boxBorder,
+                  ),
+                  child: CommonText(
+                    message,
+                    style: style(
+                      height: 1.5,
+                      color: color.black,
+                      fontSize: 14.rps,
+                      fontWeight: FontWeight.w400,
                     ),
-                    SizedBox(height: 8.rps),
-                    CommonContainer(
-                      color: color.white,
-                      border: SolidBorder.allRadius(radius: 10.rps, borderColor: color.grey1),
-                      padding: EdgeInsets.all(12.rps),
-                      child: CommonText(
-                        time,
+                  ),
+                ),
+                Visibility(
+                  visible: time.isNotEmpty,
+                  // ignore: missing_expanded_or_flexible
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      SizedBox(height: 16.rps),
+                      CommonText(
+                        l10n.maintenanceTimeTitle,
                         style: style(
-                          height: 1.5,
+                          height: 1.18,
                           color: color.black,
-                          fontSize: 14.rps,
-                          fontWeight: FontWeight.w400,
+                          fontSize: 16.rps,
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
-                    ),
-                  ],
+                      SizedBox(height: 8.rps),
+                      Container(
+                        padding: EdgeInsets.all(12.rps),
+                        decoration: BoxDecoration(
+                          color: color.white,
+                          borderRadius: infoBorder.borderRadius,
+                          border: infoBorder.boxBorder,
+                        ),
+                        child: CommonText(
+                          time,
+                          style: style(
+                            height: 1.5,
+                            color: color.black,
+                            fontSize: 14.rps,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 
@@ -291,7 +301,7 @@ class CommonPopup {
         return Dialog(
           child: StatefulBuilder(
             builder: (context, setState) {
-              return CommonContainer(
+              return Container(
                 padding: EdgeInsets.symmetric(horizontal: 16.rps, vertical: 32.rps),
                 // ignore: missing_expanded_or_flexible
                 child: Column(

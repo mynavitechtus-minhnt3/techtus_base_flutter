@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:popup_menu/popup_menu.dart' as p;
 
 import '../../../index.dart';
 
@@ -124,7 +125,7 @@ class ChatPage extends BasePage<ChatState,
                     message: message,
                     replyMessage: replyMessage.message.isEmpty ? null : replyMessage,
                   ),
-          onMoreMenuBuilder: (message, index) => MoreMenuIconButton(
+          onMoreMenuBuilder: (message, index) => _MoreMenuIconButton(
             onCopy: () => Clipboard.setData(ClipboardData(text: message.message)),
             onReply: () => chatController.showReplyView(message),
           ),
@@ -251,5 +252,70 @@ class ChatPage extends BasePage<ChatState,
     await ref.read(appNavigatorProvider).push(RenameConversationRoute(
           conversation: ref.read(provider.select((value) => value.data.conversation)),
         ));
+  }
+}
+
+class _MoreMenuIconButton extends StatelessWidget {
+  _MoreMenuIconButton({
+    required this.onCopy,
+    required this.onReply,
+  });
+
+  final VoidCallBack onCopy;
+  final VoidCallBack onReply;
+
+  final _globalKey = GlobalKey();
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      key: _globalKey,
+      onPressed: () => _showPopupMenu(context),
+      icon: Icon(
+        Icons.more_horiz,
+        color: color.grey1,
+      ),
+    );
+  }
+
+  void _showPopupMenu(BuildContext context) {
+    final copy = l10n.copy;
+    final reply = l10n.reply;
+    final menu = p.PopupMenu(
+      context: context,
+      config: p.MenuConfig(
+        backgroundColor: color.black,
+        lineColor: color.white,
+        type: p.MenuType.list,
+        itemWidth: 150,
+      ),
+      items: [
+        p.MenuItem(
+          title: copy,
+          image: Icon(
+            Icons.copy,
+            color: color.white,
+          ),
+          textStyle: style(color: color.white, fontSize: 12),
+        ),
+        p.MenuItem(
+          title: reply,
+          image: Icon(
+            Icons.reply,
+            color: color.white,
+          ),
+          textStyle: style(color: color.white, fontSize: 12),
+        ),
+      ],
+      onClickMenu: (item) {
+        if (item.menuTitle == copy) {
+          onCopy();
+        } else if (item.menuTitle == reply) {
+          onReply();
+        }
+      },
+    );
+
+    menu.show(widgetKey: _globalKey);
   }
 }

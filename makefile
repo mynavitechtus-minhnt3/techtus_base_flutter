@@ -9,6 +9,9 @@ ln:
 	flutter gen-l10n
 	make sort_arb
 
+check_page_routes:
+	dart run $(DART_TOOLS_PATH)/check_page_routes.dart
+
 sort_arb:
 	dart run $(DART_TOOLS_PATH)/sort_arb_files.dart lib/resource/l10n
 
@@ -37,6 +40,8 @@ ref:
 	make cl
 	make delete_empty_folders
 	make sync
+	make pu
+	make pod
 
 pod:
 	cd ios && rm -rf Pods && rm -f Podfile.lock && pod install --repo-update
@@ -47,6 +52,8 @@ pu:
 ci:
 	cd tools/dart_tools && flutter pub get
 	make check_pubs
+	make check_page_routes
+	make check_component_usage
 	make ep
 	make rup
 	make rua
@@ -62,8 +69,11 @@ check_pubs:
 rup:
 	dart run $(DART_TOOLS_PATH)/remove_unused_pub.dart . comment
 
-fcl:
+check_sorted_arb_keys:
 	dart run $(DART_TOOLS_PATH)/check_sorted_arb_keys.dart lib/resource/l10n
+
+fcl:
+	make check_sorted_arb_keys
 	make clc
 	make rul
 	make rdl
@@ -98,13 +108,12 @@ ep:
 		dart run $(DART_TOOLS_PATH)/export_all_files.dart lib --check; \
 	fi
 
+check_component_usage:
+	dart run $(DART_TOOLS_PATH)/check_component_usage.dart
+
 gen_api:
-	@if [ -z "$(input_path)" ]; then \
-		echo "❌ Error: input_path is required"; \
-		echo "Usage: make gen_api input_path=<path> [output_path=<path>] [replace=<true/false>] [apis=<api_list>]"; \
-		exit 1; \
-	fi
-	@CMD="dart run $(DART_TOOLS_PATH)/gen_api_from_swagger.dart --input_path=$(input_path)"; \
+	@INPUT_PATH=$${input_path:-docs/api_doc}; \
+	CMD="dart run $(DART_TOOLS_PATH)/gen_api_from_swagger.dart --input_path=$$INPUT_PATH"; \
 	if [ ! -z "$(output_path)" ]; then \
 		CMD="$$CMD --output_path=$(output_path)"; \
 	fi; \
@@ -141,7 +150,7 @@ lint:
 	make analyze
 
 sl:
-	dart run $(DART_TOOLS_PATH)/super_lint.dart lib test
+	tools/bash/super_lint.sh
 
 analyze:
 	flutter analyze --no-pub --suppress-analytics

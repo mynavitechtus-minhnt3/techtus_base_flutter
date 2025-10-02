@@ -126,8 +126,8 @@ Set<String> _extractFontFamilies(List<String> fontFiles) {
 // Sinh nội dung file app_fonts.dart
 String _generateFontsContent(Set<String> fontFamilies) {
   final buffer = StringBuffer();
-  buffer.writeln('class FontFamily {');
-  buffer.writeln('  FontFamily._();\n');
+  buffer.writeln('class AppFonts {');
+  buffer.writeln('  AppFonts._();\n');
   for (final family in fontFamilies) {
     buffer.writeln('  /// Font family: $family');
     buffer.writeln("  static const String ${_toCamelCase(family)} = '$family';\n");
