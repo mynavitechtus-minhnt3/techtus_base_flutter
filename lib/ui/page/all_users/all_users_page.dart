@@ -329,7 +329,6 @@ class AllUsersPage extends BasePage<AllUsersState,
 
 class _PrimaryCheckBox extends StatelessWidget {
   const _PrimaryCheckBox({
-    this.text,
     this.initValue = false,
     this.onChanged,
     this.isEnabled = true,
@@ -338,7 +337,6 @@ class _PrimaryCheckBox extends StatelessWidget {
   final ValueChanged<bool>? onChanged;
   final bool initValue;
   final bool isEnabled;
-  final Widget? text;
 
   @override
   Widget build(BuildContext context) {
@@ -357,14 +355,6 @@ class _PrimaryCheckBox extends StatelessWidget {
         child: Stack(
           alignment: Alignment.centerLeft,
           children: [
-            if (text != null)
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Padding(
-                  padding: EdgeInsets.only(left: 33.rps),
-                  child: text!,
-                ),
-              ),
             SizedBox(
               width: 36.rps,
               height: 36.rps,

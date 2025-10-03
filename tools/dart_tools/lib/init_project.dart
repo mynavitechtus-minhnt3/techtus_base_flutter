@@ -11,13 +11,11 @@ const String _flutterImagePrefix = 'ghcr.io/cirruslabs/flutter:';
 final filesToDelete = [
   // UI Components
   'lib/ui/component/avatar_view.dart',
-  'lib/ui/component/primary_check_box.dart',
   'lib/ui/component/primary_text_field.dart',
   'lib/ui/component/search_text_field.dart',
 
   // Widget Tests
   'test/widget_test/ui/component/avatar_view_test.dart',
-  'test/widget_test/ui/component/primary_check_box_test.dart',
   'test/widget_test/ui/component/primary_text_field_test.dart',
   'test/widget_test/ui/component/search_text_field_test.dart',
 ];
@@ -25,12 +23,15 @@ final filesToDelete = [
 // Directories to delete (including all contents)
 final directoriesToDelete = [
   'test/widget_test/ui/component/goldens/avatar_view',
-  'test/widget_test/ui/component/goldens/primary_check_box',
   'test/widget_test/ui/component/goldens/primary_text_field',
   'test/widget_test/ui/component/goldens/search_text_field',
+  'integration_test',
+];
+
+final subDirsToDelete = [
+  'lib/ui/page',
   'test/unit_test/ui/page',
   'test/widget_test/ui/page',
-  'integration_test',
 ];
 
 final excludeDirsFromDeletion = [
@@ -1034,17 +1035,37 @@ Future<void> _cleanupExampleCode(String root) async {
     }
   }
 
+  // Delete subdirectories (excluding those in excludeDirsFromDeletion)
+  for (final dirPath in subDirsToDelete) {
+    // list all subdirectories under dir
+    Directory dir = Directory(pathOf(root, dirPath));
+    if (!await dir.exists()) continue;
+    final subDirs = await dir
+        .list(recursive: false, followLinks: false)
+        .where((e) => e is Directory)
+        .map((e) => e.path.split(Platform.pathSeparator).last)
+        .toList();
+
+    for (final subDirPath in subDirs) {
+      final fullSubDirPath = '$dirPath/$subDirPath';
+      // Check if directory path contains any excluded patterns
+      final shouldExclude =
+          excludeDirsFromDeletion.any((excludePattern) => fullSubDirPath.contains(excludePattern));
+
+      if (shouldExclude) {
+        print('⏭️  Skipped directory (excluded): $fullSubDirPath');
+        continue;
+      }
+      Directory subDir = Directory(pathOf(root, fullSubDirPath));
+      if (await subDir.exists()) {
+        await subDir.delete(recursive: true);
+        print('🗑️  Deleted directory: $fullSubDirPath');
+      }
+    }
+  }
+
   // Delete directories (excluding those in excludeDirsFromDeletion)
   for (final dirPath in directoriesToDelete) {
-    // Check if directory path contains any excluded patterns
-    final shouldExclude =
-        excludeDirsFromDeletion.any((excludePattern) => dirPath.contains(excludePattern));
-
-    if (shouldExclude) {
-      print('⏭️  Skipped directory (excluded): $dirPath');
-      continue;
-    }
-
     final directory = Directory(pathOf(root, dirPath));
     if (await directory.exists()) {
       await directory.delete(recursive: true);

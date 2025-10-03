@@ -60,7 +60,7 @@ class CommonPopup {
           style: null,
         ),
         duration: Constant.snackBarDuration,
-        backgroundColor: color.red1,
+        backgroundColor: color.black,
       ),
     );
   }

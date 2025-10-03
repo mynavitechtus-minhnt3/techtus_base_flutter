@@ -13,8 +13,7 @@ class MaintenanceModeDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CommonScaffold(
-      body: Container(
-        color: color.white,
+      body: Padding(
         padding: EdgeInsets.all(24.rps),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
