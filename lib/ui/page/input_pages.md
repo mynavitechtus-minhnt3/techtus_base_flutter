@@ -1,3 +1,5 @@
-load_more_example
-home
+splash
+login
 main
+home
+my_profile

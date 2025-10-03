@@ -36,10 +36,8 @@ final subDirsToDelete = [
 
 final excludeDirsFromDeletion = [
   'splash',
-  'home',
   'main',
   'login',
-  'my_profile',
 ];
 
 // Helper functions for common operations
