@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:dartx/dartx.dart';
+import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../index.dart';
@@ -10,37 +12,76 @@ final homeViewModelProvider =
 );
 
 class HomeViewModel extends BaseViewModel<HomeState> {
-  HomeViewModel(
-    this._ref,
-  ) : super(CommonState(data: HomeState()));
+  HomeViewModel(this._ref)
+      : super(
+          const CommonState(data: HomeState()),
+        );
 
   final Ref _ref;
 
-  Future<void> fetchUsers({
-    required bool isInitialLoad,
-  }) {
-    return _getUsers(isInitialLoad: isInitialLoad);
+  StreamSubscription<List<FirebaseConversationData>>? _conversationsSubscription;
+
+  void init() {
+    listenToConversations();
   }
 
-  Future<void> _getUsers({
-    required bool isInitialLoad,
-  }) async {
-    return runCatching(
+  void listenToConversations() {
+    _conversationsSubscription?.cancel();
+    final userId = _ref.appPreferences.userId;
+    _conversationsSubscription =
+        // ignore: missing_run_catching
+        _ref.firebaseFirestoreService.getConversationsStream(userId).listen((event) {
+      runCatching(
+        action: () async {
+          data = data.copyWith(conversationList: event);
+          _ref.update<Map<String, List<FirebaseConversationUserData>>>(
+            conversationMembersMapProvider,
+            (state) => state.plusAll(mapToConversationMembers(event)),
+          );
+        },
+        handleLoading: false,
+      );
+    });
+  }
+
+  @visibleForTesting
+  Map<String, List<FirebaseConversationUserData>> mapToConversationMembers(
+    List<FirebaseConversationData> conversations,
+  ) {
+    return conversations.associate((element) => MapEntry(
+          element.id,
+          _ref.sharedViewModel.getRenamedMembers(
+            members: element.members,
+            conversationId: element.id,
+          ),
+        ));
+  }
+
+  void setKeyWord(String keyword) {
+    data = data.copyWith(keyword: keyword.trim());
+  }
+
+  Future<void> deleteConversation(FirebaseConversationData conversation) async {
+    data = data.copyWith(
+      conversationList: data.conversationList.minus(conversation),
+    );
+    await runCatching(
       action: () async {
-        data = data.copyWith(isShimmerLoading: isInitialLoad, loadUsersException: null);
-        final output = await _ref.loadMoreUsersExecutor.execute(
-          isInitialLoad: isInitialLoad,
-        );
-        data = data.copyWith(users: output);
+        await _ref.sharedViewModel.deleteConversation(conversation);
       },
       doOnError: (e) async {
-        data = data.copyWith(loadUsersException: e);
-      },
-      doOnSuccessOrError: () async {
-        data = data.copyWith(isShimmerLoading: false);
+        data = data.copyWith(
+          conversationList: data.conversationList.plus(conversation),
+        );
       },
       handleLoading: false,
-      handleErrorWhen: (_) => false,
     );
+  }
+
+  @override
+  void dispose() {
+    _conversationsSubscription?.cancel();
+    _conversationsSubscription = null;
+    super.dispose();
   }
 }

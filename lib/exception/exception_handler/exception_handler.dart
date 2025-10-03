@@ -69,7 +69,6 @@ class ExceptionHandler {
         await _ref.nav.showDialog(
           CommonPopup.maintenanceModeDialog(
             message: appException.message,
-            time: appException.message,
           ),
           barrierDismissible: false,
           canPop: false,

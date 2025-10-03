@@ -162,7 +162,7 @@ void main() {
           when(() => appPreferences.saveUserId(userId)).thenAnswer((_) async => true);
           when(() => appPreferences.saveEmail(email)).thenAnswer((_) async => true);
           when(() => appPreferences.saveIsLoggedIn(true)).thenAnswer((_) async {});
-          when(() => navigator.replaceAll([const ContactListRoute()])).thenAnswer((_) async {});
+          when(() => navigator.replaceAll([const HomeRoute()])).thenAnswer((_) async {});
           when(() => firebaseFirestoreService.putUserToFireStore(
                 userId: any(named: 'userId'),
                 user: any(named: 'user'),
@@ -179,7 +179,7 @@ void main() {
           verify(() => appPreferences.saveUserId(userId)).called(1);
           verify(() => appPreferences.saveEmail(email)).called(1);
           verify(() => appPreferences.saveIsLoggedIn(true)).called(1);
-          verify(() => navigator.replaceAll([const ContactListRoute()])).called(1);
+          verify(() => navigator.replaceAll([const HomeRoute()])).called(1);
           verify(() => firebaseFirestoreService.putUserToFireStore(
                 userId: userId,
                 user: const FirebaseUserData(

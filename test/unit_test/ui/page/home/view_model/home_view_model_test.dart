@@ -1,3 +1,6 @@
+// ignore_for_file: variable_type_mismatch
+import 'dart:async';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:nalsflutter/index.dart';
@@ -6,235 +9,211 @@ import 'package:state_notifier_test/state_notifier_test.dart';
 import '../../../../../common/index.dart';
 
 void main() {
-  late LoadMoreUsersExecutor loadMoreUsersExecutor;
   late HomeViewModel homeViewModel;
 
   setUp(() {
     homeViewModel = HomeViewModel(ref);
-    loadMoreUsersExecutor = ref.read(loadMoreUsersExecutorProvider);
   });
 
-  group('fetchInitialUsers', () {
-    group('test', () {
-      final seed = CommonState(
-        data: HomeState(
-          users: const LoadMoreOutput(data: [
-            ApiUserData(id: 1, email: 'name1'),
-            ApiUserData(id: 2, email: 'name2'),
-          ]),
-        ),
+  group('mapToConversationMembers', () {
+    test('when `conversations` is not empty', () {
+      const conversation1 = FirebaseConversationData(
+        id: '1',
+        members: [
+          FirebaseConversationUserData(userId: '1', email: 'email1'),
+          FirebaseConversationUserData(userId: '2', email: 'email2'),
+        ],
       );
-      //ignore:variable_type_mismatch
-      const dummyUsers = LoadMoreOutput(data: [
-        ApiUserData(id: 3, email: 'name3'),
-        ApiUserData(id: 4, email: 'name4'),
+      const conversation2 = FirebaseConversationData(
+        id: '2',
+        members: [
+          FirebaseConversationUserData(userId: '3', email: 'email3'),
+          FirebaseConversationUserData(userId: '4', email: 'email4'),
+        ],
+      );
+      const conversations = [conversation1, conversation2];
+      const expected = {
+        '1': [
+          FirebaseConversationUserData(userId: '1', email: 'nickname1'),
+          FirebaseConversationUserData(userId: '2', email: 'email2'),
+        ],
+        '2': [
+          FirebaseConversationUserData(userId: '3', email: 'nickname3'),
+          FirebaseConversationUserData(userId: '4', email: 'nickname4'),
+        ],
+      };
+
+      when(() => sharedViewModel.getRenamedMembers(
+            members: conversation1.members,
+            conversationId: conversation1.id,
+          )).thenReturn(const [
+        FirebaseConversationUserData(userId: '1', email: 'nickname1'),
+        FirebaseConversationUserData(userId: '2', email: 'email2'),
+      ]);
+      when(() => sharedViewModel.getRenamedMembers(
+            members: conversation2.members,
+            conversationId: conversation2.id,
+          )).thenReturn(const [
+        FirebaseConversationUserData(userId: '3', email: 'nickname3'),
+        FirebaseConversationUserData(userId: '4', email: 'nickname4'),
       ]);
 
-      stateNotifierTest(
-        'when `loadUsersException` of seed is null',
-        seed: () => [seed],
-        setUp: () {
-          when(() => loadMoreUsersExecutor.execute(isInitialLoad: true))
-              .thenAnswer((_) async => dummyUsers);
-        },
-        actions: (vm) => vm.fetchUsers(isInitialLoad: true),
-        expect: () {
-          final state1 = seed.copyWithData(isShimmerLoading: true, loadUsersException: null);
-          final state2 = state1.copyWithData(users: dummyUsers);
-          final state3 = state2.copyWithData(isShimmerLoading: false);
+      final result = homeViewModel.mapToConversationMembers(conversations);
 
-          return [
-            seed,
-            state1,
-            state2,
-            state3,
-          ];
-        },
-        build: () => homeViewModel,
-      );
+      expect(result, expected);
     });
 
-    group('test', () {
-      final seed = CommonState(
-        data: HomeState(
-          users: const LoadMoreOutput(data: [
-            ApiUserData(id: 1, email: 'name1'),
-            ApiUserData(id: 2, email: 'name2'),
-          ]),
-          loadUsersException: AppUncaughtException(),
-        ),
-      );
-      //ignore:variable_type_mismatch
-      const dummyUsers = LoadMoreOutput(data: [
-        ApiUserData(id: 3, email: 'name3'),
-        ApiUserData(id: 4, email: 'name4'),
-      ]);
+    test('when `conversations` is empty', () {
+      const conversations = <FirebaseConversationData>[];
+      const expected = <String, List<FirebaseConversationUserData>>{};
 
-      stateNotifierTest(
-        'when `loadUsersException` of seed is not null',
-        seed: () => [seed],
-        setUp: () {
-          when(() => loadMoreUsersExecutor.execute(isInitialLoad: true))
-              .thenAnswer((_) async => dummyUsers);
-        },
-        actions: (vm) => vm.fetchUsers(isInitialLoad: true),
-        expect: () {
-          final state1 = seed.copyWithData(isShimmerLoading: true, loadUsersException: null);
-          final state2 = state1.copyWithData(users: dummyUsers);
-          final state3 = state2.copyWithData(isShimmerLoading: false);
+      final result = homeViewModel.mapToConversationMembers(conversations);
 
-          return [
-            seed,
-            state1,
-            state2,
-            state3,
-          ];
-        },
-        build: () => homeViewModel,
-      );
-    });
-
-    group('test', () {
-      final seed = CommonState(
-        data: HomeState(
-          users: const LoadMoreOutput(data: [
-            ApiUserData(id: 1, email: 'name1'),
-            ApiUserData(id: 2, email: 'name2'),
-          ]),
-        ),
-      );
-
-      final exception = AppUncaughtException();
-
-      stateNotifierTest(
-        'when fetchInitialUsers gets an error',
-        seed: () => [seed],
-        setUp: () {
-          when(() => loadMoreUsersExecutor.execute(isInitialLoad: true)).thenThrow(exception);
-        },
-        actions: (vm) => vm.fetchUsers(isInitialLoad: true),
-        expect: () {
-          final state1 = seed.copyWithData(isShimmerLoading: true, loadUsersException: null);
-          final state2 = state1.copyWithData(isShimmerLoading: false);
-          final state3 = state2.copyWithData(loadUsersException: exception);
-
-          return [
-            seed,
-            state1,
-            state2,
-            state3,
-          ];
-        },
-        build: () => homeViewModel,
-      );
+      expect(result, expected);
     });
   });
 
-  group('fetchMoreUsers', () {
+  group('listenToConversations', () {
     group('test', () {
-      final seed = CommonState(
-        data: HomeState(
-          users: const LoadMoreOutput(data: [
-            ApiUserData(id: 1, email: 'name1'),
-            ApiUserData(id: 2, email: 'name2'),
-          ]),
-        ),
-      );
-
-      final exception = AppUncaughtException();
+      final seed = _homeState(const HomeState());
 
       stateNotifierTest(
-        'when fetchMoreUsers gets an error',
+        'when `getConversationsStream` does not emit any events',
         seed: () => [seed],
         setUp: () {
-          when(() => loadMoreUsersExecutor.execute(isInitialLoad: false)).thenThrow(exception);
+          const userId = 'abc12';
+          when(() => appPreferences.userId).thenReturn(userId);
+          when(() => firebaseFirestoreService.getConversationsStream(userId))
+              .thenAnswer((_) => Stream.fromIterable([]));
         },
-        actions: (vm) => vm.fetchUsers(isInitialLoad: false),
+        actions: (vm) => vm.listenToConversations(),
         expect: () {
-          final state1 = seed.copyWithData(loadUsersException: exception);
-
-          return [
-            seed,
-            seed,
-            seed,
-            state1,
-          ];
+          return [seed];
         },
         build: () => homeViewModel,
       );
     });
 
     group('test', () {
-      final seed = CommonState(
-        data: HomeState(
-          users: const LoadMoreOutput(data: [
-            ApiUserData(id: 1, email: 'name1'),
-            ApiUserData(id: 2, email: 'name2'),
-          ]),
-        ),
+      const conversation1 = FirebaseConversationData(
+        id: '1',
+        members: [
+          FirebaseConversationUserData(userId: '1', email: 'email1'),
+          FirebaseConversationUserData(userId: '2', email: 'email2'),
+        ],
       );
-      //ignore:variable_type_mismatch
-      const dummyUsers = LoadMoreOutput(data: [
-        ApiUserData(id: 3, email: 'name3'),
-        ApiUserData(id: 4, email: 'name4'),
-      ]);
+      const conversation2 = FirebaseConversationData(
+        id: '2',
+        members: [
+          FirebaseConversationUserData(userId: '3', email: 'email3'),
+          FirebaseConversationUserData(userId: '4', email: 'email4'),
+        ],
+      );
+      final seed = _homeState(const HomeState());
 
       stateNotifierTest(
-        'when `loadUsersException` of seed is null',
+        'when `getConversationsStream` emits events',
         seed: () => [seed],
         setUp: () {
-          when(() => loadMoreUsersExecutor.execute(isInitialLoad: false))
-              .thenAnswer((_) async => dummyUsers);
+          const userId = 'abc12';
+          when(() => appPreferences.userId).thenReturn(userId);
+          when(() => firebaseFirestoreService.getConversationsStream(userId))
+              .thenAnswer((_) => Stream.fromIterable([
+                    const [conversation1, conversation2],
+                  ]));
         },
-        actions: (vm) => vm.fetchUsers(isInitialLoad: false),
+        actions: (vm) => vm.listenToConversations(),
         expect: () {
-          final state1 = seed.copyWithData(users: dummyUsers);
+          final state1 = seed.copyWithData(conversationList: [conversation1, conversation2]);
+          return [seed, state1];
+        },
+        verify: (vm) {
+          verify(() => conversationMembersMapStateController.update(any())).called(1);
+        },
+        build: () => homeViewModel,
+      );
+    });
+  });
 
-          return [
-            seed,
-            seed,
-            state1,
-            state1,
-          ];
+  group('deleteConversation', () {
+    group('test', () {
+      const conversation1 = FirebaseConversationData(id: '1');
+      const conversation2 = FirebaseConversationData(id: '2');
+      final seed = _homeState(
+        const HomeState(
+          conversationList: [
+            conversation1,
+            conversation2,
+          ],
+        ),
+      );
+
+      stateNotifierTest(
+        'when `conversationList` contains `conversation`',
+        seed: () => [seed],
+        setUp: () {
+          when(() => sharedViewModel.deleteConversation(conversation1)).thenAnswer((_) async => {});
+        },
+        actions: (vm) => vm.deleteConversation(conversation1),
+        expect: () {
+          final state1 = seed.copyWithData(
+            conversationList: const [conversation2],
+          );
+          return [seed, state1];
         },
         build: () => homeViewModel,
       );
     });
 
     group('test', () {
-      final seed = CommonState(
-        data: HomeState(
-          users: const LoadMoreOutput(data: [
-            ApiUserData(id: 1, email: 'name1'),
-            ApiUserData(id: 2, email: 'name2'),
-          ]),
-          loadUsersException: AppUncaughtException(),
-        ),
+      const conversation1 = FirebaseConversationData(id: '1');
+      const conversation2 = FirebaseConversationData(id: '2');
+      final seed = _homeState(
+        const HomeState(conversationList: [conversation2]),
       );
-      //ignore:variable_type_mismatch
-      const dummyUsers = LoadMoreOutput(data: [
-        ApiUserData(id: 3, email: 'name3'),
-        ApiUserData(id: 4, email: 'name4'),
-      ]);
 
       stateNotifierTest(
-        'when `loadUsersException` of seed is not null',
+        'when `conversationList` does not contain `conversation`',
         seed: () => [seed],
         setUp: () {
-          when(() => loadMoreUsersExecutor.execute(isInitialLoad: false))
-              .thenAnswer((_) async => dummyUsers);
+          when(() => sharedViewModel.deleteConversation(conversation1)).thenAnswer((_) async => {});
         },
-        actions: (vm) => vm.fetchUsers(isInitialLoad: false),
+        actions: (vm) => vm.deleteConversation(conversation1),
         expect: () {
-          final state1 = seed.copyWithData(loadUsersException: null);
-          final state2 = state1.copyWithData(users: dummyUsers);
+          return [seed, seed];
+        },
+        build: () => homeViewModel,
+      );
+    });
 
-          return [
-            seed,
-            state1,
-            state2,
-            state2,
-          ];
+    group('test', () {
+      const conversation1 = FirebaseConversationData(id: '1');
+      const conversation2 = FirebaseConversationData(id: '2');
+      final seed = _homeState(
+        const HomeState(
+          conversationList: [
+            conversation1,
+            conversation2,
+          ],
+        ),
+      );
+      final exception = AppUncaughtException(rootException: Exception());
+
+      stateNotifierTest(
+        'when `deleteConversation` failed',
+        seed: () => [seed],
+        setUp: () {
+          when(() => sharedViewModel.deleteConversation(conversation1)).thenThrow(exception);
+        },
+        actions: (vm) => vm.deleteConversation(conversation1),
+        expect: () {
+          final state1 = seed.copyWithData(
+            conversationList: const [conversation2],
+          );
+          final state2 =
+              state1.copyWithData(conversationList: const [conversation2, conversation1]);
+          final state3 = state2.copyWith(appException: exception);
+          return [seed, state1, state2, state3];
         },
         build: () => homeViewModel,
       );
@@ -242,17 +221,17 @@ void main() {
   });
 }
 
+CommonState<HomeState> _homeState(HomeState data) => CommonState(data: data);
+
 extension HomeStateExt on CommonState<HomeState> {
   CommonState<HomeState> copyWithData({
-    LoadMoreOutput<ApiUserData>? users,
-    bool? isShimmerLoading,
-    AppException? loadUsersException,
+    String? keyword,
+    List<FirebaseConversationData>? conversationList,
   }) {
     return copyWith(
       data: data.copyWith(
-        users: users ?? data.users,
-        isShimmerLoading: isShimmerLoading ?? data.isShimmerLoading,
-        loadUsersException: loadUsersException,
+        keyword: keyword ?? data.keyword,
+        conversationList: conversationList ?? data.conversationList,
       ),
     );
   }

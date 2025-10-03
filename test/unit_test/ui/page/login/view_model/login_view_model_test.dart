@@ -117,7 +117,7 @@ void main() {
           when(() => appPreferences.saveEmail(email)).thenAnswer((_) async => true);
           when(() => appPreferences.saveIsLoggedIn(true)).thenAnswer((_) async {});
           when(() => firebaseAuthService.signOut()).thenAnswer((_) async {});
-          when(() => navigator.replaceAll([const ContactListRoute()])).thenAnswer((_) async {});
+          when(() => navigator.replaceAll([const HomeRoute()])).thenAnswer((_) async {});
           when(() => firebaseFirestoreService.updateCurrentUser(
                 userId: any(named: 'userId'),
                 data: any(named: 'data'),

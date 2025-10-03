@@ -8,9 +8,8 @@ part 'home_state.freezed.dart';
 sealed class HomeState extends BaseState with _$HomeState {
   const HomeState._();
 
-  factory HomeState({
-    @Default(LoadMoreOutput<ApiUserData>(data: <ApiUserData>[])) LoadMoreOutput<ApiUserData> users,
-    @Default(false) bool isShimmerLoading,
-    AppException? loadUsersException,
+  const factory HomeState({
+    @Default('') String keyword,
+    @Default(<FirebaseConversationData>[]) List<FirebaseConversationData> conversationList,
   }) = _HomeState;
 }

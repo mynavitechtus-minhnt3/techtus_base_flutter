@@ -5,7 +5,7 @@ import 'package:mocktail/mocktail.dart';
 import 'package:nalsflutter/index.dart';
 
 import '../../../../common/index.dart';
-import '../contact_list/contact_list_page_test.dart';
+import '../home/home_page_test.dart';
 
 class MockMainViewModel extends StateNotifier<CommonState<MainState>>
     with Mock
@@ -18,8 +18,8 @@ void main() {
 
   setUp(() {
     when(() => navigator.tabRoutes).thenReturn(const [
-      ContactListTab(),
-      MyPageTab(),
+      HomeTab(),
+      MyProfileTab(),
     ]);
   });
 
@@ -36,10 +36,10 @@ void main() {
                   ),
                 ),
               ),
-              contactListViewModelProvider.overrideWith(
-                (_) => MockContactListViewModel(
+              homeViewModelProvider.overrideWith(
+                (_) => MockHomeViewModel(
                   const CommonState(
-                    data: ContactListState(),
+                    data: HomeState(),
                   ),
                 ),
               ),
@@ -80,10 +80,10 @@ void main() {
                   ),
                 ),
               ),
-              contactListViewModelProvider.overrideWith(
-                (_) => MockContactListViewModel(
+              homeViewModelProvider.overrideWith(
+                (_) => MockHomeViewModel(
                   const CommonState(
-                    data: ContactListState(),
+                    data: HomeState(),
                   ),
                 ),
               ),

@@ -10,7 +10,6 @@ const _excluded = <String>[
   'lib/ui/component/shimmer/rounded_rectangle_shimmer.dart',
   'lib/ui/component/shimmer/shimmer_loading.dart',
   'lib/ui/component/common_scrollbar.dart',
-  'lib/ui/component/primary_check_box.dart',
 ];
 
 Future<void> main(List<String> args) async {

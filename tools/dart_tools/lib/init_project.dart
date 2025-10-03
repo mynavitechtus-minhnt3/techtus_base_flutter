@@ -8,6 +8,38 @@ import 'dart:io';
 const List<String> _iosFlavors = ['Develop', 'Qa', 'Staging', 'Production'];
 const List<String> _defaultFlavors = ['develop', 'qa', 'staging', 'production'];
 const String _flutterImagePrefix = 'ghcr.io/cirruslabs/flutter:';
+final filesToDelete = [
+  // UI Components
+  'lib/ui/component/avatar_view.dart',
+  'lib/ui/component/primary_check_box.dart',
+  'lib/ui/component/primary_text_field.dart',
+  'lib/ui/component/search_text_field.dart',
+
+  // Widget Tests
+  'test/widget_test/ui/component/avatar_view_test.dart',
+  'test/widget_test/ui/component/primary_check_box_test.dart',
+  'test/widget_test/ui/component/primary_text_field_test.dart',
+  'test/widget_test/ui/component/search_text_field_test.dart',
+];
+
+// Directories to delete (including all contents)
+final directoriesToDelete = [
+  'test/widget_test/ui/component/goldens/avatar_view',
+  'test/widget_test/ui/component/goldens/primary_check_box',
+  'test/widget_test/ui/component/goldens/primary_text_field',
+  'test/widget_test/ui/component/goldens/search_text_field',
+  'test/unit_test/ui/page',
+  'test/widget_test/ui/page',
+  'integration_test',
+];
+
+final excludeDirsFromDeletion = [
+  'splash',
+  'home',
+  'main',
+  'login',
+  'my_profile',
+];
 
 // Helper functions for common operations
 String? _extractFlutterSdkVersion(Map<String, dynamic> config) {
@@ -337,6 +369,16 @@ Future<void> main(List<String> args) async {
   await _updateWithErrorHandling(
       'MainActivity package', () => _updateMainActivityPackage(projectRoot, config));
   await _updateWithErrorHandling('Export Options', () => _updateExportOptions(projectRoot, config));
+  await _updateWithErrorHandling('Example Code Cleanup', () => _cleanupExampleCode(projectRoot));
+  await _updateWithErrorHandling(
+      'Shared Provider Cleanup', () => _cleanupSharedProvider(projectRoot));
+  await _updateWithErrorHandling(
+      'Shared Provider Test Cleanup', () => _cleanupSharedProviderTest(projectRoot));
+  await _updateWithErrorHandling(
+      'Shared ViewModel Cleanup', () => _cleanupSharedViewModel(projectRoot));
+  await _updateWithErrorHandling(
+      'Shared ViewModel Test Cleanup', () => _cleanupSharedViewModelTest(projectRoot));
+  await _updateWithErrorHandling('App Colors Cleanup', () => _cleanupAppColors(projectRoot));
 
   // Skip reading project state back to avoid overwriting user's JSON config
   // final backfill = await _readProjectState(projectRoot, config);
@@ -978,6 +1020,146 @@ Future<void> _updateExportOptions(String root, Map<String, dynamic> config) asyn
   );
 
   await exportOptionsFile.writeAsString(content);
+}
+
+Future<void> _cleanupExampleCode(String root) async {
+  // List of example files and directories to delete
+
+  // Delete files
+  for (final filePath in filesToDelete) {
+    final file = File(pathOf(root, filePath));
+    if (await file.exists()) {
+      await file.delete();
+      print('🗑️  Deleted: $filePath');
+    }
+  }
+
+  // Delete directories (excluding those in excludeDirsFromDeletion)
+  for (final dirPath in directoriesToDelete) {
+    // Check if directory path contains any excluded patterns
+    final shouldExclude =
+        excludeDirsFromDeletion.any((excludePattern) => dirPath.contains(excludePattern));
+
+    if (shouldExclude) {
+      print('⏭️  Skipped directory (excluded): $dirPath');
+      continue;
+    }
+
+    final directory = Directory(pathOf(root, dirPath));
+    if (await directory.exists()) {
+      await directory.delete(recursive: true);
+      print('🗑️  Deleted directory: $dirPath');
+    }
+  }
+}
+
+Future<void> _cleanupSharedProvider(String root) async {
+  final sharedProviderFile = File(pathOf(root, 'lib/ui/shared/shared_provider.dart'));
+  if (!await sharedProviderFile.exists()) return;
+
+  var content = await sharedProviderFile.readAsString();
+
+  // Remove code below comment "/// Below code will be removed after running `make init`"
+  final commentPattern =
+      RegExp(r'/// Below code will be removed after running `make init`[\s\S]*$', multiLine: true);
+  content = content.replaceAll(commentPattern, '');
+
+  // Clean up extra blank lines
+  content = content.replaceAll(RegExp(r'\n\s*\n\s*\n'), '\n\n');
+
+  await sharedProviderFile.writeAsString(content);
+  print('🗑️  Cleaned up shared_provider.dart');
+}
+
+Future<void> _cleanupSharedProviderTest(String root) async {
+  final testFile = File(pathOf(root, 'test/unit_test/ui/shared/shared_provider_test.dart'));
+  if (!await testFile.exists()) return;
+
+  var content = await testFile.readAsString();
+
+  // Remove test groups below comment "/// Below code will be removed after running `make init`"
+  final commentPattern =
+      RegExp(r'/// Below code will be removed after running `make init`[\s\S]*$', multiLine: true);
+  content = content.replaceAll(commentPattern, '');
+
+  // Clean up extra blank lines
+  content = content.replaceAll(RegExp(r'\n\s*\n\s*\n'), '\n\n');
+
+  await testFile.writeAsString(content);
+  print('🗑️  Cleaned up shared_provider_test.dart');
+}
+
+Future<void> _cleanupSharedViewModel(String root) async {
+  final sharedViewModelFile = File(pathOf(root, 'lib/ui/shared/shared_view_model.dart'));
+  if (!await sharedViewModelFile.exists()) return;
+
+  var content = await sharedViewModelFile.readAsString();
+
+  // Remove code below comment "/// Below code will be removed after running `make init`"
+  final commentPattern =
+      RegExp(r'/// Below code will be removed after running `make init`[\s\S]*$', multiLine: true);
+  content = content.replaceAll(commentPattern, '');
+
+  // Clean up extra blank lines
+  content = content.replaceAll(RegExp(r'\n\s*\n\s*\n'), '\n\n');
+
+  await sharedViewModelFile.writeAsString(content);
+  print('🗑️  Cleaned up shared_view_model.dart');
+}
+
+Future<void> _cleanupSharedViewModelTest(String root) async {
+  final testFile = File(pathOf(root, 'test/unit_test/ui/shared/shared_view_model_test.dart'));
+  if (!await testFile.exists()) return;
+
+  var content = await testFile.readAsString();
+
+  // Remove test groups below comment "/// Below code will be removed after running `make init`"
+  final commentPattern =
+      RegExp(r'/// Below code will be removed after running `make init`[\s\S]*$', multiLine: true);
+  content = content.replaceAll(commentPattern, '');
+
+  // Clean up extra blank lines
+  content = content.replaceAll(RegExp(r'\n\s*\n\s*\n'), '\n\n');
+
+  await testFile.writeAsString(content);
+  print('🗑️  Cleaned up shared_view_model_test.dart');
+}
+
+Future<void> _cleanupAppColors(String root) async {
+  final appColorsFile = File(pathOf(root, 'lib/resource/app_colors.dart'));
+  if (!await appColorsFile.exists()) return;
+
+  const newAppColors = '''// ignore_for_file: avoid_hard_coded_colors
+import 'package:flutter/material.dart';
+
+import '../index.dart';
+
+class AppColors {
+  const AppColors({
+    required this.black,
+  });
+
+  static late AppColors current;
+
+  final Color black;
+
+  static const defaultAppColor = AppColors(
+    black: Colors.black,
+  );
+
+  static const darkThemeColor = defaultAppColor;
+
+  static AppColors of(BuildContext context) {
+    final appColor = Theme.of(context).appColor;
+
+    current = appColor;
+
+    return current;
+  }
+}''';
+
+  await appColorsFile.writeAsString(newAppColors);
+  print('🗑️  Cleaned up app_colors.dart');
 }
 
 String? _extractJsonBlock(String content) {

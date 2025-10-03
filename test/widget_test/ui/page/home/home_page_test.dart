@@ -1,7 +1,4 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:golden_toolkit/golden_toolkit.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -16,120 +13,86 @@ class MockHomeViewModel extends StateNotifier<CommonState<HomeState>>
   MockHomeViewModel(super.state);
 }
 
-HomeViewModel _buildHomeViewModel(CommonState<HomeState> state) {
-  final vm = MockHomeViewModel(state);
-
-  when(() => vm.fetchUsers(isInitialLoad: any(named: 'isInitialLoad'))).thenAnswer((_) async {});
-
-  return vm;
-}
-
 void main() {
   group('others', () {
     testGoldens(
-      'when fetching background image failed',
-      (tester) async {
-        await runZonedGuarded(
-          () async {
-            /// Exception to cause errors on purpose also causes errors in this test case, which are mixed with Golden errors.
-            /// Therefore, Exception errors in this test case are ignored and only cause Golden errors.
-            final oldCallback = FlutterError.onError;
-            FlutterError.onError = (details) {
-              if (details.exception is HttpExceptionWithStatus) {
-                return;
-              }
-              oldCallback?.call(details);
-            };
-
-            await tester.testWidget(
-              filename: 'home_page/when fetching background image failed',
-              widget: HomePage(cacheManager: MockInvalidCacheManager()),
-              overrides: [
-                homeViewModelProvider.overrideWith(
-                  (_) => _buildHomeViewModel(
-                    CommonState(
-                      data: HomeState(),
-                    ),
-                  ),
-                ),
-              ],
-              customPump: (t) => t.pump(),
-            );
-          },
-          (error, stack) {},
-        );
-      },
-    );
-
-    testGoldens(
-      'when `isShimmerLoading` is true',
+      'when conversationList is empty',
       (tester) async {
         await tester.testWidget(
-          filename: 'home_page/when `isShimmerLoading` is true',
-          widget: HomePage(cacheManager: MockCacheManager()),
+          filename: 'home_page/when conversationList is empty',
+          widget: const HomePage(),
           overrides: [
             homeViewModelProvider.overrideWith(
-              (_) => _buildHomeViewModel(
-                CommonState(
-                  data: HomeState(
-                    isShimmerLoading: true,
-                  ),
-                ),
-              ),
-            ),
-          ],
-          customPump: (t) => t.pump(),
-        );
-      },
-    );
-
-    testGoldens(
-      'when `users` is empty',
-      (tester) async {
-        await tester.testWidget(
-          filename: 'home_page/when `users` is empty',
-          widget: HomePage(cacheManager: MockCacheManager()),
-          overrides: [
-            homeViewModelProvider.overrideWith(
-              (_) => _buildHomeViewModel(
-                CommonState(
+              (_) => MockHomeViewModel(
+                const CommonState(
                   data: HomeState(),
                 ),
               ),
             ),
+            currentUserProvider.overrideWith((ref) => const FirebaseUserData(
+                  id: '1',
+                  email: 'ntminhdn@gmail.com',
+                )),
           ],
-          customPump: (t) => t.pump(),
         );
       },
     );
 
     testGoldens(
-      'when `users` is not empty',
+      'when conversationList is not empty',
       (tester) async {
         await tester.testWidget(
-          filename: 'home_page/when `users` is not empty',
-          widget: HomePage(cacheManager: MockCacheManager()),
+          filename: 'home_page/when conversationList is not empty',
+          widget: const HomePage(),
+          onCreate: (tester, key) async {
+            final textFieldFinder = find.byType(TextField).isDescendantOfKeyIfAny(key);
+            expect(textFieldFinder, findsOneWidget);
+
+            await tester.enterText(textFieldFinder, 'dog');
+          },
           overrides: [
             homeViewModelProvider.overrideWith(
-              (_) => _buildHomeViewModel(
-                CommonState(
-                  data: HomeState(
-                    users: LoadMoreOutput(
-                      data: List.generate(
-                        Constant.itemsPerPage,
-                        (index) => ApiUserData(
-                          id: 1,
-                          email: 'nghiand1@nals.vn',
-                          birthday: DateTime(2000, 1, 1),
-                        ),
-                      ),
-                    ),
-                  ),
+              (_) => MockHomeViewModel(
+                const CommonState(
+                  data: HomeState(conversationList: [
+                    FirebaseConversationData(id: '1'),
+                    FirebaseConversationData(id: '2'),
+                  ]),
                 ),
               ),
             ),
+            currentUserProvider.overrideWith((ref) => const FirebaseUserData(
+                  id: '1',
+                  email: 'duynn@gmail.com',
+                )),
+            conversationNameProvider.overrideWith(
+              (ref, conversationId) => conversationId == '1' ? 'Dog, Cat' : 'Fish',
+            ),
           ],
-          customPump: (t) => t.pump(const Duration(seconds: 1)),
+        );
+      },
+    );
+
+    testGoldens(
+      'when current user is vip member',
+      (tester) async {
+        await tester.testWidget(
+          filename: 'home_page/when current user is vip member',
+          widget: const HomePage(),
+          overrides: [
+            homeViewModelProvider.overrideWith(
+              (_) => MockHomeViewModel(
+                const CommonState(
+                  data: HomeState(),
+                ),
+              ),
+            ),
+            currentUserProvider.overrideWith((ref) => const FirebaseUserData(
+                  id: '1',
+                  email: 'ntminhdnlonglonglonglonglong@gmail.com',
+                  isVip: true,
+                )),
+          ],
         );
       },
     );

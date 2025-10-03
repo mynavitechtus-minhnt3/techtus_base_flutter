@@ -46,73 +46,6 @@ void main() {
     });
   });
 
-  group('getRenamedMembers', () {
-    test('when `members` is not empty and `getUserNickname` returns non-null values', () {
-      const dummyMembers = [
-        FirebaseConversationUserData(userId: 'id1', email: 'email1'),
-        FirebaseConversationUserData(userId: 'id2', email: 'email2'),
-      ];
-      const expectedMembers = [
-        FirebaseConversationUserData(userId: 'id1', email: 'nickname1'),
-        FirebaseConversationUserData(userId: 'id2', email: 'nickname2'),
-      ];
-
-      when(() => appPreferences.getUserNickname(
-            conversationId: 'conversationId',
-            memberId: 'id1',
-          )).thenAnswer((_) => 'nickname1');
-
-      when(() => appPreferences.getUserNickname(
-            conversationId: 'conversationId',
-            memberId: 'id2',
-          )).thenAnswer((_) => 'nickname2');
-
-      final result = sharedViewModel.getRenamedMembers(
-        members: dummyMembers,
-        conversationId: 'conversationId',
-      );
-
-      expect(result, expectedMembers);
-    });
-
-    test('when `members` is not empty and `getUserNickname` returns null values', () {
-      const dummyMembers = [
-        FirebaseConversationUserData(userId: 'id1', email: 'email1'),
-        FirebaseConversationUserData(userId: 'id2', email: 'email2'),
-      ];
-      final expectedMembers = dummyMembers.toList();
-
-      when(() => appPreferences.getUserNickname(
-            conversationId: 'conversationId',
-            memberId: 'id1',
-          )).thenAnswer((_) => null);
-
-      when(() => appPreferences.getUserNickname(
-            conversationId: 'conversationId',
-            memberId: 'id2',
-          )).thenAnswer((_) => null);
-
-      final result = sharedViewModel.getRenamedMembers(
-        members: dummyMembers,
-        conversationId: 'conversationId',
-      );
-
-      expect(result, expectedMembers);
-    });
-
-    test('when `members` is empty', () {
-      const dummyMembers = <FirebaseConversationUserData>[];
-      const expectedMembers = <FirebaseConversationUserData>[];
-
-      final result = sharedViewModel.getRenamedMembers(
-        members: dummyMembers,
-        conversationId: 'conversationId',
-      );
-
-      expect(result, expectedMembers);
-    });
-  });
-
   group('logout', () {
     const dummyDeviceToken = 'token123';
     const dummyUserId = 'userId';
@@ -197,6 +130,75 @@ void main() {
       verify(() => firebaseAuthService.signOut()).called(1);
       verifyNever(() => currentUserStateController.update(any()));
       verify(() => navigator.replaceAll([const LoginRoute()])).called(1);
+    });
+  });
+
+  /// Below code will be removed after running `make init`
+
+  group('getRenamedMembers', () {
+    test('when `members` is not empty and `getUserNickname` returns non-null values', () {
+      const dummyMembers = [
+        FirebaseConversationUserData(userId: 'id1', email: 'email1'),
+        FirebaseConversationUserData(userId: 'id2', email: 'email2'),
+      ];
+      const expectedMembers = [
+        FirebaseConversationUserData(userId: 'id1', email: 'nickname1'),
+        FirebaseConversationUserData(userId: 'id2', email: 'nickname2'),
+      ];
+
+      when(() => appPreferences.getUserNickname(
+            conversationId: 'conversationId',
+            memberId: 'id1',
+          )).thenAnswer((_) => 'nickname1');
+
+      when(() => appPreferences.getUserNickname(
+            conversationId: 'conversationId',
+            memberId: 'id2',
+          )).thenAnswer((_) => 'nickname2');
+
+      final result = sharedViewModel.getRenamedMembers(
+        members: dummyMembers,
+        conversationId: 'conversationId',
+      );
+
+      expect(result, expectedMembers);
+    });
+
+    test('when `members` is not empty and `getUserNickname` returns null values', () {
+      const dummyMembers = [
+        FirebaseConversationUserData(userId: 'id1', email: 'email1'),
+        FirebaseConversationUserData(userId: 'id2', email: 'email2'),
+      ];
+      final expectedMembers = dummyMembers.toList();
+
+      when(() => appPreferences.getUserNickname(
+            conversationId: 'conversationId',
+            memberId: 'id1',
+          )).thenAnswer((_) => null);
+
+      when(() => appPreferences.getUserNickname(
+            conversationId: 'conversationId',
+            memberId: 'id2',
+          )).thenAnswer((_) => null);
+
+      final result = sharedViewModel.getRenamedMembers(
+        members: dummyMembers,
+        conversationId: 'conversationId',
+      );
+
+      expect(result, expectedMembers);
+    });
+
+    test('when `members` is empty', () {
+      const dummyMembers = <FirebaseConversationUserData>[];
+      const expectedMembers = <FirebaseConversationUserData>[];
+
+      final result = sharedViewModel.getRenamedMembers(
+        members: dummyMembers,
+        conversationId: 'conversationId',
+      );
+
+      expect(result, expectedMembers);
     });
   });
 

@@ -7,7 +7,7 @@ import '../../../../index.dart';
 
 enum BottomTab {
   home(icon: Icon(Icons.home), activeIcon: Icon(Icons.home)),
-  myPage(icon: Icon(Icons.people), activeIcon: Icon(Icons.people));
+  myProfile(icon: Icon(Icons.people), activeIcon: Icon(Icons.people));
 
   const BottomTab({
     required this.icon,
@@ -20,7 +20,7 @@ enum BottomTab {
     switch (this) {
       case BottomTab.home:
         return l10n.home;
-      case BottomTab.myPage:
+      case BottomTab.myProfile:
         return l10n.myPage;
     }
   }

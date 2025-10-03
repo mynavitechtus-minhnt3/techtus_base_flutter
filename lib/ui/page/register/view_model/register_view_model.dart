@@ -83,7 +83,7 @@ class RegisterViewModel extends BaseViewModel<RegisterState> {
           ),
         ]);
 
-        await _ref.nav.replaceAll([const ContactListRoute()]);
+        await _ref.nav.replaceAll([const HomeRoute()]);
       },
       handleErrorWhen: (_) => false,
       doOnError: (e) async {
