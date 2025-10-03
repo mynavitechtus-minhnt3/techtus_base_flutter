@@ -31,29 +31,31 @@ class CommonScaffold extends StatelessWidget {
     final scaffold = Scaffold(
       key: scaffoldKey,
       endDrawer: endDrawer,
-      backgroundColor: backgroundColor ?? color.white,
+      backgroundColor: backgroundColor ?? Colors.white,
       body: shimmerEnabled ? Shimmer(child: body) : body,
       appBar: appBar,
       drawer: drawer,
       floatingActionButton: floatingActionButton,
     );
 
-    final scaffoldWithBanner = Env.flavor == Flavor.production || Env.flavor == Flavor.test
-        ? scaffold
-        : Banner(
-            location: BannerLocation.topStart,
-            message: Env.flavor.name,
-            // ignore: avoid_hard_coded_colors
-            color: Colors.green.withValues(alpha: 0.6),
-            textStyle: style(
-              color: color.white,
-              fontWeight: FontWeight.w700,
-              fontSize: 12,
-              letterSpacing: 1,
-            ),
-            textDirection: TextDirection.ltr,
-            child: scaffold,
-          );
+    final scaffoldWithBanner =
+        Env.flavor == Flavor.production || Env.flavor == Flavor.test || Env.flavor == Flavor.staging
+            ? scaffold
+            : Banner(
+                location: BannerLocation.topStart,
+                message: Env.flavor.name,
+                // ignore: avoid_hard_coded_colors
+                color: Colors.green.withValues(alpha: 0.6),
+                textStyle: style(
+                  // ignore: avoid_hard_coded_colors
+                  color: Colors.white,
+                  fontWeight: FontWeight.w700,
+                  fontSize: 12,
+                  letterSpacing: 1,
+                ),
+                textDirection: TextDirection.ltr,
+                child: scaffold,
+              );
 
     return hideKeyboardWhenTouchOutside
         ? GestureDetector(

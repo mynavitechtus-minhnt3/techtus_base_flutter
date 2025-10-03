@@ -37,7 +37,6 @@ final subDirsToDelete = [
 final excludeDirsFromDeletion = [
   'splash',
   'main',
-  'login',
 ];
 
 // Helper functions for common operations
@@ -1086,6 +1085,12 @@ Future<void> _cleanupSharedProvider(String root) async {
   // Clean up extra blank lines
   content = content.replaceAll(RegExp(r'\n\s*\n\s*\n'), '\n\n');
 
+  // Ensure file ends with closing brace if it doesn't
+  content = content.trim();
+  if (!content.endsWith('}')) {
+    content += '\n}';
+  }
+
   await sharedProviderFile.writeAsString(content);
   print('🗑️  Cleaned up shared_provider.dart');
 }
@@ -1122,6 +1127,12 @@ Future<void> _cleanupSharedViewModel(String root) async {
   // Clean up extra blank lines
   content = content.replaceAll(RegExp(r'\n\s*\n\s*\n'), '\n\n');
 
+  // Ensure file ends with closing brace if it doesn't
+  content = content.trim();
+  if (!content.endsWith('}')) {
+    content += '}\n}';
+  }
+
   await sharedViewModelFile.writeAsString(content);
   print('🗑️  Cleaned up shared_view_model.dart');
 }
@@ -1139,6 +1150,12 @@ Future<void> _cleanupSharedViewModelTest(String root) async {
 
   // Clean up extra blank lines
   content = content.replaceAll(RegExp(r'\n\s*\n\s*\n'), '\n\n');
+
+  // Ensure file ends with closing brace if it doesn't
+  content = content.trim();
+  if (!content.endsWith('}')) {
+    content += '}\n}';
+  }
 
   await testFile.writeAsString(content);
   print('🗑️  Cleaned up shared_view_model_test.dart');

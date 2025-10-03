@@ -69,10 +69,14 @@ class MainPage extends BasePage<MainState,
           },
           showSelectedLabels: true,
           showUnselectedLabels: true,
-          unselectedItemColor: color.grey1,
+          // TODO(minh): update after init project #0
+          // ignore: avoid_hard_coded_colors
+          unselectedItemColor: Colors.grey,
           selectedItemColor: color.black,
           type: BottomNavigationBarType.fixed,
-          backgroundColor: color.white,
+          // TODO(minh): update after init project #0
+          // ignore: avoid_hard_coded_colors
+          backgroundColor: Colors.white,
           items: BottomTab.values
               .map(
                 (tab) => BottomNavigationBarItem(
