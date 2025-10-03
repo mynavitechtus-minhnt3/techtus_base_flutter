@@ -10,7 +10,7 @@ import 'dart:io';
 // Pages that should be ignored during route checking
 // Add page names (without _page.dart suffix) that don't need route validation
 const List<String> _excludedPages = [
-  'my_profile', // MyProfileRoute is handled differently as a nested route
+  'my_page', // MyPageRoute is handled differently as a nested route
 ];
 
 void main(List<String> args) async {
@@ -108,7 +108,7 @@ String _getPageNameFromFile(String filePath) {
 String _convertPageNameToRouteName(String pageName) {
   // Convert snake_case to PascalCase following AutoRoute convention
   // AutoRoute replaces "Page" with "Route" due to @AutoRouterConfig(replaceInRouteName: 'Page,Route')
-  // e.g. login_page -> LoginPage -> LoginRoute, my_profile -> MyProfilePage -> MyProfileRoute
+  // e.g. login_page -> LoginPage -> LoginRoute, my_page -> MyPage -> MyRoute
   final words = pageName.split('_');
   final pascalCase = words
       .map((word) => word.isEmpty ? '' : word[0].toUpperCase() + word.substring(1).toLowerCase())
