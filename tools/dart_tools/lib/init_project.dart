@@ -1083,14 +1083,11 @@ Future<void> _cleanupSharedProvider(String root) async {
       RegExp(r'/// Below code will be removed after running `make init`[\s\S]*$', multiLine: true);
   content = content.replaceAll(commentPattern, '');
 
+  // Remove specific import
+  content = content.replaceAll(RegExp(r"import 'package:dartx/dartx\.dart';\n?"), '');
+
   // Clean up extra blank lines
   content = content.replaceAll(RegExp(r'\n\s*\n\s*\n'), '\n\n');
-
-  // Ensure file ends with closing brace if it doesn't
-  content = content.trim();
-  if (!content.endsWith('}')) {
-    content += '\n}';
-  }
 
   await sharedProviderFile.writeAsString(content);
   print('🗑️  Cleaned up shared_provider.dart');
@@ -1107,8 +1104,16 @@ Future<void> _cleanupSharedProviderTest(String root) async {
       RegExp(r'/// Below code will be removed after running `make init`[\s\S]*$', multiLine: true);
   content = content.replaceAll(commentPattern, '');
 
+  // Remove specific import
+  content =
+      content.replaceAll(RegExp(r"import 'package:hooks_riverpod/hooks_riverpod\.dart';\n?"), '');
+
   // Clean up extra blank lines
   content = content.replaceAll(RegExp(r'\n\s*\n\s*\n'), '\n\n');
+
+  // Ensure file ends with closing brace if it doesn't
+  content = content.trim();
+  content += '}\n';
 
   await testFile.writeAsString(content);
   print('🗑️  Cleaned up shared_provider_test.dart');
@@ -1130,9 +1135,7 @@ Future<void> _cleanupSharedViewModel(String root) async {
 
   // Ensure file ends with closing brace if it doesn't
   content = content.trim();
-  if (!content.endsWith('}')) {
-    content += '}\n}';
-  }
+  content += '}\n';
 
   await sharedViewModelFile.writeAsString(content);
   print('🗑️  Cleaned up shared_view_model.dart');
@@ -1154,9 +1157,7 @@ Future<void> _cleanupSharedViewModelTest(String root) async {
 
   // Ensure file ends with closing brace if it doesn't
   content = content.trim();
-  if (!content.endsWith('}')) {
-    content += '}\n}';
-  }
+  content += '}\n';
 
   await testFile.writeAsString(content);
   print('🗑️  Cleaned up shared_view_model_test.dart');

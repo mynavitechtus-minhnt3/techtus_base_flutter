@@ -54,6 +54,7 @@ ci:
 	make check_pubs
 	make check_page_routes
 	make check_component_usage
+	make check_assets_structure
 	make ep
 	make rup
 	make rua
@@ -110,6 +111,9 @@ ep:
 
 check_component_usage:
 	dart run $(DART_TOOLS_PATH)/check_component_usage.dart
+
+check_assets_structure:
+	dart run $(DART_TOOLS_PATH)/check_assets_structure.dart
 
 gen_api:
 	@INPUT_PATH=$${input_path:-docs/api_doc}; \
@@ -179,6 +183,7 @@ gen_env:
 
 init:
 	dart run tools/dart_tools/lib/init_project.dart
+	make gap
 
 build_dev_apk:
 	flutter build apk --flavor develop -t lib/main.dart --dart-define-from-file=dart_defines/develop.json --verbose
