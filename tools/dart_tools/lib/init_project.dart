@@ -377,6 +377,7 @@ Future<void> main(List<String> args) async {
   await _updateWithErrorHandling(
       'Shared ViewModel Test Cleanup', () => _cleanupSharedViewModelTest(projectRoot));
   await _updateWithErrorHandling('App Colors Cleanup', () => _cleanupAppColors(projectRoot));
+  await _updateWithErrorHandling('Base Test Cleanup', () => _cleanupBaseTest(projectRoot));
 
   // Skip reading project state back to avoid overwriting user's JSON config
   // final backfill = await _readProjectState(projectRoot, config);
@@ -1196,6 +1197,24 @@ class AppColors {
 
   await appColorsFile.writeAsString(newAppColors);
   print('🗑️  Cleaned up app_colors.dart');
+}
+
+Future<void> _cleanupBaseTest(String root) async {
+  final baseTestFile = File(pathOf(root, 'test/common/base_test.dart'));
+  if (!await baseTestFile.exists()) return;
+
+  var content = await baseTestFile.readAsString();
+
+  // Remove specific lines 75-76
+  final lines = content.split('\n');
+  if (lines.length > 76) {
+    // Remove lines 75-76 (0-indexed, so lines 74-75)
+    lines.removeRange(74, 76);
+    content = lines.join('\n');
+  }
+
+  await baseTestFile.writeAsString(content);
+  print('🗑️  Cleaned up base_test.dart');
 }
 
 String? _extractJsonBlock(String content) {
