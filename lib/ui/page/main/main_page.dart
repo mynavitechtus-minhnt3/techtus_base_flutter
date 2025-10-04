@@ -7,7 +7,7 @@ import '../../../../index.dart';
 
 enum BottomTab {
   home(icon: Icon(Icons.home), activeIcon: Icon(Icons.home)),
-  myPage(icon: Icon(Icons.people), activeIcon: Icon(Icons.people));
+  myProfile(icon: Icon(Icons.people), activeIcon: Icon(Icons.people));
 
   const BottomTab({
     required this.icon,
@@ -20,7 +20,7 @@ enum BottomTab {
     switch (this) {
       case BottomTab.home:
         return l10n.home;
-      case BottomTab.myPage:
+      case BottomTab.myProfile:
         return l10n.myPage;
     }
   }
@@ -69,10 +69,14 @@ class MainPage extends BasePage<MainState,
           },
           showSelectedLabels: true,
           showUnselectedLabels: true,
-          unselectedItemColor: color.grey1,
+          // TODO(minh): update after init project #0
+          // ignore: avoid_hard_coded_colors
+          unselectedItemColor: Colors.grey,
           selectedItemColor: color.black,
           type: BottomNavigationBarType.fixed,
-          backgroundColor: color.white,
+          // TODO(minh): update after init project #0
+          // ignore: avoid_hard_coded_colors
+          backgroundColor: Colors.white,
           items: BottomTab.values
               .map(
                 (tab) => BottomNavigationBarItem(

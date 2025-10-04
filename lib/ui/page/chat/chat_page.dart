@@ -101,12 +101,6 @@ class ChatPage extends BasePage<ChatState,
           swipeToReplyConfig: swipeToReplyConfig,
           items: [
             MenuItem(
-              text: l10n.renameConversationMembers,
-              action: () async {
-                await _showRenameConversation(ref);
-              },
-            ),
-            MenuItem(
               text: l10n.deleteThisConversation,
               action: () async {
                 final isConfirm = await ref.read(appNavigatorProvider).showDialog(
@@ -247,12 +241,6 @@ class ChatPage extends BasePage<ChatState,
   SwipeToReplyConfiguration get swipeToReplyConfig => SwipeToReplyConfiguration(
         replyIconColor: color.white,
       );
-
-  Future<void> _showRenameConversation(WidgetRef ref) async {
-    await ref.read(appNavigatorProvider).push(RenameConversationRoute(
-          conversation: ref.read(provider.select((value) => value.data.conversation)),
-        ));
-  }
 }
 
 class _MoreMenuIconButton extends StatelessWidget {

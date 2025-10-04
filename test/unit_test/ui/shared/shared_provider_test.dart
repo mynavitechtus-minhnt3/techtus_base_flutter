@@ -75,6 +75,8 @@ void main() {
     });
   });
 
+  /// Below code will be removed after running `make init`
+
   group('conversationNameProvider', () {
     setUp(() {
       when(() => appPreferences.saveUserId(any())).thenAnswer((_) async => true);
@@ -183,8 +185,8 @@ void main() {
 
           final container = TestUtil.createContainer(
             overrides: [
-              contactListViewModelProvider.overrideWith(
-                (_) => _MockContactListViewModel(conversationList: [], keyword: ''),
+              homeViewModelProvider.overrideWith(
+                (_) => _MockHomeViewModel(conversationList: [], keyword: ''),
               ),
               conversationMembersMapProvider.overrideWith((_) => {}),
             ],
@@ -199,8 +201,8 @@ void main() {
 
           final container = TestUtil.createContainer(
             overrides: [
-              contactListViewModelProvider.overrideWith(
-                (_) => _MockContactListViewModel(conversationList: [], keyword: ''),
+              homeViewModelProvider.overrideWith(
+                (_) => _MockHomeViewModel(conversationList: [], keyword: ''),
               ),
               conversationMembersMapProvider.overrideWith((_) => {
                     'id1': [
@@ -224,8 +226,8 @@ void main() {
 
           final container = TestUtil.createContainer(
             overrides: [
-              contactListViewModelProvider.overrideWith(
-                (_) => _MockContactListViewModel(conversationList: [], keyword: 'keyword'),
+              homeViewModelProvider.overrideWith(
+                (_) => _MockHomeViewModel(conversationList: [], keyword: 'keyword'),
               ),
               conversationMembersMapProvider.overrideWith((_) => {}),
             ],
@@ -240,8 +242,8 @@ void main() {
 
           final container = TestUtil.createContainer(
             overrides: [
-              contactListViewModelProvider.overrideWith(
-                (_) => _MockContactListViewModel(conversationList: [], keyword: 'keyword'),
+              homeViewModelProvider.overrideWith(
+                (_) => _MockHomeViewModel(conversationList: [], keyword: 'keyword'),
               ),
               conversationMembersMapProvider.overrideWith((_) => {
                     'id1': [
@@ -282,8 +284,8 @@ void main() {
 
           final container = TestUtil.createContainer(
             overrides: [
-              contactListViewModelProvider.overrideWith(
-                (_) => _MockContactListViewModel(
+              homeViewModelProvider.overrideWith(
+                (_) => _MockHomeViewModel(
                   conversationList: dummyConversations,
                   keyword: '',
                 ),
@@ -324,8 +326,8 @@ void main() {
 
           final container = TestUtil.createContainer(
             overrides: [
-              contactListViewModelProvider.overrideWith(
-                (_) => _MockContactListViewModel(
+              homeViewModelProvider.overrideWith(
+                (_) => _MockHomeViewModel(
                   conversationList: dummyConversations,
                   keyword: '',
                 ),
@@ -356,8 +358,8 @@ void main() {
 
           final container = TestUtil.createContainer(
             overrides: [
-              contactListViewModelProvider.overrideWith(
-                (_) => _MockContactListViewModel(
+              homeViewModelProvider.overrideWith(
+                (_) => _MockHomeViewModel(
                   conversationList: dummyConversations,
                   keyword: 'du',
                 ),
@@ -395,8 +397,8 @@ void main() {
 
           final container = TestUtil.createContainer(
             overrides: [
-              contactListViewModelProvider.overrideWith(
-                (_) => _MockContactListViewModel(
+              homeViewModelProvider.overrideWith(
+                (_) => _MockHomeViewModel(
                   conversationList: dummyConversations,
                   keyword: 'ki',
                 ),
@@ -434,8 +436,8 @@ void main() {
 
           final container = TestUtil.createContainer(
             overrides: [
-              contactListViewModelProvider.overrideWith(
-                (_) => _MockContactListViewModel(
+              homeViewModelProvider.overrideWith(
+                (_) => _MockHomeViewModel(
                   conversationList: dummyConversations,
                   keyword: 'ki',
                 ),
@@ -452,14 +454,14 @@ void main() {
   });
 }
 
-class _MockContactListViewModel extends StateNotifier<CommonState<ContactListState>>
+class _MockHomeViewModel extends StateNotifier<CommonState<HomeState>>
     with Mock
-    implements ContactListViewModel {
-  _MockContactListViewModel({
+    implements HomeViewModel {
+  _MockHomeViewModel({
     required List<FirebaseConversationData> conversationList,
     required String keyword,
-  }) : super(CommonState<ContactListState>(
-          data: ContactListState(
+  }) : super(CommonState<HomeState>(
+          data: HomeState(
             conversationList: conversationList,
             keyword: keyword,
           ),

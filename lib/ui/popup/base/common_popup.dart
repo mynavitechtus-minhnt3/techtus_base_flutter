@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../../../index.dart';
@@ -22,57 +21,8 @@ class CommonPopup {
   ) {
     return CommonPopup._(
       id: 'errorDialog_$message'.hardcoded,
-      builder: (context, navigator) => AlertDialog.adaptive(
-        actions: [
-          TextButton(
-            onPressed: () => navigator.pop(),
-            child: CommonText(
-              l10n.ok,
-              style: null,
-            ),
-          ),
-        ],
-        content: CommonText(
-          message,
-          style: null,
-        ),
-      ),
-    );
-  }
-
-  static CommonPopup confirmDialog({
-    required String message,
-    VoidCallback? onConfirm,
-    VoidCallback? onCancel,
-    String? confirmButtonText,
-    String? cancelButtonText,
-  }) {
-    return CommonPopup._(
-      id: 'confirmDialog_$message'.hardcoded,
-      builder: (context, navigator) => AlertDialog.adaptive(
-        title: CommonText(
-          message,
-          style: style(
-            color: color.black,
-            fontSize: 14.rps,
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () {
-              navigator.pop(result: false);
-              onCancel?.call();
-            },
-            child: CommonText(cancelButtonText ?? l10n.cancel, style: null),
-          ),
-          TextButton(
-            onPressed: () {
-              navigator.pop(result: true);
-              onConfirm?.call();
-            },
-            child: CommonText(confirmButtonText ?? l10n.ok, style: null),
-          ),
-        ],
+      builder: (context, _) => ErrorDialog(
+        message: message,
       ),
     );
   }
@@ -83,194 +33,20 @@ class CommonPopup {
   }) {
     return CommonPopup._(
       id: 'errorWithRetryDialog_$message'.hardcoded,
-      builder: (context, navigator) => AlertDialog.adaptive(
-        actions: [
-          TextButton(
-            onPressed: () => navigator.pop(),
-            child: CommonText(
-              l10n.cancel,
-              style: null,
-            ),
-          ),
-          TextButton(
-            onPressed: () {
-              navigator.pop();
-              onRetryPressed.call();
-            },
-            child: CommonText(
-              l10n.retry,
-              style: null,
-            ),
-          ),
-        ],
-        content: CommonText(
-          message,
-          style: null,
-        ),
-      ),
-    );
-  }
-
-  static CommonPopup infoDialog(
-    String message,
-  ) {
-    return CommonPopup._(
-      id: 'infoDialog_$message'.hardcoded,
-      builder: (context, navigator) => AlertDialog.adaptive(
-        actions: [
-          TextButton(
-            onPressed: () {
-              navigator.pop();
-            },
-            child: CommonText(
-              l10n.ok,
-              style: null,
-            ),
-          ),
-        ],
-        content: CommonText(
-          message,
-          style: null,
-        ),
+      builder: (context, navigator) => ErrorWithRetryDialog(
+        message: message,
+        onRetryPressed: onRetryPressed,
       ),
     );
   }
 
   static CommonPopup maintenanceModeDialog({
     required String message,
-    required String time,
   }) {
     return CommonPopup._(
       id: 'maintenanceModeDialog_$message'.hardcoded,
-      // ignore: prefer_common_widgets
-      builder: (context, navigator) {
-        final infoBorder = SolidBorder.allRadius(radius: 10.rps, borderColor: color.grey1);
-
-        return CommonScaffold(
-          body: Container(
-            color: color.white,
-            padding: EdgeInsets.all(24.rps),
-            // ignore: missing_expanded_or_flexible
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Align(
-                  alignment: Alignment.topCenter,
-                  child: CommonImage.asset(
-                    path: image.imageAppIcon,
-                    width: 128.rps,
-                    height: 128.rps,
-                  ),
-                ),
-                SizedBox(height: 32.rps),
-                CommonText(
-                  l10n.maintenanceTitle,
-                  style: style(
-                    height: 1.18,
-                    color: color.black,
-                    fontSize: 16.rps,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                SizedBox(height: 8.rps),
-                Container(
-                  padding: EdgeInsets.all(12.rps),
-                  decoration: BoxDecoration(
-                    color: color.white,
-                    borderRadius: infoBorder.borderRadius,
-                    border: infoBorder.boxBorder,
-                  ),
-                  child: CommonText(
-                    message,
-                    style: style(
-                      height: 1.5,
-                      color: color.black,
-                      fontSize: 14.rps,
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
-                ),
-                Visibility(
-                  visible: time.isNotEmpty,
-                  // ignore: missing_expanded_or_flexible
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      SizedBox(height: 16.rps),
-                      CommonText(
-                        l10n.maintenanceTimeTitle,
-                        style: style(
-                          height: 1.18,
-                          color: color.black,
-                          fontSize: 16.rps,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      SizedBox(height: 8.rps),
-                      Container(
-                        padding: EdgeInsets.all(12.rps),
-                        decoration: BoxDecoration(
-                          color: color.white,
-                          borderRadius: infoBorder.borderRadius,
-                          border: infoBorder.boxBorder,
-                        ),
-                        child: CommonText(
-                          time,
-                          style: style(
-                            height: 1.5,
-                            color: color.black,
-                            fontSize: 14.rps,
-                            fontWeight: FontWeight.w400,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-  static CommonPopup changeImageOptionsBottomSheet() {
-    return CommonPopup._(
-      id: 'changeImageOptionsBottomSheet'.hardcoded,
-      builder: (context, navigator) => CupertinoAlertDialog(
-        actions: [
-          CupertinoDialogAction(
-            onPressed: () => navigator.pop(),
-            child: CommonText(
-              l10n.ok,
-              style: null,
-            ),
-          ),
-          CupertinoDialogAction(
-            onPressed: () => navigator.pop(),
-            child: CommonText(
-              l10n.cancel,
-              style: null,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  static CommonPopup successSnackBar(String message) {
-    return CommonPopup._(
-      id: 'successSnackBar_$message'.hardcoded,
-      builder: (context, navigator) => SnackBar(
-        content: CommonText(
-          message,
-          style: null,
-        ),
-        duration: Constant.snackBarDuration,
-        backgroundColor: color.green1,
+      builder: (context, navigator) => MaintenanceModeDialog(
+        message: message,
       ),
     );
   }
@@ -284,83 +60,27 @@ class CommonPopup {
           style: null,
         ),
         duration: Constant.snackBarDuration,
-        backgroundColor: color.red1,
+        backgroundColor: color.black,
       ),
     );
   }
 
-  static CommonPopup renameConversationDialog({
-    required String email,
-    required Function(String nameChanged) onSubmit,
+  static CommonPopup confirmDialog({
+    required String message,
+    VoidCallback? onConfirm,
+    VoidCallback? onCancel,
+    String? confirmButtonText,
+    String? cancelButtonText,
   }) {
     return CommonPopup._(
-      id: 'renameConversationDialog_$email'.hardcoded,
-      builder: (context, navigator) {
-        String nickname = '';
-
-        return Dialog(
-          child: StatefulBuilder(
-            builder: (context, setState) {
-              return Container(
-                padding: EdgeInsets.symmetric(horizontal: 16.rps, vertical: 32.rps),
-                // ignore: missing_expanded_or_flexible
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    CommonText(
-                      l10n.rename,
-                      style: style(
-                        color: color.black,
-                        fontSize: 18.rps,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                    SizedBox(height: 32.rps),
-                    TextField(
-                      onChanged: (value) {
-                        setState(() {
-                          nickname = value;
-                        });
-                      },
-                      decoration: InputDecoration(
-                        hintText: email,
-                      ),
-                    ),
-                    SizedBox(height: 32.rps),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: TextButton(
-                            onPressed: () => navigator.pop(),
-                            child: CommonText(
-                              l10n.cancel,
-                              style: null,
-                            ),
-                          ),
-                        ),
-                        SizedBox(width: 16.rps),
-                        Expanded(
-                          child: TextButton(
-                            onPressed: () {
-                              navigator.pop();
-                              onSubmit(nickname);
-                            },
-                            child: CommonText(
-                              l10n.ok,
-                              style: null,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              );
-            },
-          ),
-        );
-      },
+      id: 'confirmDialog_$message'.hardcoded,
+      builder: (context, navigator) => ConfirmDialog(
+        message: message,
+        onConfirm: onConfirm,
+        onCancel: onCancel,
+        confirmButtonText: confirmButtonText,
+        cancelButtonText: cancelButtonText,
+      ),
     );
   }
 }

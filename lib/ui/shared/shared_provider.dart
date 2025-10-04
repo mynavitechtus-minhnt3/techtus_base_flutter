@@ -33,11 +33,24 @@ final isDarkModeProvider = StateProvider<bool>(
   },
 );
 
+final currentUserProvider = StateProvider<FirebaseUserData>(
+  (ref) {
+    ref.listenSelf((previous, next) {
+      ref.appPreferences.saveUserId(next.id);
+      ref.appPreferences.saveEmail(next.email);
+    });
+
+    return const FirebaseUserData();
+  },
+);
+
+/// Below code will be removed after running `make init`
+
 final filteredConversationsProvider = Provider.autoDispose<List<FirebaseConversationData>>(
   (ref) {
     final conversations =
-        ref.watch(contactListViewModelProvider.select((value) => value.data.conversationList));
-    final keyword = ref.watch(contactListViewModelProvider.select((value) => value.data.keyword));
+        ref.watch(homeViewModelProvider.select((value) => value.data.conversationList));
+    final keyword = ref.watch(homeViewModelProvider.select((value) => value.data.keyword));
     final allConversationsMembers = ref.watch(conversationMembersMapProvider);
     final filteredConversationsMembers = allConversationsMembers.filter(
       (element) =>
@@ -87,14 +100,3 @@ final conversationMembersProvider =
           .toList() ??
       [];
 });
-
-final currentUserProvider = StateProvider<FirebaseUserData>(
-  (ref) {
-    ref.listenSelf((previous, next) {
-      ref.appPreferences.saveUserId(next.id);
-      ref.appPreferences.saveEmail(next.email);
-    });
-
-    return const FirebaseUserData();
-  },
-);

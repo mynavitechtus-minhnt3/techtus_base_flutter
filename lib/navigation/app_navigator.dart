@@ -20,8 +20,8 @@ class AppNavigator {
   );
 
   final tabRoutes = const [
-    ContactListTab(),
-    MyPageTab(),
+    HomeTab(),
+    MyProfileTab(),
   ];
 
   TabsRouter? tabsRouter;

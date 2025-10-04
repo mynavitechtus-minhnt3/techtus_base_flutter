@@ -233,7 +233,7 @@ class AllUsersPage extends BasePage<AllUsersState,
             SizedBox(height: 16.rps),
             Row(
               children: [
-                PrimaryCheckBox(
+                _PrimaryCheckBox(
                   initValue: ref.watch(provider.notifier).isConversationUserChecked(userId),
                   isEnabled: !isMe,
                   onChanged: (value) async => {
@@ -292,7 +292,7 @@ class AllUsersPage extends BasePage<AllUsersState,
             SizedBox(height: 16.rps),
             Row(
               children: [
-                PrimaryCheckBox(
+                _PrimaryCheckBox(
                   initValue: ref.watch(provider.notifier).isUserChecked(userId),
                   onChanged: (value) async => {
                     value
@@ -324,5 +324,57 @@ class AllUsersPage extends BasePage<AllUsersState,
         ),
       ),
     );
+  }
+}
+
+class _PrimaryCheckBox extends StatelessWidget {
+  const _PrimaryCheckBox({
+    this.initValue = false,
+    this.onChanged,
+    this.isEnabled = true,
+  });
+
+  final ValueChanged<bool>? onChanged;
+  final bool initValue;
+  final bool isEnabled;
+
+  @override
+  Widget build(BuildContext context) {
+    bool _checked = initValue;
+
+    return StatefulBuilder(builder: (_, setState) {
+      return CommonInkWell(
+        onTap: isEnabled
+            ? null
+            : () {
+                setState(() {
+                  _checked = !_checked;
+                  onChanged?.call(_checked);
+                });
+              },
+        child: Stack(
+          alignment: Alignment.centerLeft,
+          children: [
+            SizedBox(
+              width: 36.rps,
+              height: 36.rps,
+              child: Checkbox(
+                checkColor: color.white,
+                activeColor: color.black,
+                value: _checked,
+                onChanged: isEnabled
+                    ? (value) {
+                        onChanged?.call(value ?? false);
+                        setState(() {
+                          _checked = !_checked;
+                        });
+                      }
+                    : null,
+              ),
+            ),
+          ],
+        ),
+      );
+    });
   }
 }

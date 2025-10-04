@@ -1,15 +1,14 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import '../../../index.dart';
+import '../../../../index.dart';
 
 @RoutePage()
 class HomePage extends BasePage<HomeState,
     AutoDisposeStateNotifierProvider<HomeViewModel, CommonState<HomeState>>> {
-  const HomePage({this.cacheManager, super.key});
+  const HomePage({super.key});
 
   @override
   ScreenViewEvent get screenViewEvent => ScreenViewEvent(screenName: ScreenName.homePage);
@@ -18,136 +17,207 @@ class HomePage extends BasePage<HomeState,
   AutoDisposeStateNotifierProvider<HomeViewModel, CommonState<HomeState>> get provider =>
       homeViewModelProvider;
 
-  @visibleForTesting
-  final BaseCacheManager? cacheManager;
-
   @override
   Widget buildPage(BuildContext context, WidgetRef ref) {
-    final pagingController = useMemoized(() => CommonPagingController<ApiUserData>(
-          fetchPage: (_, isInitialLoad) async {
-            await ref.read(provider.notifier).fetchUsers(isInitialLoad: isInitialLoad);
-            final output = ref.read(provider.select((value) => value.data.users)).data;
-            return output;
-          },
-        ));
-
     useEffect(
       () {
-        return () {
-          pagingController.dispose();
-        };
+        Future.microtask(() {
+          ref.read(provider.notifier).init();
+        });
+
+        return () {};
       },
       [],
     );
 
-    ref.listen(provider.select((value) => value.data.loadUsersException), (previous, next) {
-      if (previous != next && next != null) {
-        pagingController.error = next;
-      }
-    });
+    final email = ref.watch(currentUserProvider.select((value) => value.email));
+    final scrollController = useScrollController();
 
     return CommonScaffold(
-      shimmerEnabled: true,
-      appBar: CommonAppBar.back(text: l10n.home),
+      hideKeyboardWhenTouchOutside: true,
       body: SafeArea(
-        bottom: false,
-        child: Stack(
-          fit: StackFit.expand,
+        child: Column(
           children: [
-            CommonImage.network(
-              url: Constant.contactListBg,
-              fit: BoxFit.cover,
-              cacheManager: cacheManager,
-              errorBuilder: (context, error) => Container(color: color.red1),
-            ),
-            Consumer(
-              builder: (context, ref, child) {
-                final users = ref.watch(provider.select((value) => value.data.users));
-                final isShimmerLoading =
-                    ref.watch(provider.select((value) => value.data.isShimmerLoading));
+            Padding(
+              padding: EdgeInsets.only(
+                top: 16.rps,
+                left: 16.rps,
+                right: 16.rps,
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: Consumer(
+                      builder: (context, ref, child) {
+                        final isVipMember =
+                            ref.watch(currentUserProvider.select((value) => value.isVip));
 
-                return RefreshIndicator(
-                  onRefresh: () async => pagingController.refresh(),
-                  child: isShimmerLoading && users.data.isEmpty
-                      ? const _ListViewLoader()
-                      : CommonPagedListView<ApiUserData>(
-                          pagingController: pagingController,
-                          animateTransitions: false,
-                          itemBuilder: (context, user, index) {
-                            final cardBorder = SolidBorder.allRadius(radius: 8.rps);
-                            return Padding(
-                              padding: EdgeInsets.symmetric(
-                                horizontal: 8.rps,
-                                vertical: 4.rps,
-                              ),
-                              child: ShimmerLoading(
-                                isLoading: isShimmerLoading,
-                                loadingWidget: const _LoadingItem(),
-                                child: GestureDetector(
-                                  onTap: () async {
-                                    await ref.read(appNavigatorProvider).push(HomeRoute());
-                                  },
-                                  child: Container(
-                                    padding: EdgeInsets.all(8.rps),
-                                    width: double.infinity,
-                                    decoration: BoxDecoration(
-                                      color: color.green1,
-                                      borderRadius: cardBorder.borderRadius,
-                                      border: cardBorder.boxBorder,
-                                    ),
-                                    child: CommonText(
-                                      '${user.email}\n${user.gender}\n${user.birthday?.toIso8601String()}'
-                                          .hardcoded,
-                                      style: style(
-                                        color: color.black,
-                                        fontSize: 14.rps,
-                                      ),
-                                    ),
-                                  ),
+                        return Row(
+                          children: [
+                            AvatarView(text: email),
+                            SizedBox(width: 16.rps),
+                            Flexible(
+                              child: CommonText(
+                                email,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: style(
+                                  fontSize: 20.rps,
+                                  fontWeight: FontWeight.w500,
+                                  color: color.black,
                                 ),
                               ),
-                            );
+                            ),
+                            SizedBox(width: 4.rps),
+                            Visibility(
+                              visible: isVipMember,
+                              child: Icon(
+                                Icons.local_police,
+                                size: 20.rps,
+                                color: color.green1,
+                              ),
+                            ),
+                          ],
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(height: 16.rps),
+            Padding(
+              padding: EdgeInsets.only(
+                left: 6.rps,
+                right: 6.rps,
+                bottom: 6.rps,
+              ),
+              child: Row(
+                children: [
+                  SizedBox(width: 12.rps),
+                  Expanded(
+                    child: CommonText(
+                      l10n.conversations,
+                      style: style(
+                        fontSize: 20.rps,
+                        fontWeight: FontWeight.w500,
+                        color: color.black,
+                      ),
+                    ),
+                  ),
+                  IconButton(
+                    onPressed: () => ref.read(appNavigatorProvider).push(AllUsersRoute(
+                          action: AllUsersPageAction.createNewConversation,
+                        )),
+                    icon: Icon(
+                      Icons.add,
+                      color: color.black,
+                      size: 24.rps,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.only(
+                left: 16.rps,
+                right: 16.rps,
+                bottom: 6.rps,
+              ),
+              child: SearchTextField(
+                onChanged: (value) => ref.read(provider.notifier).setKeyWord(value),
+              ),
+            ),
+            Expanded(
+              child: Consumer(
+                builder: (context, ref, child) {
+                  final filteredConversations = ref.watch(filteredConversationsProvider);
+
+                  return CommonScrollbarWithIosStatusBarTapDetector(
+                    routeName: HomeRoute.name,
+                    controller: scrollController,
+                    child: ListView.separated(
+                      controller: scrollController,
+                      separatorBuilder: (context, index) => SizedBox(
+                        height: 1.rps,
+                        child: CommonDivider(indent: 68.rps),
+                      ),
+                      padding: EdgeInsets.zero,
+                      itemCount: filteredConversations.length,
+                      itemBuilder: (context, index) {
+                        final conversation = filteredConversations[index];
+                        final conversationName = ref.watch(
+                          conversationNameProvider(conversation.id),
+                        );
+                        return CommonInkWell(
+                          onTap: () {
+                            ref
+                                .read(appNavigatorProvider)
+                                .push(ChatRoute(conversation: conversation));
                           },
-                        ),
-                );
-              },
+                          child: Dismissible(
+                            key: UniqueKey(),
+                            onDismissed: (direction) {
+                              ref.read(provider.notifier).deleteConversation(conversation);
+                            },
+                            confirmDismiss: (direction) async {
+                              return await ref.read(appNavigatorProvider).showDialog(
+                                    CommonPopup.confirmDialog(
+                                      message: l10n.deleteConversationConfirm,
+                                    ),
+                                  );
+                            },
+                            child: Padding(
+                              padding: EdgeInsets.only(left: 16.rps, right: 16.rps),
+                              child: Column(
+                                children: [
+                                  SizedBox(height: 16.rps),
+                                  Row(
+                                    children: [
+                                      AvatarView(
+                                        text: conversationName,
+                                        width: 36.rps,
+                                        height: 36.rps,
+                                      ),
+                                      SizedBox(width: 20.rps),
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            CommonText(
+                                              conversationName,
+                                              style: style(
+                                                fontSize: 16.rps,
+                                                fontWeight: FontWeight.w500,
+                                                color: color.black,
+                                              ),
+                                            ),
+                                            if (conversation.lastMessage.isNotEmpty)
+                                              CommonText(
+                                                conversation.lastMessage,
+                                                maxLines: 1,
+                                                overflow: TextOverflow.ellipsis,
+                                                style: style(fontSize: 13.rps, color: color.black),
+                                              ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(height: 16.rps),
+                                ],
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  );
+                },
+              ),
             ),
           ],
-        ),
-      ),
-    );
-  }
-}
-
-class _LoadingItem extends StatelessWidget {
-  const _LoadingItem();
-
-  @override
-  Widget build(BuildContext context) {
-    return RoundedRectangleShimmer(
-      width: double.infinity,
-      height: 60.rps,
-    );
-  }
-}
-
-/// Because [PagedListView] does not expose the [itemCount] property, itemCount = 0 on the first load and thus the Shimmer loading effect can not work. We need to create a fake ListView for the first load.
-class _ListViewLoader extends StatelessWidget {
-  const _ListViewLoader();
-
-  @override
-  Widget build(BuildContext context) {
-    return ListView.builder(
-      itemCount: Constant.shimmerItemCount,
-      itemBuilder: (context, index) => Padding(
-        padding: EdgeInsets.symmetric(
-          horizontal: 8.rps,
-          vertical: 4.rps,
-        ),
-        child: const ShimmerLoading(
-          loadingWidget: _LoadingItem(),
-          isLoading: true,
-          child: _LoadingItem(),
         ),
       ),
     );

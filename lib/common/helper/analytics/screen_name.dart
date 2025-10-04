@@ -9,15 +9,15 @@ enum ScreenName {
     screenEventPrefix: 'chat',
     screenClass: 'ChatPage',
   ),
-  contactListPage(
-    screenName: 'Contact List Page',
-    screenEventPrefix: 'contact_list',
-    screenClass: 'ContactListPage',
-  ),
   homePage(
     screenName: 'Home Page',
     screenEventPrefix: 'home',
     screenClass: 'HomePage',
+  ),
+  loadMoreExamplePage(
+    screenName: 'Load More Example Page',
+    screenEventPrefix: 'load_more_example',
+    screenClass: 'LoadMoreExamplePage',
   ),
   loginPage(
     screenName: 'Login Page',
@@ -29,10 +29,10 @@ enum ScreenName {
     screenEventPrefix: 'main',
     screenClass: 'MainPage',
   ),
-  myPage(
-    screenName: 'My Page',
-    screenEventPrefix: 'my',
-    screenClass: 'MyPage',
+  myProfilePage(
+    screenName: 'My Profile Page',
+    screenEventPrefix: 'my_profile',
+    screenClass: 'MyProfilePage',
   ),
   registerPage(
     screenName: 'Register Page',

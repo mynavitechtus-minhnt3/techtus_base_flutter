@@ -55,7 +55,7 @@ class MainViewModel extends BaseViewModel<MainState> {
         // user deleted - force logout
         if (user.id.isEmpty) {
           await _ref.nav.showDialog(
-            CommonPopup.infoDialog(l10n.forceLogout),
+            CommonPopup.errorDialog(l10n.forceLogout),
           );
           // ignore: missing_run_catching
           await _ref.appPreferences.clearCurrentUserData();

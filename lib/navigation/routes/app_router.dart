@@ -56,24 +56,23 @@ class AppRouter extends RootStackRouter {
         AutoRoute(page: RegisterRoute.page),
         AutoRoute(page: ChatRoute.page),
         AutoRoute(page: AllUsersRoute.page),
-        AutoRoute(page: RenameConversationRoute.page),
-        AutoRoute(page: HomeRoute.page),
+        AutoRoute(page: LoadMoreExampleRoute.page),
         buildCustomRoute(
             page: MainRoute.page,
             transitionsBuilder: TransitionsBuilders.fadeIn,
             children: [
               AutoRoute(
-                page: ContactListTab.page,
+                page: HomeTab.page,
                 maintainState: true,
                 children: [
-                  AutoRoute(page: ContactListRoute.page, initial: true),
+                  AutoRoute(page: HomeRoute.page, initial: true),
                 ],
               ),
               AutoRoute(
-                page: MyPageTab.page,
+                page: MyProfileTab.page,
                 maintainState: true,
                 children: [
-                  AutoRoute(page: MyPageRoute.page, initial: true),
+                  AutoRoute(page: MyProfileRoute.page, initial: true),
                   AutoRoute(page: SettingRoute.page),
                 ],
               ),
@@ -81,12 +80,12 @@ class AppRouter extends RootStackRouter {
       ];
 }
 
-@RoutePage(name: 'ContactListTab')
-class ContactListTabPage extends AutoRouter {
-  const ContactListTabPage({super.key});
+@RoutePage(name: 'HomeTab')
+class HomeTabPage extends AutoRouter {
+  const HomeTabPage({super.key});
 }
 
-@RoutePage(name: 'MyPageTab')
-class MyPageTabPage extends AutoRouter {
-  const MyPageTabPage({super.key});
+@RoutePage(name: 'MyProfileTab')
+class MyProfileTabPage extends AutoRouter {
+  const MyProfileTabPage({super.key});
 }

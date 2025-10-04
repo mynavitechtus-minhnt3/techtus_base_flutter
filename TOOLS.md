@@ -376,7 +376,25 @@ make fds
 make sl
 ```
 
-### 2.21. MynaviMobileTool VSCode Extension
+### 2.21. check_assets_structure.dart
+
+**Mục đích**:
+- Kiểm tra cấu trúc assets tuân thủ quy tắc dự án để đảm bảo tính nhất quán và dễ maintain.
+
+**Cách hoạt động**:
+- Kiểm tra chỉ có 3 folder được phép: `images/`, `fonts/`, `raw/`
+- Kiểm tra SVG files phải bắt đầu với `icon_`
+- Kiểm tra Other image files phải bắt đầu với `image_`
+- Kiểm tra fonts chỉ chứa file font (ttf, otf, woff, woff2)
+- Kiểm tra raw/ không có subdirectory
+- Báo lỗi trong CI khi có vi phạm quy tắc
+
+**Cách sử dụng**:
+```bash
+make check_assets_structure
+```
+
+### 2.22. MynaviMobileTool VSCode Extension
 
 **Mục đích**:
 - Giúp generate code với các commands và snippets hữu ích.

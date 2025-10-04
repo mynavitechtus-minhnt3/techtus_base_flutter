@@ -62,7 +62,7 @@ class LoginViewModel extends BaseViewModel<LoginState> {
           }),
         ]);
 
-        await _ref.nav.replaceAll([const ContactListRoute()]);
+        await _ref.nav.replaceAll([const HomeRoute()]);
       },
       handleErrorWhen: (_) => false,
       doOnError: (e) async {

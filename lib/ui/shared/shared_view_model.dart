@@ -57,6 +57,8 @@ class SharedViewModel {
     }
   }
 
+  /// Below code will be removed after running `make init`
+
   List<FirebaseConversationUserData> getRenamedMembers({
     required List<FirebaseConversationUserData> members,
     required String conversationId,

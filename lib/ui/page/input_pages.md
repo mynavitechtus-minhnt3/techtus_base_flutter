@@ -1,3 +1,5 @@
-contact_list
-home
+splash
+login
 main
+home
+my_profile
