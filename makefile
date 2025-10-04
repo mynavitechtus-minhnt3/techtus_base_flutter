@@ -212,9 +212,24 @@ rm_spl:
 gen_env:
 	dart run $(DART_TOOLS_PATH)/gen_env.dart .
 
+reset:
+	dart run tools/dart_tools/lib/reset_project.dart
+	make gap
+	cd tools/dart_tools && flutter pub get
+	make check_pubs skip_error=true
+	make check_page_routes skip_error=true
+	make check_component_usage skip_error=true
+	make check_assets_structure skip_error=true
+	make ep skip_error=true
+	make rup skip_error=true
+	make rua skip_error=true
+	make fds skip_error=true
+	make fcl skip_error=true
+	make fm skip_error=true
+	make sync
+
 init:
 	dart run tools/dart_tools/lib/init_project.dart
-	make gap
 
 build_dev_apk:
 	flutter build apk --flavor develop -t lib/main.dart --dart-define-from-file=dart_defines/develop.json --verbose

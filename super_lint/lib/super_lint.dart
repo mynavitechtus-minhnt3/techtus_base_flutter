@@ -28,6 +28,7 @@ class _SuperLintPlugin extends PluginBase {
       IncorrectScreenNameEnumValue(configs),
       AvoidDynamic(configs),
       AvoidNestedConditions(configs),
+      AvoidUsingEnumNameAsKey(configs),
       AvoidUsingIfElseWithEnums(configs),
       AvoidUsingUnsafeCast(configs),
       MissingLogInCatchBlock(configs),

@@ -36,6 +36,7 @@ export 'lints/avoid_hard_coded_strings.dart';
 export 'lints/avoid_nested_conditions.dart';
 export 'lints/avoid_unnecessary_async_function.dart';
 export 'lints/avoid_using_datetime_now.dart';
+export 'lints/avoid_using_enum_name_as_key.dart';
 export 'lints/avoid_using_if_else_with_enums.dart';
 export 'lints/avoid_using_text_style_constructor_directly.dart';
 export 'lints/avoid_using_unsafe_cast.dart';

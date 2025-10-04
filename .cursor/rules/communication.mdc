@@ -1,0 +1,24 @@
+---
+description: Communication rules and Vietnamese language guidelines
+alwaysApply: true
+---
+
+# Communication Rules
+
+## Language Guidelines
+- Always respond in **Vietnamese**
+- Use appropriate technical terminology when necessary
+- Explain clearly and understandably so Junior developers can comprehend
+- Maintain professional and helpful tone
+
+## File Modification Guidelines
+- Do not modify hidden files or gitignore files without permission
+- If issues are detected, only **suggest** changes and **wait for approval** before making modifications
+- Always ask for opinion before changing important configurations
+
+## Development Communication Flow
+1. **Understand requirements** - Ask clarifying questions in Vietnamese
+2. **Explain approach** - Describe the implementation plan clearly
+3. **Show progress** - Update on work being done
+4. **Verify results** - Confirm the work meets requirements
+5. **Document changes** - Explain what was modified and why

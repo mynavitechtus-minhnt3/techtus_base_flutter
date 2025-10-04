@@ -1,0 +1,76 @@
+---
+description: Golden test implementation guidelines and standards
+globs: ["test/**/*.dart", "**/*_test.dart"]
+alwaysApply: false
+---
+
+# Golden Test Implementation
+
+## 📖 Complete Documentation
+For comprehensive golden test guidelines, refer to:
+**[docs/technical/golden_test_instructions.md](../docs/technical/golden_test_instructions.md)**
+
+This document covers:
+- Core rules and file structure requirements
+- Test group organization ("design" vs "others")
+- Quality standards and validation checklist
+- testWidget parameters guide with use cases
+- Template structure and examples
+- Parameter usage for different scenarios
+- Commands reference
+
+## Quick Reference
+
+### Test Structure
+```dart
+import 'package:flutter_test/flutter_test.dart';
+import 'package:golden_toolkit/golden_toolkit.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:mocktail/mocktail.dart';
+
+class Mock[PageName]ViewModel extends StateNotifier<CommonState<[PageName]State>>
+    with Mock implements [PageName]ViewModel {
+  Mock[PageName]ViewModel(super.state);
+}
+
+void main() {
+  group('[PageName]', () {
+    testGoldens('default state', (tester) async {
+      await tester.testWidget(
+        filename: '[snake_case_filename]',
+        widget: const [PageName](),
+        overrides: [
+          [pageName]ViewModelProvider.overrideWith(
+            (ref) => Mock[PageName]ViewModel(
+              const CommonState(data: [PageName]State()),
+            ),
+          ),
+        ],
+      );
+    });
+  });
+}
+```
+
+### testWidget Key Parameters
+- `filename`: Snake_case name for golden file
+- `hasNetworkImage`: Set to `true` when component displays network images
+- `mockToday`: Use when UI depends on current date/time
+- `customPump`: Use for complex animations or async operations
+- `onCreate`: Setup before widget creation (providers, mock data)
+
+### Mock Data Guidelines
+- Use realistic data matching design requirements
+- Use Japanese text for display content
+- Include meaningful values: prices, times, IDs
+- Provide complete lists: dogBreeds, categories, etc.
+- Use multiline content for descriptions and notes
+
+### Commands
+```bash
+# Update goldens
+flutter test path/to/test_file.dart --update-goldens --tags=golden
+
+# Verify goldens
+flutter test path/to/test_file.dart --tags=golden
+```

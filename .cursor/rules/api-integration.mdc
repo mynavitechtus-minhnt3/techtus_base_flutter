@@ -1,0 +1,54 @@
+---
+description: API integration guidelines and patterns
+globs: ["lib/data_source/**/*.dart", "lib/model/**/*.dart"]
+alwaysApply: false
+---
+
+# API Integration Guidelines
+
+## 📖 Complete Documentation
+For comprehensive API integration guidelines, refer to:
+**[docs/technical/api_integration_instructions.md](../docs/technical/api_integration_instructions.md)**
+
+This document covers:
+- RestApiClient usage and parameters
+- AppApiService implementation patterns
+- Model class creation with Freezed
+- Enum and converter implementation
+- SuccessResponseDecoderType and ErrorResponseDecoderType usage
+- Error handling and retry mechanisms
+- Real-world API integration examples
+
+## Quick Reference
+
+### API Service Pattern
+```dart
+Future<ReturnType?> methodName({
+  required String param1,
+  int? optionalParam,
+}) async {
+  final response = await _authAppServerApiClient.request<ModelType, ResponseWrapper<ModelType>>(
+    path: ApiUrls.endpoint,
+    method: RestMethod.post,
+    data: {'param1': param1},
+    successResponseDecoderType: SuccessResponseDecoderType.dataWrapper,
+    errorResponseDecoderType: ErrorResponseDecoderType.common,
+  );
+  return response?.data;
+}
+```
+
+### Model Class Pattern
+```dart
+@freezed
+class ApiModelData with _$ApiModelData {
+  const factory ApiModelData({
+    required int id,
+    required String name,
+    @DateTimeConverter() DateTime? createdAt,
+  }) = _ApiModelData;
+
+  factory ApiModelData.fromJson(Map<String, dynamic> json) =>
+      _$ApiModelDataFromJson(json);
+}
+```

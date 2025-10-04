@@ -749,14 +749,15 @@ make sync    # chạy tuần tự 3 lệnh make pg, make ln, make ccfb
 ```bash
 make cl          # flutter clean && rm -rf pubspec.lock
 make ref         # full refresh: clean + delete empty folders + sync + upgrade + pod
-make pod         # cd ios && rm -rf Pods && rm -f Podfile.lock && pod install --repo-update
+make pod         # pod install lại
 make pu          # flutter pub upgrade
 make dart_fix    # dart fix --apply
+make ci          # fix tất cả lỗi CI
 ```
 
 ### 7.3. Để check CI dưới local trước khi push
 ```bash
-make ci          # check xem đã pass CI chưa trước khi push
+make check_ci    # check xem đã pass CI chưa trước khi push
 make fm          # format code + sort .arb files
 make ug          # gen lại tất cả golden images
 make lint        # chạy super lint + analyze để kiểm tra trước khi push
