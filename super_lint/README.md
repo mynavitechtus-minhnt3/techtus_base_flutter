@@ -1129,11 +1129,11 @@ lib/ui/page/login/login_page.dart
 
 ### 34. avoid_using_datetime_now
 
-Sử dụng `now` thay vì `DateTime.now()`.
+Tránh sử dụng `DateTime.now()` và `DateTimeUtil.now` trong test widget files. Đối với file thường, sử dụng `DateTimeUtil.now` thay vì `DateTime.now()`.
 
 **Parameters**: Chỉ có [common parameters](#common-parameters)
 
-**QuickFix**: Không có
+**QuickFix**: Tự động thay thế `DateTime.now()` bằng `DateTimeUtil.now` cho file thường, và thay thế fixed DateTime cho test widget files
 
 ```yaml
 - avoid_using_datetime_now:
@@ -1142,13 +1142,22 @@ Sử dụng `now` thay vì `DateTime.now()`.
 **Good**:
 
 ```dart
-final current = now;
+// Trong file thường
+final current = DateTimeUtil.now;
+
+// Trong test widget files (test/widget_test/ui/*_test.dart)
+final mockTime = DateTime(2024, 1, 1); // Sử dụng fixed time cho testing
 ```
 
 **Bad**:
 
 ```dart
+// Trong file thường
 final current = DateTime.now();
+
+// Trong test widget files
+final current = DateTime.now();
+final current2 = DateTimeUtil.now; // Cả hai đều không được phép
 ```
 
 ### 35. empty_test_group
