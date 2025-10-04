@@ -53,10 +53,6 @@ class AppRouter extends RootStackRouter {
   List<AutoRoute> get routes => [
         AutoRoute(page: SplashRoute.page),
         buildCustomRoute(page: LoginRoute.page, transitionsBuilder: TransitionsBuilders.fadeIn),
-        AutoRoute(page: RegisterRoute.page),
-        AutoRoute(page: ChatRoute.page),
-        AutoRoute(page: AllUsersRoute.page),
-        AutoRoute(page: LoadMoreExampleRoute.page),
         buildCustomRoute(
             page: MainRoute.page,
             transitionsBuilder: TransitionsBuilders.fadeIn,
@@ -73,10 +69,14 @@ class AppRouter extends RootStackRouter {
                 maintainState: true,
                 children: [
                   AutoRoute(page: MyProfileRoute.page, initial: true),
-                  AutoRoute(page: SettingRoute.page),
+                  AutoRoute(page: SettingRoute.page), // remove after running `make init`
                 ],
               ),
             ]),
+        AutoRoute(page: RegisterRoute.page), // remove after running `make init`
+        AutoRoute(page: ChatRoute.page), // remove after running `make init`
+        AutoRoute(page: AllUsersRoute.page), // remove after running `make init`
+        AutoRoute(page: LoadMoreExampleRoute.page), // remove after running `make init`
       ];
 }
 

@@ -335,9 +335,14 @@ make gen_env
 ### 2.18. init_project.dart
 
 **Mục đích**: 
+- Xoá code mẫu trong project
 - Config project khi mới start dự án giúp tiết kiệm thời gian setup ban đầu
 
 **Cách hoạt động**:
+- Xoá toàn bộ màn hình và unit test, widget test tương ứng trừ `splash` và `main`
+- Generate lại các file theo template cho 3 màn: `login`, `home`, `my_profile`
+- Xoá toàn bộ color trong app_colors.dart trừ màu `black`
+- Xoá 1 vài biến, hàm không cần thiết trong `shared_view_model.dart` và `shared_provider.dart`
 - Đọc file `setting_initial_config.md` và config project
 
 **Cách sử dụng**:
@@ -417,7 +422,7 @@ make check_assets_structure
 - CI và CD (dùng khi khách hàng yêu cầu)
 
 **Cách hoạt động**: 
-- CI: kiểm tra mọi thứ được định nghĩa trong lệnh `make ci`
+- CI: kiểm tra mọi thứ được định nghĩa trong lệnh `make check_ci`
 - CD: build và deploy app lên Firebase App Distribution cho các môi trường develop, qa, staging, production
 
 **Cách sử dụng**: 
@@ -430,7 +435,7 @@ make check_assets_structure
 - CI và CD (thường được dùng hơn GitHub Actions trong các dự án labor)
 
 **Cách hoạt động**: 
-- CI: kiểm tra mọi thứ được định nghĩa trong lệnh `make ci`
+- CI: kiểm tra mọi thứ được định nghĩa trong lệnh `make check_ci`
 - CD: có các workflows:
   - distribution_qa: 
     - build Android & iOS app cho môi trường qa, phân phối qua QR code trên Codemagic
@@ -451,7 +456,7 @@ make check_assets_structure
 - CI (thường dùng cho dự án fixed price)
 
 **Cách hoạt động**: 
-- CI: kiểm tra mọi thứ được định nghĩa trong lệnh `make ci`
+- CI: kiểm tra mọi thứ được định nghĩa trong lệnh `make check_ci`
 
 **Cách sử dụng**: 
 - Tự động chạy khi có PR mới hoặc push code lên PR có sẵn
@@ -744,14 +749,15 @@ make sync    # chạy tuần tự 3 lệnh make pg, make ln, make ccfb
 ```bash
 make cl          # flutter clean && rm -rf pubspec.lock
 make ref         # full refresh: clean + delete empty folders + sync + upgrade + pod
-make pod         # cd ios && rm -rf Pods && rm -f Podfile.lock && pod install --repo-update
+make pod         # pod install lại
 make pu          # flutter pub upgrade
 make dart_fix    # dart fix --apply
+make ci          # fix tất cả lỗi CI
 ```
 
 ### 7.3. Để check CI dưới local trước khi push
 ```bash
-make ci          # chạy CI dưới local trước khi push
+make check_ci    # check xem đã pass CI chưa trước khi push
 make fm          # format code + sort .arb files
 make ug          # gen lại tất cả golden images
 make lint        # chạy super lint + analyze để kiểm tra trước khi push

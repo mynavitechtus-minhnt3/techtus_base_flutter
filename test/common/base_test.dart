@@ -72,8 +72,10 @@ Future<void> main() async {
     when(() => ref.read(packageHelperProvider)).thenReturn(packageHelper);
     when(() => ref.read(permissionHelperProvider)).thenReturn(permissionHelper);
     when(() => ref.read(sharedViewModelProvider)).thenReturn(sharedViewModel);
+    // this block will be removed after running `make init` - START
     when(() => ref.read(conversationMembersMapProvider.notifier))
         .thenReturn(conversationMembersMapStateController);
+    // this block will be removed after running `make init` - END
     when(() => ref.read(currentUserProvider.notifier)).thenReturn(currentUserStateController);
 
     when(() => analyticsHelper.logEvent(any())).thenAnswer((_) => Future.value());

@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:dartx/dartx.dart';
 
 void main(List<String> args) {
+  final skipError = args.contains('--skip-error');
   final l10nPath = args[0];
 
   Directory(l10nPath).listSync().forEach((file) {
@@ -24,6 +25,10 @@ void main(List<String> args) {
     } else {
       if (duplicateKeys.isNotEmpty) print('Dup l10n keys of ${file.path}:\n$duplicateKeys');
       if (duplicateValues.isNotEmpty) print('Dup l10n values of ${file.path}:\n$duplicateValues');
+      if (skipError) {
+        print('Skip error mode: Continuing despite duplicate l10n keys/values found');
+        exit(0);
+      }
       exit(1);
     }
   });

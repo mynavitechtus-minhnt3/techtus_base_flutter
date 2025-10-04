@@ -42,6 +42,7 @@
   - [36. incorrect_golden_image_name](#36-incorrect_golden_image_name)
   - [37. invalid_test_group_name](#37-invalid_test_group_name)
   - [38. missing_test_group](#38-missing_test_group)
+  - [39. avoid_using_enum_name_as_key](#39-avoid_using_enum_name_as_key)
 
 ## Common Parameters
 
@@ -1301,4 +1302,40 @@ void main() {
   });
   // missing 'others' group
 }
+```
+
+### 39. avoid_using_enum_name_as_key
+
+Tránh sử dụng tên enum làm key trong SharedPreferences hoặc các nơi lưu trữ khác. Điều này rất nguy hiểm vì khi refactor tên enum có thể dẫn đến việc get data bị sai.
+
+**Parameters**: Chỉ có [common parameters](#common-parameters)
+
+**QuickFix**: Không có
+
+**Good**:
+
+```dart
+class StorageKeys {
+  static const String userStatus = 'user_status';
+  static const String notificationType = 'notification_type';
+  static const String themeMode = 'theme_mode';
+}
+
+// Sử dụng string constants
+await prefs.setString(StorageKeys.userStatus, UserStatus.active.name);
+await prefs.setString(StorageKeys.notificationType, NotificationType.email.name);
+await prefs.setString(StorageKeys.themeMode, ThemeMode.light.name);
+```
+
+**Bad**:
+
+```dart
+// ❌ BAD: Sử dụng enum name trực tiếp làm key
+await prefs.setString(UserStatus.active.name, 'user_data');
+await prefs.setString(NotificationType.email.name, 'notification_settings');
+await prefs.setString(ThemeMode.light.name, 'theme_preference');
+
+// ❌ BAD: Sử dụng enum trong string interpolation
+await prefs.setString('${UserStatus.active.name}_preference', 'value');
+await prefs.setString('user_${NotificationType.push.name}_enabled', 'true');
 ```

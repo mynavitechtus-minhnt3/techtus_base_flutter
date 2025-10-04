@@ -5,14 +5,6 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../index.dart';
 
-final backgroundProvider = Provider.autoDispose<String>(
-  (ref) {
-    final isDarkMode = ref.watch(isDarkModeProvider);
-
-    return isDarkMode ? image.imageDarkBackground : image.imageBackground;
-  },
-);
-
 final languageCodeProvider = StateProvider<LanguageCode>(
   (ref) {
     ref.listenSelf((previous, next) {
@@ -45,6 +37,14 @@ final currentUserProvider = StateProvider<FirebaseUserData>(
 );
 
 /// Below code will be removed after running `make init`
+
+final backgroundProvider = Provider.autoDispose<String>(
+  (ref) {
+    final isDarkMode = ref.watch(isDarkModeProvider);
+
+    return isDarkMode ? image.imageDarkBackground : image.imageBackground;
+  },
+);
 
 final filteredConversationsProvider = Provider.autoDispose<List<FirebaseConversationData>>(
   (ref) {

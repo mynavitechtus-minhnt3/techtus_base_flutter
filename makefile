@@ -10,7 +10,7 @@ ln:
 	make sort_arb
 
 check_page_routes:
-	dart run $(DART_TOOLS_PATH)/check_page_routes.dart
+	dart run $(DART_TOOLS_PATH)/check_page_routes.dart $(if $(skip_error),--skip-error,)
 
 sort_arb:
 	dart run $(DART_TOOLS_PATH)/sort_arb_files.dart lib/resource/l10n
@@ -49,7 +49,7 @@ pod:
 pu:
 	flutter pub upgrade
 
-ci:
+check_ci:
 	cd tools/dart_tools && flutter pub get
 	make check_pubs
 	make check_page_routes
@@ -64,35 +64,50 @@ ci:
 	make te
 	make lint
 
+ci:
+	cd tools/dart_tools && flutter pub get
+	make check_pubs skip_error=true
+	make check_page_routes skip_error=true
+	make check_component_usage skip_error=true
+	make check_assets_structure skip_error=true
+	make ep skip_error=true
+	make rup skip_error=true
+	make rua skip_error=true
+	make fds skip_error=true
+	make fcl skip_error=true
+	make fm skip_error=true
+	make te skip_error=true
+	make lint skip_error=true
+
 check_pubs:
-	dart run $(DART_TOOLS_PATH)/check_pubspecs.dart pubspec.yaml
+	dart run $(DART_TOOLS_PATH)/check_pubspecs.dart pubspec.yaml $(if $(skip_error),--skip-error,)
 
 rup:
-	dart run $(DART_TOOLS_PATH)/remove_unused_pub.dart . comment
+	dart run $(DART_TOOLS_PATH)/remove_unused_pub.dart . comment $(if $(skip_error),--skip-error,)
 
 check_sorted_arb_keys:
-	dart run $(DART_TOOLS_PATH)/check_sorted_arb_keys.dart lib/resource/l10n
+	dart run $(DART_TOOLS_PATH)/check_sorted_arb_keys.dart lib/resource/l10n $(if $(skip_error),--skip-error,)
 
 fcl:
-	make check_sorted_arb_keys
-	make clc
-	make rul
-	make rdl
+	make check_sorted_arb_keys skip_error=$(skip_error)
+	make clc skip_error=$(skip_error)
+	make rul skip_error=$(skip_error)
+	make rdl skip_error=$(skip_error)
 
 rul:
-	dart run $(DART_TOOLS_PATH)/remove_unused_l10n.dart lib/resource/l10n
+	dart run $(DART_TOOLS_PATH)/remove_unused_l10n.dart lib/resource/l10n $(if $(skip_error),--skip-error,)
 
 rua:
-	dart run $(DART_TOOLS_PATH)/remove_unused_asset.dart .
+	dart run $(DART_TOOLS_PATH)/remove_unused_asset.dart . $(if $(skip_error),--skip-error,)
 
 fds:
-	dart run $(DART_TOOLS_PATH)/find_duplicate_svg.dart assets/images
+	dart run $(DART_TOOLS_PATH)/find_duplicate_svg.dart assets/images $(if $(skip_error),--skip-error,)
 
 rdl:
-	dart run $(DART_TOOLS_PATH)/remove_duplicate_l10n.dart lib/resource/l10n
+	dart run $(DART_TOOLS_PATH)/remove_duplicate_l10n.dart lib/resource/l10n $(if $(skip_error),--skip-error,)
 
 clc:
-	dart run $(DART_TOOLS_PATH)/check_l10n_convention.dart lib/resource/l10n
+	dart run $(DART_TOOLS_PATH)/check_l10n_convention.dart lib/resource/l10n $(if $(skip_error),--skip-error,)
 
 ga:
 	dart run $(DART_TOOLS_PATH)/gen_assets.dart .
@@ -104,16 +119,16 @@ gap:
 
 ep:
 	@if [ "$(check)" = "false" ]; then \
-		dart run $(DART_TOOLS_PATH)/export_all_files.dart lib; \
+		dart run $(DART_TOOLS_PATH)/export_all_files.dart lib $(if $(skip_error),--skip-error,); \
 	else \
-		dart run $(DART_TOOLS_PATH)/export_all_files.dart lib --check; \
+		dart run $(DART_TOOLS_PATH)/export_all_files.dart lib --check $(if $(skip_error),--skip-error,); \
 	fi
 
 check_component_usage:
-	dart run $(DART_TOOLS_PATH)/check_component_usage.dart
+	dart run $(DART_TOOLS_PATH)/check_component_usage.dart $(if $(skip_error),--skip-error,)
 
 check_assets_structure:
-	dart run $(DART_TOOLS_PATH)/check_assets_structure.dart
+	dart run $(DART_TOOLS_PATH)/check_assets_structure.dart $(if $(skip_error),--skip-error,)
 
 gen_api:
 	@INPUT_PATH=$${input_path:-docs/api_doc}; \
@@ -132,32 +147,48 @@ gen_api:
 	make ep check=false
 
 fm:
-	find . -name "*.dart" ! -name "*.g.dart" ! -name "*.freezed.dart" ! -name "*.gr.dart" ! -name "*.config.dart" ! -name "*.mocks.dart" ! -path '*/generated/*' ! -path '*/.dart_tool/*' | tr '\n' ' ' | xargs dart format --set-exit-if-changed -l 100
+	@if [ "$(skip_error)" = "true" ]; then \
+		find . -name "*.dart" ! -name "*.g.dart" ! -name "*.freezed.dart" ! -name "*.gr.dart" ! -name "*.config.dart" ! -name "*.mocks.dart" ! -path '*/generated/*' ! -path '*/.dart_tool/*' | tr '\n' ' ' | xargs dart format -l 100; \
+	else \
+		find . -name "*.dart" ! -name "*.g.dart" ! -name "*.freezed.dart" ! -name "*.gr.dart" ! -name "*.config.dart" ! -name "*.mocks.dart" ! -path '*/generated/*' ! -path '*/.dart_tool/*' | tr '\n' ' ' | xargs dart format --set-exit-if-changed -l 100; \
+	fi
 	make sort_arb
 
 te:
-	make ut
-	make wt
+	make ut skip_error=$(skip_error)
+	make wt skip_error=$(skip_error)
 
 ug:
 	find . -type d -name "goldens" -exec rm -rf {} +
 	flutter test --update-goldens --tags=golden
 
 ut:
-	flutter test test/unit_test
+	@if [ "$(skip_error)" = "true" ]; then \
+		flutter test test/unit_test || true; \
+	else \
+		flutter test test/unit_test; \
+	fi
 
 wt:
-	flutter test test/widget_test
+	@if [ "$(skip_error)" = "true" ]; then \
+		flutter test test/widget_test || true; \
+	else \
+		flutter test test/widget_test; \
+	fi
 
 lint:
-	make sl
-	make analyze
+	make sl skip_error=$(skip_error)
+	make analyze skip_error=$(skip_error)
 
 sl:
-	tools/bash/super_lint.sh
+	tools/bash/super_lint.sh $(if $(skip_error),--skip-error,)
 
 analyze:
-	flutter analyze --no-pub --suppress-analytics
+	@if [ "$(skip_error)" = "true" ]; then \
+		flutter analyze --no-pub --suppress-analytics || true; \
+	else \
+		flutter analyze --no-pub --suppress-analytics; \
+	fi
 
 dart_fix:
 	dart fix --apply
@@ -181,9 +212,24 @@ rm_spl:
 gen_env:
 	dart run $(DART_TOOLS_PATH)/gen_env.dart .
 
+reset:
+	dart run tools/dart_tools/lib/reset_project.dart
+	make gap
+	cd tools/dart_tools && flutter pub get
+	make check_pubs skip_error=true
+	make check_page_routes skip_error=true
+	make check_component_usage skip_error=true
+	make check_assets_structure skip_error=true
+	make ep skip_error=true
+	make rup skip_error=true
+	make rua skip_error=true
+	make fds skip_error=true
+	make fcl skip_error=true
+	make fm skip_error=true
+	make sync
+
 init:
 	dart run tools/dart_tools/lib/init_project.dart
-	make gap
 
 build_dev_apk:
 	flutter build apk --flavor develop -t lib/main.dart --dart-define-from-file=dart_defines/develop.json --verbose

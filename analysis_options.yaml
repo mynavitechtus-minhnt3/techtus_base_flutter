@@ -180,6 +180,7 @@ custom_lint:
         - "test/**/*.dart"
     - incorrect_golden_image_name:
     - avoid_using_datetime_now:
+    - avoid_using_enum_name_as_key:
     - missing_test_group:
       required_groups:
         - "others"

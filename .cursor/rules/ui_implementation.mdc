@@ -1,0 +1,47 @@
+---
+description: UI Component standards and patterns for Flutter widgets
+globs: ["lib/ui/**/*.dart"]
+alwaysApply: false
+---
+
+# UI Component Standards
+
+## 📖 Complete Documentation
+For comprehensive UI and state management guidelines, refer to:
+**[docs/technical/ui_and_state_management_instructions.md](../docs/technical/ui_and_state_management_instructions.md)**
+
+This document covers:
+- Basic implementation flow for pages, popups, and shared components
+- BasePage vs BaseStatefulPageState usage guidelines
+- Common component rules and inheritance patterns
+- Naming conventions for classes, variables, functions, and log events
+- Design system rules (dimensions, colors, text styles, strings, dummy data)
+- Analytics and logging implementation
+- Error handling with runCatching
+- BaseViewModel methods and CommonState properties
+
+## 📝 Naming Guidelines
+For detailed naming conventions:
+**[docs/technical/naming_convention.md](../docs/technical/naming_convention.md)**
+
+## Quick Reference
+
+### Base Classes
+- All pages must extend `BasePage<S, P>` or `BaseStatefulPageState<S, VM, P, W>`
+- Use HookConsumerWidget for stateless components
+- Use ConsumerState for stateful components
+
+### Common Components
+Always use Common* widgets instead of Flutter built-in widgets:
+- `CommonScaffold` instead of `Scaffold`
+- `CommonAppBar` instead of `AppBar`
+- `CommonText` instead of `Text`
+- `CommonImage` instead of `Image`
+- `CommonProgressIndicator` instead of `CircularProgressIndicator`
+- `CommonDivider` instead of `Divider`
+
+### Design System
+- Use `.rps` extension for responsive sizing
+- Use `color.*` for colors
+- Use `style()` function for TextStyle
+- Use `l10n.*` for localized strings

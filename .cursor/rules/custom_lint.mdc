@@ -1,0 +1,76 @@
+---
+description: Custom lint rule implementation guidelines
+globs: ["super_lint/**/*.dart", "analysis_options.yaml"]
+alwaysApply: false
+---
+
+# Custom Lint Implementation
+
+## 📖 Complete Documentation
+For comprehensive custom lint implementation guidelines, refer to:
+**[docs/technical/custom_lint_instructions.md](../docs/technical/custom_lint_instructions.md)**
+
+This document covers:
+- File structure requirements for new lint rules
+- Implementation guidelines and best practices
+- Step-by-step implementation process
+- Test coverage requirements with valid/invalid cases
+- Configuration setup in analysis_options.yaml
+- Performance considerations and validation checklist
+
+## Quick Reference
+
+### Required Files for New Lint Rule
+1. **Core Implementation**: `super_lint/lib/src/rules/{lint_name}.dart`
+2. **Export**: Add to `super_lint/lib/src/index.dart`
+3. **Registration**: Add to `super_lint/lib/super_lint.dart`
+4. **Test File**: `super_lint/example/lib/{lint_name}_test.dart`
+5. **Configuration**: Update both `analysis_options.yaml` files
+
+### Basic Lint Rule Structure
+```dart
+class YourLintRule extends DartLintRule {
+  const YourLintRule() : super(code: _code);
+
+  static const _code = LintCode(
+    name: 'your_lint_rule',
+    problemMessage: 'Your problem message here',
+    correctionMessage: 'Your correction message here',
+  );
+
+  @override
+  void run(
+    CustomLintResolver resolver,
+    ErrorReporter reporter,
+    CustomLintContext context,
+  ) {
+    // Implementation here
+  }
+}
+```
+
+### Test File Requirements
+```dart
+// THE FOLLOWING CASES SHOULD NOT BE WARNED
+void validCase() {
+  // Valid code examples
+}
+
+// THE FOLLOWING CASES SHOULD BE WARNED
+void invalidCase() {
+  // Invalid code that should trigger the lint
+}
+```
+
+### Quality Standards
+- No compilation errors
+- Must pass `make sl` without warnings
+- No deprecated APIs
+- Clear, actionable error messages
+- Configurable options for extensibility
+
+### Research Pattern
+- Search existing lint rules in the project
+- Study similar implementations
+- Follow established naming conventions
+- Use `OptionsLintRule` for parameterized rules

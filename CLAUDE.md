@@ -45,7 +45,7 @@ make ccfb           # Clean then build runner
 make lint           # Run all linting (super_lint + analyze)
 make te             # Run all tests (unit + widget)
 make fm             # Format code and sort ARB files
-make ci             # Full CI pipeline locally
+make check_ci             # Full CI pipeline locally
 ```
 
 ### Testing

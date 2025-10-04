@@ -132,7 +132,7 @@ definitions:
       script: make build_prod_aab
     - &ci
       name: Run CI
-      script: make ci
+      script: make check_ci
   email_release: &email_release
     email:
       recipients:

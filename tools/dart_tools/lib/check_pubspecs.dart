@@ -7,7 +7,8 @@ import 'package:yaml/yaml.dart';
 
 void main(List<String> args) {
   final excludes = ['analyzer'];
-  final pubspecPath = args[0];
+  final skipError = args.contains('--skip-error');
+  final pubspecPath = args.firstWhere((arg) => !arg.startsWith('--'), orElse: () => 'pubspec.yaml');
   final pubspecContent = File(pubspecPath).readAsStringSync();
   final yaml = loadYaml(pubspecContent);
   final dependencies = yaml['dependencies'] as YamlMap? ?? {};
@@ -92,6 +93,11 @@ void main(List<String> args) {
       invalidDevDependencies.isEmpty &&
       invalidDependencyOverrides.isEmpty) {
     print('All dependencies fixed successfully!');
+  }
+
+  if (skipError) {
+    print('Skip error mode: Always exit with 0');
+    exit(0);
   }
 
   print('Exit code: $exitCode');

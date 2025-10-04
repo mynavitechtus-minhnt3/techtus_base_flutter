@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 void main(List<String> args) async {
+  final skipError = args.contains('--skip-error');
   final dartDir = args[0].substring(0, args[0].lastIndexOf('lib/') + 4);
   final arbDir = args[0];
 
@@ -69,6 +70,10 @@ void main(List<String> args) async {
     }
 
     print('Unused keys have been removed.');
+    if (skipError) {
+      print('Skip error mode: Continuing despite unused keys found');
+      exit(0);
+    }
     exit(1);
   }
 }

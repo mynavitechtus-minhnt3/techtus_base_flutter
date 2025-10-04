@@ -6,16 +6,8 @@ definitions:
         name: CI.
         script:
           - flutter doctor -v
-          - echo "Run pub get and gen files"
           - make sync
-          - echo "Run check pubs"
-          - make check_pubs
-          - echo "Run Tests"
-          - make te
-          - echo "Check format"
-          - make fm
-          - echo "Run lint"
-          - make lint
+          - make check_ci
 
 pipelines:
   pull-requests:

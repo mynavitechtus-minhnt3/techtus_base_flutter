@@ -115,6 +115,7 @@ class MainViewModel extends BaseViewModel<MainState> {
     );
   }
 
+  // this block will be removed after running `make init` - START
   @visibleForTesting
   Future<void> goToChatPage(AppNotification appNotification) async {
     final conversationId = appNotification.conversationId;
@@ -144,6 +145,7 @@ class MainViewModel extends BaseViewModel<MainState> {
       );
     }
   }
+  // this block will be removed after running `make init` - END
 
   @override
   void dispose() {

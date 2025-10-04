@@ -1,0 +1,48 @@
+---
+description: Common development rules and standards
+globs: ["**/*.dart"]
+alwaysApply: true
+---
+
+# Common Development Rules
+
+## 📖 Complete Documentation References
+- **Naming Conventions**: [docs/technical/naming_convention.md](../docs/technical/naming_convention.md)
+- **UI Guidelines**: [docs/technical/ui_and_state_management_instructions.md](../docs/technical/ui_and_state_management_instructions.md)
+- **Golden Test**: [docs/technical/golden_test_instructions.md](../docs/technical/golden_test_instructions.md)
+- **API Integration**: [docs/technical/api_integration_instructions.md](../docs/technical/api_integration_instructions.md)
+- **Custom Lint**: [docs/technical/custom_lint_instructions.md](../docs/technical/custom_lint_instructions.md)
+
+## Coding Standards
+- Line length: 100 characters (according to .vscode/settings.json)
+- No compile errors
+- No linter errors
+- Follow consistent code formatting
+
+## Import and Export Rules
+- Always use relative imports within the same module
+- Use `import '../../../index.dart';` for cross-module imports
+- All public APIs/files must be exported through index.dart
+- Maintain clean import organization
+
+## Code Quality
+- Follow established architecture patterns (MVVM, Clean Architecture)
+- Use proper naming conventions consistently
+- Implement proper error handling
+- Write comprehensive tests (unit and golden tests)
+- Follow security guidelines for sensitive data
+
+## Security Guidelines
+- Never hardcode secrets or API keys
+- Use encryption for sensitive data storage
+- Validate all input data
+- Follow OWASP guidelines for mobile security
+- Use secure communication protocols (HTTPS)
+
+## Development Workflow
+1. Follow architecture guidelines for new features
+2. Apply naming conventions consistently
+3. Implement UI following design system rules
+4. Write tests following testing guidelines
+5. Ensure security requirements are met
+6. Document changes appropriately
