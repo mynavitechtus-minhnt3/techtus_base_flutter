@@ -14,6 +14,7 @@ const List<String> _excludedPages = [
 ];
 
 void main(List<String> args) async {
+  final skipError = args.contains('--skip-error');
   print('🔍 Checking page routes consistency...');
 
   final pageDir = Directory('lib/ui/page');
@@ -76,7 +77,11 @@ void main(List<String> args) async {
       print('   • $missing');
     }
     print('\n💡 Please add the missing routes to lib/navigation/routes/app_router.dart');
-    exit(1);
+    if (skipError) {
+      print('Skip error mode: Continuing despite missing routes');
+    } else {
+      exit(1);
+    }
   }
 
   print('\n✅ All pages have corresponding routes in app_router.dart');

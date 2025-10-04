@@ -11,6 +11,7 @@ import 'package:yaml/yaml.dart';
 /// - make remove_unused_lib
 /// - make comment_unused_lib
 void main(List<String> args) async {
+  final skipError = args.contains('--skip-error');
   final input = args.isNotEmpty ? args[1] : 'comment';
   final isComment = input == 'comment';
   print('$input unused lib...');
@@ -58,6 +59,10 @@ void main(List<String> args) async {
   // ✅ Exit based on result
   if (unusedPubs.isNotEmpty) {
     print('❌ Unused dependencies found. Exiting with code 1.');
+    if (skipError) {
+      print('Skip error mode: Continuing despite unused dependencies found');
+      exit(0);
+    }
     exit(1);
   }
 

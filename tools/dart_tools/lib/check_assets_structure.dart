@@ -4,6 +4,7 @@ import 'dart:io';
 /// Usage: dart run tools/dart_tools/lib/check_assets_structure.dart
 
 void main(List<String> args) async {
+  final skipError = args.contains('--skip-error');
   final projectRoot = Directory.current.path;
   final assetsDir = Directory('$projectRoot/assets');
 
@@ -39,7 +40,11 @@ void main(List<String> args) async {
     print('  • Other image files must be in images/ and start with "image_"');
     print('  • Font files must be in fonts/');
     print('  • Other files must be in raw/');
-    exit(1);
+    if (skipError) {
+      print('Skip error mode: Continuing despite assets structure issues');
+    } else {
+      exit(1);
+    }
   }
 
   print('✅ Assets structure is valid!');

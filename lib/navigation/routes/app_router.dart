@@ -69,7 +69,7 @@ class AppRouter extends RootStackRouter {
                 maintainState: true,
                 children: [
                   AutoRoute(page: MyProfileRoute.page, initial: true),
-                  AutoRoute(page: SettingRoute.page), // remove after running `make init` 
+                  AutoRoute(page: SettingRoute.page), // remove after running `make init`
                 ],
               ),
             ]),

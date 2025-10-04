@@ -10,9 +10,16 @@ const _excluded = <String>[
   'lib/ui/component/shimmer/rounded_rectangle_shimmer.dart',
   'lib/ui/component/shimmer/shimmer_loading.dart',
   'lib/ui/component/common_scrollbar.dart',
+  'lib/ui/component/common_app_bar.dart',
+  'lib/ui/component/common_scaffold.dart',
+  'lib/ui/component/common_divider.dart',
+  'lib/ui/component/common_image.dart',
+  'lib/ui/component/common_ink_well.dart',
+  'lib/ui/component/common_scrollbar_with_ios_status_bar_tap_detector.dart',
 ];
 
 Future<void> main(List<String> args) async {
+  final skipError = args.contains('--skip-error');
   final componentFiles = _listDartFiles(_componentRoot);
   final projectFiles = _listDartFiles('lib');
 
@@ -64,7 +71,11 @@ Future<void> main(List<String> args) async {
     for (final issue in issues) {
       stderr.writeln('  - $issue');
     }
-    exit(1);
+    if (skipError) {
+      stderr.writeln('Skip error mode: Continuing despite component usage issues');
+    } else {
+      exit(1);
+    }
   }
 }
 

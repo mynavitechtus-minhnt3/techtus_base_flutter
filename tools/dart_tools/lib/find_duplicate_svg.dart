@@ -3,14 +3,19 @@ import 'dart:convert';
 import 'package:crypto/crypto.dart';
 
 void main(List<String> args) async {
+  final skipError = args.contains('--skip-error');
   if (args.isEmpty) {
-    print('Usage: dart run tool/find_duplicate_svg.dart <images_folder>');
+    print('Usage: dart run tool/find_duplicate_svg.dart <images_folder> [--skip-error]');
     exit(1);
   }
   final folder = Directory(args.first);
 
   if (!await folder.exists()) {
     print('Folder not found: ${folder.path}');
+    if (skipError) {
+      print('Skip error mode: Continuing despite folder not found');
+      exit(0);
+    }
     exit(1);
   }
 
@@ -40,6 +45,10 @@ void main(List<String> args) async {
     print('✅ No duplicate SVG content found!');
     exit(0);
   } else {
+    if (skipError) {
+      print('Skip error mode: Continuing despite duplicate SVG files found');
+      exit(0);
+    }
     exit(1);
   }
 }

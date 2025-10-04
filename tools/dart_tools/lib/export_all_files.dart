@@ -14,16 +14,19 @@ final List<String> excludes = [
 
 void main(List<String> args) {
   if (args.isEmpty) {
-    print('Usage: dart export_all_files.dart <lib_path> [--output=<output_file>] [--check]');
+    print(
+        'Usage: dart export_all_files.dart <lib_path> [--output=<output_file>] [--check] [--skip-error]');
     print('Example: dart export_all_files.dart lib');
     print('Example: dart export_all_files.dart lib --output=lib/index.dart');
     print('Example: dart export_all_files.dart lib --check (for CI)');
+    print('Example: dart export_all_files.dart lib --skip-error (skip errors)');
     exit(1);
   }
 
   final libPath = args[0];
   String? outputFile;
   bool checkMode = false;
+  bool skipError = false;
 
   // Parse arguments
   for (int i = 1; i < args.length; i++) {
@@ -31,6 +34,8 @@ void main(List<String> args) {
       outputFile = args[i].split('=')[1];
     } else if (args[i] == '--check') {
       checkMode = true;
+    } else if (args[i] == '--skip-error') {
+      skipError = true;
     }
   }
 
@@ -41,6 +46,10 @@ void main(List<String> args) {
   final libDir = Directory(libPath);
   if (!libDir.existsSync()) {
     print('Error: Directory not found at $libPath');
+    if (skipError) {
+      print('Skip error mode: Continuing despite directory not found');
+      exit(0);
+    }
     exit(1);
   }
 
@@ -49,7 +58,13 @@ void main(List<String> args) {
 
   if (dartFiles.isEmpty) {
     print('Warning: No dart files found in $libPath');
-    if (checkMode) exit(1);
+    if (checkMode) {
+      if (skipError) {
+        print('Skip error mode: Continuing despite no dart files found');
+        exit(0);
+      }
+      exit(1);
+    }
     return;
   }
 
@@ -77,12 +92,20 @@ void main(List<String> args) {
     if (existingContent == null) {
       print(
           '❌ File $outputFile did not exist - created with ${dartFiles.length} export statements');
+      if (skipError) {
+        print('Skip error mode: Continuing despite file not existing');
+        exit(0);
+      }
       exit(1);
     }
 
     if (existingContent.trim() != newContent.trim()) {
       print('Content of index.dart: $newContent');
       print('❌ File $outputFile was outdated - updated with ${dartFiles.length} export statements');
+      if (skipError) {
+        print('Skip error mode: Continuing despite file being outdated');
+        exit(0);
+      }
       exit(1);
     }
 

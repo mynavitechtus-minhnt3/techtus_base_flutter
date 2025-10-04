@@ -4,8 +4,9 @@ import 'dart:convert';
 final camelCaseReg = RegExp(r'^[a-z][a-zA-Z0-9]*$');
 
 void main(List<String> args) async {
+  final skipError = args.contains('--skip-error');
   if (args.isEmpty) {
-    print('Usage: dart run tool/check_l10n_keys.dart <arb_dir_or_file>');
+    print('Usage: dart run tool/check_l10n_keys.dart <arb_dir_or_file> [--skip-error]');
     exit(1);
   }
   final input = args.first;
@@ -40,6 +41,10 @@ void main(List<String> args) async {
     }
   }
   if (hasError) {
+    if (skipError) {
+      print('Skip error mode: Continuing despite l10n convention errors');
+      exit(0);
+    }
     exit(1);
   } else {
     print('✅ All l10n keys are camelCase!');

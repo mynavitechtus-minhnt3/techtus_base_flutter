@@ -422,7 +422,7 @@ make check_assets_structure
 - CI và CD (dùng khi khách hàng yêu cầu)
 
 **Cách hoạt động**: 
-- CI: kiểm tra mọi thứ được định nghĩa trong lệnh `make ci`
+- CI: kiểm tra mọi thứ được định nghĩa trong lệnh `make check_ci`
 - CD: build và deploy app lên Firebase App Distribution cho các môi trường develop, qa, staging, production
 
 **Cách sử dụng**: 
@@ -435,7 +435,7 @@ make check_assets_structure
 - CI và CD (thường được dùng hơn GitHub Actions trong các dự án labor)
 
 **Cách hoạt động**: 
-- CI: kiểm tra mọi thứ được định nghĩa trong lệnh `make ci`
+- CI: kiểm tra mọi thứ được định nghĩa trong lệnh `make check_ci`
 - CD: có các workflows:
   - distribution_qa: 
     - build Android & iOS app cho môi trường qa, phân phối qua QR code trên Codemagic
@@ -456,7 +456,7 @@ make check_assets_structure
 - CI (thường dùng cho dự án fixed price)
 
 **Cách hoạt động**: 
-- CI: kiểm tra mọi thứ được định nghĩa trong lệnh `make ci`
+- CI: kiểm tra mọi thứ được định nghĩa trong lệnh `make check_ci`
 
 **Cách sử dụng**: 
 - Tự động chạy khi có PR mới hoặc push code lên PR có sẵn
@@ -756,7 +756,7 @@ make dart_fix    # dart fix --apply
 
 ### 7.3. Để check CI dưới local trước khi push
 ```bash
-make ci          # chạy CI dưới local trước khi push
+make ci          # check xem đã pass CI chưa trước khi push
 make fm          # format code + sort .arb files
 make ug          # gen lại tất cả golden images
 make lint        # chạy super lint + analyze để kiểm tra trước khi push

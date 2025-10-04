@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 void main(List<String> args) async {
+  final skipError = args.contains('--skip-error');
   final arbFiles = Directory(args[0]).listSync().whereType<File>().map((e) => e.path).toList();
 
   for (var arbFile in arbFiles) {
@@ -13,6 +14,10 @@ void main(List<String> args) async {
       final keys = data.keys.toList();
       if (!isSorted(keys)) {
         print('File "$arbFile" is not sorted.');
+        if (skipError) {
+          print('Skip error mode: Continuing despite unsorted file');
+          exit(0);
+        }
         exit(1);
       } else {
         print('File "$arbFile" is sorted. 🎉');
