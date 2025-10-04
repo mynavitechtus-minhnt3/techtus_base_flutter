@@ -335,9 +335,14 @@ make gen_env
 ### 2.18. init_project.dart
 
 **Mục đích**: 
+- Xoá code mẫu trong project
 - Config project khi mới start dự án giúp tiết kiệm thời gian setup ban đầu
 
 **Cách hoạt động**:
+- Xoá toàn bộ màn hình và unit test, widget test tương ứng trừ `splash` và `main`
+- Generate lại các file theo template cho 3 màn: `login`, `home`, `my_profile`
+- Xoá toàn bộ color trong app_colors.dart trừ màu `black`
+- Xoá 1 vài biến, hàm không cần thiết trong `shared_view_model.dart` và `shared_provider.dart`
 - Đọc file `setting_initial_config.md` và config project
 
 **Cách sử dụng**:

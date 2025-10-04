@@ -29,7 +29,7 @@ void main() {
           filename: 'common_image/asset',
           widget: UnconstrainedBox(
             child: CommonImage.asset(
-              path: image.imageBackground,
+              path: image.imageAppIcon,
               width: 234,
               height: 506,
             ),
@@ -75,7 +75,7 @@ void main() {
             includeTextScalingCase: false,
             widget: UnconstrainedBox(
               child: CommonImage.asset(
-                path: image.imageBackground,
+                path: image.imageAppIcon,
                 width: 234,
                 height: 506,
                 fit: BoxFit.cover,
@@ -94,7 +94,7 @@ void main() {
             includeTextScalingCase: false,
             widget: UnconstrainedBox(
               child: CommonImage.asset(
-                path: image.imageBackground,
+                path: image.imageAppIcon,
                 width: 234,
                 height: 506,
                 fit: BoxFit.cover,
@@ -118,7 +118,7 @@ void main() {
             includeTextScalingCase: false,
             widget: UnconstrainedBox(
               child: CommonImage.asset(
-                path: image.imageBackground,
+                path: image.imageAppIcon,
                 width: 234,
                 height: 234,
                 fit: BoxFit.cover,

@@ -18,6 +18,9 @@ final filesToDelete = [
   'test/widget_test/ui/component/avatar_view_test.dart',
   'test/widget_test/ui/component/primary_text_field_test.dart',
   'test/widget_test/ui/component/search_text_field_test.dart',
+
+  // Unit Tests
+  'test/unit_test/ui/page/main/view_model/main_view_model_test.dart',
 ];
 
 // Directories to delete (including all contents)
@@ -37,6 +40,14 @@ final subDirsToDelete = [
 final excludeDirsFromDeletion = [
   'splash',
   'main',
+];
+
+final excludeRoutesFromDeletion = [
+  'splash',
+  'login',
+  'main',
+  'home',
+  'my_profile',
 ];
 
 // Helper functions for common operations
@@ -377,7 +388,13 @@ Future<void> main(List<String> args) async {
   await _updateWithErrorHandling(
       'Shared ViewModel Test Cleanup', () => _cleanupSharedViewModelTest(projectRoot));
   await _updateWithErrorHandling('App Colors Cleanup', () => _cleanupAppColors(projectRoot));
-  await _updateWithErrorHandling('Base Test Cleanup', () => _cleanupBaseTest(projectRoot));
+  await _updateWithErrorHandling('App Router Cleanup', () => _cleanupAppRouter(projectRoot));
+  await _updateWithErrorHandling(
+      'Generated Router Cleanup', () => _cleanupGeneratedRouter(projectRoot));
+  await _updateWithErrorHandling(
+      'Main ViewModel Cleanup', () => _cleanupMainViewModel(projectRoot));
+  await _updateWithErrorHandling(
+      'Base Test Blocks Cleanup', () => _cleanupBaseTestBlocks(projectRoot));
 
   // Skip reading project state back to avoid overwriting user's JSON config
   // final backfill = await _readProjectState(projectRoot, config);
@@ -1200,24 +1217,6 @@ class AppColors {
   print('🗑️  Cleaned up app_colors.dart');
 }
 
-Future<void> _cleanupBaseTest(String root) async {
-  final baseTestFile = File(pathOf(root, 'test/common/base_test.dart'));
-  if (!await baseTestFile.exists()) return;
-
-  var content = await baseTestFile.readAsString();
-
-  // Remove specific lines 75-76
-  final lines = content.split('\n');
-  if (lines.length > 76) {
-    // Remove lines 75-76 (0-indexed, so lines 74-75)
-    lines.removeRange(74, 76);
-    content = lines.join('\n');
-  }
-
-  await baseTestFile.writeAsString(content);
-  print('🗑️  Cleaned up base_test.dart');
-}
-
 String? _extractJsonBlock(String content) {
   final regex = RegExp(r'```json\s*([\s\S]*?)\s*```', multiLine: true);
   final match = regex.firstMatch(content);
@@ -1323,4 +1322,111 @@ String _fixJsonComments(String jsonContent) {
   result = result.replaceAll(RegExp(r',\s*]'), ']');
 
   return result;
+}
+
+Future<void> _cleanupAppRouter(String root) async {
+  final appRouterFile = File(pathOf(root, 'lib/navigation/routes/app_router.dart'));
+  if (!await appRouterFile.exists()) return;
+
+  var content = await appRouterFile.readAsString();
+  final lines = content.split('\n');
+  final filteredLines = <String>[];
+
+  for (int i = 0; i < lines.length; i++) {
+    final line = lines[i];
+    final trimmedLine = line.trim();
+
+    // Skip lines that contain "// remove after running `make init`"
+    if (trimmedLine.contains('// remove after running `make init`')) {
+      continue;
+    }
+
+    filteredLines.add(line);
+  }
+
+  content = filteredLines.join('\n');
+
+  await appRouterFile.writeAsString(content);
+  print(
+      '🗑️  Cleaned up app_router.dart routes (removed lines with "// remove after running `make init`")');
+}
+
+Future<void> _cleanupGeneratedRouter(String root) async {
+  final generatedRouterFile = File(pathOf(root, 'lib/navigation/routes/app_router.gr.dart'));
+  if (!await generatedRouterFile.exists()) return;
+
+  var content = await generatedRouterFile.readAsString();
+
+  // Routes to keep based on excludeRoutesFromDeletion
+  final routesToKeep = excludeRoutesFromDeletion;
+
+  // Remove route classes that are not in the keep list
+  final routeClassPattern =
+      RegExp(r'/// generated route for[\s\S]*?class (\w+Route)[\s\S]*?^}', multiLine: true);
+  final matches = routeClassPattern.allMatches(content).toList();
+
+  for (final match in matches.reversed) {
+    final routeName = match.group(1)!;
+    final routeNameWithoutRoute = routeName.replaceAll('Route', '').replaceAll('Tab', '');
+
+    // Check if this route should be kept
+    bool shouldKeep = false;
+    for (final routeToKeep in routesToKeep) {
+      final routeToKeepLower = routeToKeep.toLowerCase();
+      final routeNameLower = routeNameWithoutRoute.toLowerCase();
+
+      if (routeNameLower == routeToKeepLower ||
+          routeNameLower == '${routeToKeepLower}tab' ||
+          routeNameLower == '${routeToKeepLower}tabpage') {
+        shouldKeep = true;
+        break;
+      }
+    }
+
+    if (!shouldKeep) {
+      content = content.replaceFirst(match.group(0)!, '');
+    }
+  }
+
+  // Clean up extra blank lines
+  content = content.replaceAll(RegExp(r'\n\s*\n\s*\n'), '\n\n');
+
+  await generatedRouterFile.writeAsString(content);
+  print('🗑️  Cleaned up app_router.gr.dart');
+}
+
+Future<void> _cleanupMainViewModel(String root) async {
+  final mainViewModelFile = File(pathOf(root, 'lib/ui/page/main/view_model/main_view_model.dart'));
+  if (!await mainViewModelFile.exists()) return;
+
+  var content = await mainViewModelFile.readAsString();
+
+  // Remove blocks between "// this block will be removed after running `make init` - START" and "// this block will be removed after running `make init` - END"
+  final blockPattern = RegExp(
+      r'// this block will be removed after running `make init` - START[\s\S]*?// this block will be removed after running `make init` - END',
+      multiLine: true);
+
+  content = content.replaceAll(blockPattern, '');
+
+  await mainViewModelFile.writeAsString(content);
+  print(
+      '🗑️  Cleaned up main_view_model.dart (removed blocks with "// this block will be removed after running `make init`")');
+}
+
+Future<void> _cleanupBaseTestBlocks(String root) async {
+  final baseTestFile = File(pathOf(root, 'test/common/base_test.dart'));
+  if (!await baseTestFile.exists()) return;
+
+  var content = await baseTestFile.readAsString();
+
+  // Remove blocks between "// this block will be removed after running `make init` - START" and "// this block will be removed after running `make init` - END"
+  final blockPattern = RegExp(
+      r'// this block will be removed after running `make init` - START[\s\S]*?// this block will be removed after running `make init` - END',
+      multiLine: true);
+
+  content = content.replaceAll(blockPattern, '');
+
+  await baseTestFile.writeAsString(content);
+  print(
+      '🗑️  Cleaned up base_test.dart (removed blocks with "// this block will be removed after running `make init`")');
 }
